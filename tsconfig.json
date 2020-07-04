@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    /* Visit https://aka.ms/tsconfig.json to read more about this file */
+    "target": "es5",
+    "lib": ["ES2017", "ES2015.Iterable", "DOM"],
+    "downlevelIteration": true,
+    "baseUrl": "./",
+    "resolveJsonModule": true,
+    "jsx": "react",
+    "module": "ES2020",
+    "moduleResolution": "node",
+    "allowUmdGlobalAccess": true,
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "typeRoots": [
+      "node_modules/@types",
+      "./src/types"
+    ]
+  }
+}

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <meta
+      name="description"
+      content="{{{ description }}}"
+    />
+    <meta name="keywords" content="{{{ keywords }}}" />
+    <title>{{{ title }}}</title>
+    <link rel="stylesheet" href="{{{ relativePathToRoot }}}styles.css">
+    <link rel="stylesheet" href="https://use.typekit.net/jyf2raq.css">
+  </head>
+  <body>
+    <noscript class="absolute px-2 py-1 top-0 right-0 bg-white">
+      <div class="flex flex-row items-center">
+
+        <svg class="h-5 w-5 stroke-current text-yellow-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span class="pl-1 text-sm text-gray-700">Some parts of the site need JavaScript</span>
+      </div>
+    </noscript>
+
+    <div id="react-root">{{{ htmlContent }}}</div>
+
+    <script type="module" src="{{{ hydrateScriptPath }}}"></script>
+  </body>
+</html>
