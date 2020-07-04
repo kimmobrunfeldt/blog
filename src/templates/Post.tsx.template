@@ -1,0 +1,13 @@
+import React from "react";
+import hydrate from "next-mdx-remote/hydrate";
+import { PostLayout } from "src/components";
+import * as components from "src/components";
+import renderedOutput from "{{{ renderedOutputPath }}}";
+import compiledSource from "{{{ compiledSourcePath }}}";
+
+function Post(): JSX.Element {
+  const content = hydrate({ renderedOutput, compiledSource }, { components });
+  return <PostLayout>{content}</PostLayout>;
+}
+
+export default Post;
