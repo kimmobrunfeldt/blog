@@ -7,6 +7,7 @@ import glob from "glob";
 import matter, { GrayMatterFile } from "gray-matter";
 import _ from "lodash";
 import renderMdxToString from "next-mdx-remote/render-to-string";
+import { components as mdxComponents } from "src/mdxComponents";
 import { mapSeriesAsync } from "src/util/promise";
 import { getProjectPath, renderTemplate } from "src/util/index";
 import { PostFromHtml } from "src/components";
@@ -47,7 +48,7 @@ const TEMPLATES = {
 };
 
 function getTitle(pageTitle: string): string {
-  return `${pageTitle} | kimmo.blog`;
+  return `${pageTitle} - kimmo.blog`;
 }
 
 function getFilesForOneReactPage(
@@ -111,7 +112,10 @@ async function parseMdxFile(
 async function getFilesForOneMdxPage(mdxFileName: string): Promise<File[]> {
   const matterMdx = await parseMdxFile(mdxFileName);
   const renderedMdxSource = await renderMdxToString(matterMdx.content, {
-    components: COMPONENTS,
+    components: {
+      ...COMPONENTS,
+      ...mdxComponents,
+    },
   });
   const postName = path.basename(mdxFileName, ".mdx").toLowerCase();
   const postPageTsxContent = renderTemplate(TEMPLATES.post, {
