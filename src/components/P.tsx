@@ -5,9 +5,11 @@ export type ParagraphProps = {
   className?: string;
 };
 
+export const textColor = "text-gray-700";
+
 export function P({ children, className = "", ...otherProps }: ParagraphProps) {
   return (
-    <p {...otherProps} className={`font-sans text-gray-700 ${className}`}>
+    <p {...otherProps} className={`font-sans ${textColor} ${className}`}>
       {children}
     </p>
   );

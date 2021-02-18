@@ -12,6 +12,7 @@
     <title>{{{ title }}}</title>
     <link rel="stylesheet" href="{{{ relativePathToRoot }}}styles.css">
     <link rel="stylesheet" href="https://use.typekit.net/jyf2raq.css">
+    {{{ headAfterAll }}}
   </head>
   <body>
     <noscript class="absolute px-2 py-1 top-0 right-0 bg-white">
@@ -27,5 +28,6 @@
     <div id="react-root">{{{ htmlContent }}}</div>
 
     <script type="module" src="{{{ hydrateScriptPath }}}"></script>
+    {{{ bodyBeforeHydrate }}}
   </body>
 </html>
