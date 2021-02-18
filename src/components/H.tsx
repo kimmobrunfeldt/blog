@@ -12,7 +12,7 @@ export function levelToClass(level: HeadingLevel): string {
     6: "text-l",
   }[level];
 
-  return `${size} font-black text-gray-800 font-heading`;
+  return `${size} font-black text-gray-900 font-heading`;
 }
 
 export const LevelContext = React.createContext(1 as HeadingLevel);

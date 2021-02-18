@@ -18,8 +18,13 @@ module.exports = {
   darkMode: "media",
   theme: {
     fontFamily: {
-      heading: ["freight-big-pro", ...defaultTheme.fontFamily.sans],
+      heading: ["freight-display-pro", ...defaultTheme.fontFamily.sans],
       sans: ["Charter", ...defaultTheme.fontFamily.sans],
+    },
+    extend: {
+      colors: {
+        "rust-500": "#BE8D6A",
+      },
     },
   },
 };
