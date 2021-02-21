@@ -2,26 +2,30 @@ import path from "path";
 import fs from "fs";
 import { promisify } from "util";
 import React from "react";
+import remark from "remark";
+import stripMarkdown from "strip-markdown";
 import ReactDOMServer from "react-dom/server";
 import glob from "glob";
 import matter, { GrayMatterFile } from "gray-matter";
 import _ from "lodash";
+import Ajv from "ajv";
 import renderMdxToString from "next-mdx-remote/render-to-string";
 import { components as mdxComponents } from "src/mdxComponents";
 import { mapSeriesAsync } from "src/util/promise";
 import { getProjectPath, renderTemplate } from "src/util/index";
-import { PostFromHtml } from "src/components";
+import { PostLayout } from "src/components";
 import { pages as PAGES } from "src/pages/_exports";
 import * as COMPONENTS from "src/components";
+import { theme as prismTheme } from "src/prismTheme";
 import * as siteData from "./types/siteData";
 
-type Page = typeof PAGES[0];
+type PageComponent = typeof PAGES[0];
 type File = {
   path: string;
   content: string;
 };
 type SiteInput = {
-  pages: Page[];
+  pages: PageComponent[];
   mdxFileNames: string[];
 };
 
@@ -42,38 +46,61 @@ const TEMPLATES = {
       encoding: "utf8",
     }
   ),
-  post: fs.readFileSync(getProjectPath("src/templates/Post.tsx.template"), {
+  post: fs.readFileSync(getProjectPath("src/templates/PostPage.tsx.template"), {
     encoding: "utf8",
   }),
+  prismTheme: fs.readFileSync(
+    getProjectPath("src/templates/prism-theme.css.template"),
+    {
+      encoding: "utf8",
+    }
+  ),
 };
 
 function getTitle(pageTitle: string): string {
   return `${pageTitle} - kimmo.blog`;
 }
 
-function getFilesForOneReactPage(
-  page: Page,
+function getFileNameFromPath(path: string): string {
+  if (path === "/") {
+    return "index";
+  }
+
+  const basename = _.last(path.split("/"));
+  if (!basename) {
+    throw new Error(`Unexpected path: '${path}'`);
+  }
+
+  return basename;
+}
+
+async function getFilesForOneReactPage(
+  page: PageComponent,
   siteData: siteData.SiteData
-): File[] {
-  const fileName = page.name.toLowerCase();
+): Promise<File[]> {
+  const pageData = await page.getData();
+
+  const fileName = getFileNameFromPath(pageData.path).toLowerCase();
   const pageHydrateName = `${fileName}-hydrate`;
   const htmlContent = ReactDOMServer.renderToString(
-    <page.Component data={siteData} />
+    <page.Component pageData={pageData} siteData={siteData} />
   );
   const relativePathToRoot = "./";
   const html = renderTemplate(TEMPLATES.pageHtml, {
-    title: getTitle(page.title),
-    description: page.description,
-    keywords: page.tags.join(", "),
+    title: getTitle(pageData.title),
+    description: pageData.description,
+    keywords: pageData.tags.join(", "),
     htmlContent,
     hydrateScriptPath: `./${pageHydrateName}.js`,
     relativePathToRoot,
-    headAfterAll: "",
-    bodyBeforeHydrate: "",
+    headAfter: "",
   });
 
   const pageHydrateContent = renderTemplate(TEMPLATES.pageHydrate, {
-    pageImportPath: `../src/pages/${fileName}`,
+    // The convention for page components are with capitalized first letter:
+    // Index.tsx, Posts.tsx etc
+    pageImportPath: `../src/pages/${_.capitalize(fileName)}`,
+    pagePath: pageData.path,
     relativePathToRoot,
   });
 
@@ -89,12 +116,14 @@ function getFilesForOneReactPage(
   ];
 }
 
-function getFilesForReactPages(
-  pages: Page[],
+async function getFilesForReactPages(
+  pages: PageComponent[],
   siteData: siteData.SiteData
-): File[] {
+): Promise<File[]> {
   return _.flatten(
-    pages.map((page) => getFilesForOneReactPage(page, siteData))
+    await mapSeriesAsync(pages, (page) =>
+      getFilesForOneReactPage(page, siteData)
+    )
   );
 }
 
@@ -113,38 +142,44 @@ async function parseMdxFile(
 
 async function getFilesForOneMdxPage(mdxFileName: string): Promise<File[]> {
   const matterMdx = await parseMdxFile(mdxFileName);
+  const postData = await getPostData(mdxFileName);
+
   const renderedMdxSource = await renderMdxToString(matterMdx.content, {
     components: {
       ...COMPONENTS,
       ...mdxComponents,
     },
+    mdxOptions: {
+      remarkPlugins: [],
+    },
   });
+  const relativePathToRoot = "../../";
   const postName = path.basename(mdxFileName, ".mdx").toLowerCase();
   const postPageTsxContent = renderTemplate(TEMPLATES.post, {
     renderedOutputPath: `./renderedOutput.txt`,
     compiledSourcePath: `./compiledSource.txt`,
+    relativePathToRoot,
+    slug: postData.slug,
   });
 
   const pageHydrateName = `${postName}-post-hydrate`;
   const htmlContent = ReactDOMServer.renderToString(
-    <PostFromHtml html={renderedMdxSource.renderedOutput} />
+    <PostLayout html={renderedMdxSource.renderedOutput} data={postData} />
   );
-
-  const relativePathToRoot = "../../";
   const html = renderTemplate(TEMPLATES.pageHtml, {
-    title: getTitle(matterMdx.data.title),
-    description: matterMdx.data.description,
-    keywords: matterMdx.data.tags.join(","),
+    title: getTitle(postData.title),
+    description: postData.description,
+    keywords: postData.tags.join(","),
     htmlContent,
     hydrateScriptPath: `./${pageHydrateName}.js`,
     relativePathToRoot,
-    headAfterAll: `<link rel="stylesheet" href="${relativePathToRoot}prism-duotone-light.css" />`,
-    bodyBeforeHydrate: `<script src="${relativePathToRoot}prism.js"></script>`,
+    headAfter: `<link rel="stylesheet" href="${relativePathToRoot}prism-theme.css" />`,
   });
 
   const postFileName = `${postName}-post`;
   const pageHydrateContent = renderTemplate(TEMPLATES.pageHydrate, {
     pageImportPath: `./${postFileName}`,
+    pagePath: postData.path,
     relativePathToRoot,
   });
 
@@ -177,21 +212,47 @@ async function getFilesForMdxPages(mdxFileNames: string[]): Promise<File[]> {
   return _.flatten(files);
 }
 
+async function getPostData(
+  mdxFilePath: string
+): Promise<siteData.PostMetadata> {
+  const { data, content } = await parseMdxFile(mdxFilePath);
+  const plain = remark().use(stripMarkdown).processSync(content).toString();
+  const charCount = plain.replace(/\s+/, "").length;
+
+  const validate = new Ajv({ strict: false }).compile(
+    siteData.PostMetadataSchema
+  );
+
+  const postData = {
+    title: data.title,
+    createdAt: data.createdAt,
+    slug: data.slug,
+    tags: data.tags,
+    description: data.description,
+    path: `/posts/${data.slug}`,
+    charCount,
+  };
+
+  const isValid = validate(postData);
+  if (!isValid) {
+    console.error(validate.errors);
+    throw new Error(`Invalid data found for MDX post '${mdxFilePath}'`);
+  }
+  return postData;
+}
+
 async function getSiteData(input: SiteInput): Promise<siteData.SiteData> {
-  const parsedFiles = await mapSeriesAsync(input.mdxFileNames, parseMdxFile);
+  const postPages = await mapSeriesAsync(input.mdxFileNames, getPostData);
+  const regularPages = await mapSeriesAsync(input.pages, async (page) =>
+    page.getData()
+  );
+  const allPages: siteData.AnyPage[] = _.flatten<siteData.AnyPage>([
+    postPages.map((pageData) => ({ type: "post" as const, data: pageData })),
+    regularPages.map((pageData) => ({ type: "page" as const, data: pageData })),
+  ]);
+
   return {
-    posts: parsedFiles.map((matterMdx) => ({
-      title: matterMdx.data.title,
-      createdAt: matterMdx.data.createdAt,
-      slug: matterMdx.data.slug,
-      tags: matterMdx.data.tags,
-      description: matterMdx.data.description,
-      path: `/posts/${matterMdx.data.slug}`,
-    })),
-    pages: input.pages.map((page) => ({
-      title: page.title,
-      path: `/${page.name}`,
-    })),
+    pages: allPages,
   };
 }
 
@@ -219,11 +280,15 @@ async function main() {
   });
 
   const files = _.flatten([
-    getFilesForReactPages(PAGES, siteData),
+    await getFilesForReactPages(PAGES, siteData),
     await getFilesForMdxPages(mdxFileNames),
     {
       path: "site-data.json",
       content: JSON.stringify(siteData, null, 2),
+    },
+    {
+      path: "prism-theme.css",
+      content: renderTemplate(TEMPLATES.prismTheme, prismTheme),
     },
   ]);
 

@@ -1,11 +1,8 @@
-import Index from "./index";
+import { getData as getIndexData, default as Index } from "./Index";
 
 export const pages = [
   {
+    getData: getIndexData,
     Component: Index,
-    title: "Index",
-    name: "index",
-    tags: ["blog", "tech"],
-    description: "Welcome to my blog.",
   },
 ];

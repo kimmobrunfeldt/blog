@@ -1,0 +1,176 @@
+/* http://k88hudson.github.io/react-markdocs */
+/**
+ * @author k88hudson
+ *
+ * Based on prism.js default theme for JavaScript, CSS and HTML
+ * Based on dabblet (http://dabblet.com)
+ * @author Lea Verou
+ */
+
+/*********************************************************
+* General
+*/
+
+pre[class*="language-"],
+code[class*="language-"] {
+  color: {{{ baseColor }}};
+  direction: ltr;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  hyphens: none;
+}
+
+@media print {
+  pre[class*="language-"],
+  code[class*="language-"] {
+    text-shadow: none;
+  }
+}
+
+pre[class*="language-"]::selection,
+code[class*="language-"]::selection {
+  text-shadow: none;
+  background: {{{ selectedColor }}};
+}
+
+/* Blocks */
+pre > code[class*="language-"] {
+  background: {{{ blockBackground }}};
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+  border-radius: .3em;
+  color: {{{ inlineCodeColor }}};
+  background: {{{ inlineCodeBackground }}};
+}
+
+/*********************************************************
+* Tokens
+*/
+
+.namespace {
+  opacity: .7;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+  color: {{{ commentColor }}};
+}
+
+.token.punctuation {
+  color: {{{ punctuationColor }}};
+}
+
+.token.property,
+.token.tag,
+.token.boolean,
+.token.number,
+.token.constant,
+.token.symbol,
+.token.deleted {
+  color: {{{ propertyColor }}};
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+  color: {{{ selectorColor }}};
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string {
+  color: {{{ operatorColor }}};
+  background: {{{ operatorBackground }}};
+}
+
+.token.atrule,
+.token.attr-value,
+.token.keyword {
+  color: {{{ keywordColor }}};
+}
+
+.token.function {
+  color: {{{ functionColor }}};
+}
+
+.token.regex,
+.token.important,
+.token.variable {
+  color: {{{  variableColor }}};
+}
+
+.token.important,
+.token.bold {
+  font-weight: bold;
+}
+.token.italic {
+  font-style: italic;
+}
+
+.token.entity {
+  cursor: help;
+}
+
+/*********************************************************
+* Line highlighting
+*/
+
+pre[data-line] {
+  position: relative;
+}
+
+pre[class*="language-"] > code[class*="language-"] {
+  position: relative;
+  z-index: 1;
+}
+
+.line-highlight {
+  position: absolute;
+  left: 0;
+  right: 0;
+  padding: inherit 0;
+  background: {{{ highlightBackground }}};
+  box-shadow: inset 5px 0 0 {{{ highlightAccent }}};
+  z-index: 0;
+  pointer-events: none;
+  line-height: inherit;
+  white-space: pre;
+}
+
+
+.diff-add-highlight {
+  position: absolute;
+  left: 0;
+  right: 0;
+  padding: inherit 0;
+  background: {{{ diffAddBackground }}};
+  box-shadow: inset 5px 0 0 {{{ diffAddAccent }}};
+  z-index: 0;
+  pointer-events: none;
+  line-height: inherit;
+  white-space: pre;
+}
+
+.diff-delete-highlight {
+  position: absolute;
+  left: 0;
+  right: 0;
+  padding: inherit 0;
+  background: {{{ diffDeleteBackground }}};
+  box-shadow: inset 5px 0 0 {{{ diffDeleteAccent }}};
+  z-index: 0;
+  pointer-events: none;
+  line-height: inherit;
+  white-space: pre;
+}
