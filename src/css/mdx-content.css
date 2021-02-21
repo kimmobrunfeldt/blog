@@ -1,0 +1,31 @@
+/*
+ * Use only when necessary, for example when a child or adjacent sibling selector
+ * is needed.
+ */
+
+/* The page layouting should cover the whitespace before the first header */
+.mdx h1:first-child {
+  @apply mt-0;
+}
+
+/* Top level lists */
+.mdx :not(li) > ol,
+.mdx :not(li) > ul {
+  @apply mb-5;
+}
+
+/* Sublists */
+.mdx li > ol,
+.mdx li > ul {
+  @apply mt-1 mb-2;
+}
+
+/* Block of code */
+.mdx pre > code {
+  @apply py-2 px-3 mb-5 block overflow-auto rounded-md text-xs;
+}
+
+/* Inline code */
+.mdx :not(pre) > code {
+  @apply px-0.5 pb-0.5 pt-1 inline-block bg-gray-1 rounded-sm text-xs leading-normal;
+}

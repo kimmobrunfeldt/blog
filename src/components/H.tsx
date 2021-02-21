@@ -4,15 +4,15 @@ export type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
 
 export function levelToClass(level: HeadingLevel): string {
   const size = {
-    1: "text-8xl",
-    2: "text-5xl",
-    3: "text-3xl",
-    4: "text-2xl",
-    5: "text-xl",
-    6: "text-l",
+    1: "text-8xl mt-20 mb-7",
+    2: "text-5xl mt-12 mb-5",
+    3: "text-3xl mt-9 mb-4",
+    4: "text-2xl mt-7 mb-3",
+    5: "text-xl mt-5 mb-2",
+    6: "text-l mt-3 mb-1",
   }[level];
 
-  return `${size} font-black text-gray-900 font-heading`;
+  return `${size} font-black text-gray-9 font-heading`;
 }
 
 export const LevelContext = React.createContext(1 as HeadingLevel);

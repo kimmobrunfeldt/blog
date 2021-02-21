@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="h-full" lang="en">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -12,22 +12,20 @@
     <title>{{{ title }}}</title>
     <link rel="stylesheet" href="{{{ relativePathToRoot }}}styles.css">
     <link rel="stylesheet" href="https://use.typekit.net/jyf2raq.css">
-    {{{ headAfterAll }}}
+    {{{ headAfter }}}
   </head>
-  <body>
-    <noscript class="absolute px-2 py-1 top-0 right-0 bg-white">
+  <body class="h-full bg-rust-0">
+    <noscript class="absolute px-2 py-1 top-0 right-0">
       <div class="flex flex-row items-center">
-
-        <svg class="h-5 w-5 stroke-current text-yellow-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        <svg class="h-4 w-4 fill-current text-warning-5" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M7 4.5V5H8V4.5H7ZM8 4.49V3.99H7V4.49H8ZM8 11V7H7V11H8ZM8 4.5V4.49H7V4.5H8ZM6 8H7.5V7H6V8ZM6 11H9V10H6V11ZM7.5 1C11.0899 1 14 3.91015 14 7.5H15C15 3.35787 11.6421 3.57628e-07 7.5 0V1ZM1 7.5C1 3.91015 3.91015 1 7.5 1V0C3.35787 -3.57628e-07 3.57628e-07 3.35786 0 7.5H1ZM7.5 14C3.91015 14 1 11.0899 1 7.5H0C-3.57628e-07 11.6421 3.35786 15 7.5 15V14ZM7.5 15C11.6421 15 15 11.6421 15 7.5H14C14 11.0899 11.0899 14 7.5 14V15Z" />
         </svg>
-        <span class="pl-1 text-sm text-gray-700">Some parts of the site need JavaScript</span>
+        <span class="pl-1 text-xs text-gray-8">Some parts of the site need JavaScript</span>
       </div>
     </noscript>
 
-    <div id="react-root">{{{ htmlContent }}}</div>
+    <div class="h-full" id="react-root">{{{ htmlContent }}}</div>
 
     <script type="module" src="{{{ hydrateScriptPath }}}"></script>
-    {{{ bodyBeforeHydrate }}}
   </body>
 </html>

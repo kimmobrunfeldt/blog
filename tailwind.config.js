@@ -1,4 +1,26 @@
 const defaultTheme = require("tailwindcss/defaultTheme");
+const colorAlgorithm = require("@k-vyn/coloralgorithm");
+const colorboxColors = require("./colorbox.json");
+
+// https://colorbox.io/
+const generatedColors = colorboxColors.map(({ properties, options }) => {
+  const output = colorAlgorithm.generate(properties, options);
+  return output.find((item) => !item.inverted);
+});
+
+const colors = generatedColors.reduce((accColor, color) => {
+  const colorSteps = color.colors.reduce((accStep, step) => {
+    return {
+      ...accStep,
+      [step.step]: step.hex,
+    };
+  }, {});
+
+  return {
+    ...accColor,
+    [color.name.toLowerCase()]: colorSteps,
+  };
+}, {});
 
 module.exports = {
   purge: {
@@ -21,9 +43,15 @@ module.exports = {
       heading: ["freight-display-pro", ...defaultTheme.fontFamily.sans],
       sans: ["Charter", ...defaultTheme.fontFamily.sans],
     },
+    colors: {
+      ...colors,
+      white: "white",
+      black: "black",
+      transparent: "transparent",
+    },
     extend: {
-      colors: {
-        "rust-500": "#BE8D6A",
+      gridTemplateRows: {
+        layout: `auto 1fr auto`,
       },
     },
   },

@@ -1,12 +1,14 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { SiteData } from "src/types/siteData";
 import siteData from "{{{ relativePathToRoot }}}site-data.json";
-import Page from "{{{ pageImportPath }}}";
+import PageComponent from "{{{ pageImportPath }}}";
+
+const pagePath = "{{{ pagePath }}}";
+const page = siteData.pages.find((page) => page.data.path === pagePath);
 
 window.addEventListener("load", () => {
   ReactDOM.hydrate(
-    <Page data={siteData as SiteData} />,
+    <PageComponent pageData={page.data} siteData={siteData} />,
     document.getElementById("react-root")
   );
 });

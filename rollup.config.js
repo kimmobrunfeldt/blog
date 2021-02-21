@@ -13,27 +13,25 @@ export default {
     format: "esm",
   },
   manualChunks(id) {
-    console.log("ID", id);
     if (id.includes("node_modules")) {
       return "vendor";
     }
   },
   plugins: [
+    {
+      transform(code, id) {
+        console.log(id);
+        // not returning anything, so doesn't affect bundle
+      },
+    },
     replace({
-      "process.env.NODE_ENV": JSON.stringify("production"),
+      "process.env.NODE_ENV": JSON.stringify("development"),
     }),
     nodeResolve({
       browser: true,
       dedupe: ["react", "react-dom", "lodash"],
       rootDir: __dirname,
     }),
-    {
-      transform(code, id) {
-        console.log(id);
-        //console.log(code);
-        // not returning anything, so doesn't affect bundle
-      },
-    },
     string({
       // Required to be specified
       include: "**/*.txt",

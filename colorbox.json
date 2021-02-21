@@ -1,0 +1,223 @@
+[
+  {
+    "properties": {
+      "steps": 11,
+      "hue": {
+        "start": 25,
+        "end": 22,
+        "curve": "easeOutQuad"
+      },
+      "saturation": {
+        "start": 0.03,
+        "end": 0.8,
+        "rate": 0.8,
+        "curve": "easeOutQuad"
+      },
+      "brightness": {
+        "start": 1,
+        "end": 0.3,
+        "curve": "easeInQuad"
+      }
+    },
+    "options": {
+      "minorSteps": [
+        0,
+        1,
+        8,
+        9
+      ],
+      "name": "Rust",
+      "rotation": "counterclockwise"
+    }
+  },
+  {
+    "properties": {
+      "steps": 11,
+      "hue": {
+        "start": 25,
+        "end": 25,
+        "curve": "easeOutQuad"
+      },
+      "saturation": {
+        "start": 0,
+        "end": 0.08,
+        "rate": 1,
+        "curve": "easeInQuad"
+      },
+      "brightness": {
+        "start": 0.98,
+        "end": 0.11,
+        "curve": "easeInOutQuad"
+      }
+    },
+    "options": {
+      "minorSteps": [
+        0,
+        1,
+        8,
+        9
+      ],
+      "name": "Gray",
+      "rotation": "clockwise"
+    }
+  },
+  {
+    "properties": {
+      "steps": 11,
+      "hue": {
+        "start": 45,
+        "end": 22,
+        "curve": "linear"
+      },
+      "saturation": {
+        "start": 0.01,
+        "end": 1,
+        "rate": 2,
+        "curve": "easeInOutQuad"
+      },
+      "brightness": {
+        "start": 1,
+        "end": 0.3,
+        "curve": "easeInQuad"
+      }
+    },
+    "options": {
+      "minorSteps": [
+        0,
+        1,
+        8,
+        9
+      ],
+      "name": "Amber",
+      "rotation": "counterclockwise"
+    }
+  },
+  {
+    "properties": {
+      "steps": 11,
+      "hue": {
+        "start": 345,
+        "end": 3,
+        "curve": "easeOutQuad"
+      },
+      "saturation": {
+        "start": 0.01,
+        "end": 0.9,
+        "rate": 2,
+        "curve": "easeInOutQuad"
+      },
+      "brightness": {
+        "start": 1,
+        "end": 0.3,
+        "curve": "easeInQuad"
+      }
+    },
+    "options": {
+      "minorSteps": [
+        0,
+        1,
+        8,
+        9
+      ],
+      "name": "Danger",
+      "lockHex": "EF4444",
+      "rotation": "clockwise"
+    }
+  },
+  {
+    "properties": {
+      "steps": 11,
+      "hue": {
+        "start": 48,
+        "end": 50,
+        "curve": "easeOutQuad"
+      },
+      "saturation": {
+        "start": 0.01,
+        "end": 1,
+        "rate": 2,
+        "curve": "easeInOutQuad"
+      },
+      "brightness": {
+        "start": 1,
+        "end": 0.3,
+        "curve": "easeInQuad"
+      }
+    },
+    "options": {
+      "minorSteps": [
+        0,
+        1,
+        8,
+        9
+      ],
+      "name": "Warning",
+      "provideInverted": false,
+      "rotation": "clockwise"
+    }
+  },
+  {
+    "properties": {
+      "steps": 11,
+      "hue": {
+        "start": 84,
+        "end": 98,
+        "curve": "easeOutQuad"
+      },
+      "saturation": {
+        "start": 0.01,
+        "end": 1,
+        "rate": 2,
+        "curve": "easeInOutQuad"
+      },
+      "brightness": {
+        "start": 1,
+        "end": 0.3,
+        "curve": "easeInQuad"
+      }
+    },
+    "options": {
+      "minorSteps": [
+        0,
+        1,
+        8,
+        9
+      ],
+      "name": "Success",
+      "provideInverted": false,
+      "rotation": "clockwise"
+    }
+  },
+  {
+    "properties": {
+      "steps": 11,
+      "hue": {
+        "start": 199,
+        "end": 205,
+        "curve": "easeOutQuad"
+      },
+      "saturation": {
+        "start": 0.01,
+        "end": 1,
+        "rate": 2,
+        "curve": "easeInOutQuad"
+      },
+      "brightness": {
+        "start": 1,
+        "end": 0.3,
+        "curve": "easeInQuad"
+      }
+    },
+    "options": {
+      "minorSteps": [
+        0,
+        1,
+        8,
+        9
+      ],
+      "name": "Info",
+      "provideInverted": false,
+      "rotation": "clockwise"
+    }
+  }
+]
