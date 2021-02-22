@@ -7,3 +7,4 @@ export * from "./Prism";
 export * from "./Footer";
 export * from "./Header";
 export * from "./PostSummary";
+export * from "./FloatingProfilePicture";

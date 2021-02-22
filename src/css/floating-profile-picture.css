@@ -1,0 +1,101 @@
+
+.blob-mask {
+  width: 370px;
+  clip-path: url(#blob);
+}
+
+.profile-image-position {
+  top: 80px;
+  left: 35px;
+  z-index: 100;
+}
+
+.floating-map-container, .floating-map-container-layer-1, .floating-map-container-layer-2 {
+  position: relative;
+  top: 380px;
+  left: 30px;
+  width: 500px;
+  height: 400px;
+  border-radius: 20px;
+  transform: rotateX(75deg) rotateZ(-35deg);
+  overflow: hidden;
+}
+
+.map-location-line {
+  @apply absolute;
+  top: 260px;
+  left: 250px;
+  height: 300px;
+  width: 2px;
+  /* dashed border with https://kovart.github.io/dashed-border-generator/ */
+  background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='%2369aec2ab' stroke-width='4' stroke-dasharray='2%2c 8' stroke-dashoffset='0' stroke-linecap='butt'/%3e%3c/svg%3e");
+  z-index: 10;
+  transform: translateY(-15px);
+}
+
+.floating-map-container-layer-1, .floating-map-container-layer-2 {
+  @apply absolute block;
+  content: "";
+  border-radius: 20px;
+}
+
+.map-location-line,
+.floating-profile-picture:hover .map-location-line {
+  transition: transform 0.6s ease-in-out;
+}
+
+.floating-profile-picture:hover .map-location-line {
+  transform: translateY(0px);
+}
+
+.floating-map-container-layer-1,
+.floating-map-container-layer-2,
+.floating-profile-picture:hover .floating-map-container-layer-1,
+.floating-profile-picture:hover .floating-map-container-layer-2 {
+  transition: transform 0.6s ease-in-out;
+}
+
+.floating-profile-picture:hover .floating-map-container-layer-1 {
+  transform: rotateX(75deg) rotateZ(-35deg) translateZ(-25px) scale(0.9);
+}
+
+.floating-profile-picture:hover .floating-map-container-layer-2 {
+  transform: rotateX(75deg) rotateZ(-35deg) translateZ(-50px) scale(0.8);
+}
+
+.floating-map-container-layer-1 {
+  background: #f1e3d9;
+  transform: rotateX(75deg) rotateZ(-35deg) translateZ(-35px) scale(0.9);
+}
+
+.floating-map-container-layer-2 {
+  background: #e8d9ce;
+  transform: rotateX(75deg) rotateZ(-35deg) translateZ(-70px) scale(0.8);
+}
+
+.floating-map-container .colorizer {
+  @apply absolute w-full h-full;
+  background: #56514c;
+  mix-blend-mode: color;
+  z-index: 10;
+}
+
+.floating-map-container img {
+  max-width: initial; /* this needs to be overridden from tailwind defaults */
+  height: auto;
+  width: 1500px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.9);
+  transform-origin: center;
+}
+
+.floating-map-container img,
+.floating-profile-picture:hover .floating-map-container img {
+  transition: transform 0.6s ease-in-out;
+}
+
+.floating-profile-picture:hover .floating-map-container img {
+  transform: translate(-50%, -50%) scale(1.3);
+}

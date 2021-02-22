@@ -1,7 +1,6 @@
 .tk-blob {
   animation: blob-turn var(--time, 30s) linear infinite;
   fill: var(--fill, #7600f8);
-  position: relative;
   transform-origin: center;
 }
 
