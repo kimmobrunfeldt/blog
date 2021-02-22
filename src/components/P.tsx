@@ -9,7 +9,10 @@ export const textColor = "text-gray-8";
 
 export function P({ children, className = "", ...otherProps }: ParagraphProps) {
   return (
-    <p {...otherProps} className={`font-sans mb-5 ${textColor} ${className}`}>
+    <p
+      {...otherProps}
+      className={`font-sans mb-paragraph ${textColor} ${className}`}
+    >
       {children}
     </p>
   );
