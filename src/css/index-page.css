@@ -1,0 +1,10 @@
+
+.blob-mask {
+  width: 370px;
+  clip-path: url(#blob);
+}
+
+.profile-image-position {
+  top: 70px;
+  left: 35px;
+}

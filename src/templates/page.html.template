@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="h-full" lang="en">
+<html class="h-full overflow-y-scroll" lang="en">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -11,10 +11,11 @@
     <meta name="keywords" content="{{{ keywords }}}" />
     <title>{{{ title }}}</title>
     <link rel="stylesheet" href="{{{ relativePathToRoot }}}styles.css">
+    <link rel="stylesheet" href="{{{ relativePathToRoot }}}blobz.css">
     <link rel="stylesheet" href="https://use.typekit.net/jyf2raq.css">
     {{{ headAfter }}}
   </head>
-  <body class="h-full bg-rust-0">
+  <body class="h-full bg-rust-0 text-gray-8">
     <noscript class="absolute px-2 py-1 top-0 right-0">
       <div class="flex flex-row items-center">
         <svg class="h-4 w-4 fill-current text-warning-5" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">

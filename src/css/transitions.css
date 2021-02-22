@@ -1,0 +1,27 @@
+/* Add link effects */
+a.effects::after {
+  @apply block;
+  content: "";
+  margin-left: 10%;
+  width: 80%;
+  background: currentColor;
+  height: 2px;
+  transform: scaleX(0);
+  opacity: 0;
+}
+
+a.effects::after,
+a.effects:hover::after {
+  transition: transform 0.2s ease-in-out, opacity 0.15s ease-in-out;
+}
+
+a.effects.effects-w-half::after {
+  width: 50%;
+  margin-left: 25%;
+}
+
+a.effects:hover::after,
+a.effects.active::after {
+  transform: scaleX(1);
+  opacity: 0.7;
+}

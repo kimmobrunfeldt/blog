@@ -1,4 +1,4 @@
-import path from "path";
+import path, { basename, relative } from "path";
 import fs from "fs";
 import { promisify } from "util";
 import React from "react";
@@ -61,17 +61,24 @@ function getTitle(pageTitle: string): string {
   return `${pageTitle} - kimmo.blog`;
 }
 
-function getFileNameFromPath(path: string): string {
-  if (path === "/") {
-    return "index";
+//  "/" -> ""
+//  "/posts/" -> "posts"
+//  "/posts/something/" -> "posts/something"
+function getStaticFileDir(path: string): string {
+  return _.trimStart(_.trimEnd(path, "/"), "/");
+}
+
+//  "/" -> "."
+//  "/posts/" -> ".."
+//  "/posts/something/" -> "../.."
+function getRelativePathToRoot(fileDir: string): string {
+  if (fileDir === "") {
+    return ".";
   }
 
-  const basename = _.last(path.split("/"));
-  if (!basename) {
-    throw new Error(`Unexpected path: '${path}'`);
-  }
-
-  return basename;
+  const slashCount = _.sumBy(fileDir, (char) => (char === "/" ? 1 : 0));
+  const pathToRoot = _.repeat("../", slashCount + 1);
+  return _.trimEnd(pathToRoot, "/");
 }
 
 async function getFilesForOneReactPage(
@@ -80,18 +87,18 @@ async function getFilesForOneReactPage(
 ): Promise<File[]> {
   const pageData = await page.getData();
 
-  const fileName = getFileNameFromPath(pageData.path).toLowerCase();
-  const pageHydrateName = `${fileName}-hydrate`;
+  const fileDir = getStaticFileDir(pageData.path.toLowerCase());
+  const pageHydratePath = `${fileDir}/hydrate`;
   const htmlContent = ReactDOMServer.renderToString(
     <page.Component pageData={pageData} siteData={siteData} />
   );
-  const relativePathToRoot = "./";
+  const relativePathToRoot = `${getRelativePathToRoot(fileDir)}/`;
   const html = renderTemplate(TEMPLATES.pageHtml, {
     title: getTitle(pageData.title),
     description: pageData.description,
     keywords: pageData.tags.join(", "),
     htmlContent,
-    hydrateScriptPath: `./${pageHydrateName}.js`,
+    hydrateScriptPath: "./hydrate.js",
     relativePathToRoot,
     headAfter: "",
   });
@@ -99,18 +106,18 @@ async function getFilesForOneReactPage(
   const pageHydrateContent = renderTemplate(TEMPLATES.pageHydrate, {
     // The convention for page components are with capitalized first letter:
     // Index.tsx, Posts.tsx etc
-    pageImportPath: `../src/pages/${_.capitalize(fileName)}`,
+    pageImportPath: `src/pages/${page.fileName}`,
     pagePath: pageData.path,
     relativePathToRoot,
   });
 
   return [
     {
-      path: `${fileName}.html`,
+      path: `${fileDir}/index.html`,
       content: html,
     },
     {
-      path: `${pageHydrateName}.tsx`,
+      path: `${pageHydratePath}.tsx`,
       content: pageHydrateContent,
     },
   ];

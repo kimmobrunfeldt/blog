@@ -24,7 +24,7 @@ const colors = generatedColors.reduce((accColor, color) => {
 
 module.exports = {
   purge: {
-    enabled: process.env.NODE_ENV === "production",
+    enabled: true, //process.env.NODE_ENV === "production",
     content: [
       "./src/**/*.html",
       "./src/**/*.template",
@@ -52,6 +52,12 @@ module.exports = {
     extend: {
       gridTemplateRows: {
         layout: `auto 1fr auto`,
+      },
+      gap: {
+        global: defaultTheme.spacing["4"],
+      },
+      spacing: {
+        paragraph: defaultTheme.spacing["5"],
       },
     },
   },

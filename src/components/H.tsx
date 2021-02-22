@@ -1,4 +1,5 @@
 import React, { useContext } from "react";
+import _ from "lodash";
 
 export type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
 
@@ -32,7 +33,7 @@ export type LevelProps = {
   className?: string;
 };
 
-export function Level(props: LevelProps) {
+export function HLevel(props: LevelProps) {
   const contextLevel = useContext(LevelContext);
   return (
     <LevelContext.Provider value={ensureLevel(contextLevel + 1)}>
@@ -44,12 +45,20 @@ export function Level(props: LevelProps) {
 export type HeadingProps = {
   children?: React.ReactNode;
   className?: string;
+  visualLevel?: HeadingLevel;
 };
 
-export function H({ children, className = "", ...otherProps }: HeadingProps) {
+export function H({
+  children,
+  className = "",
+  visualLevel,
+  ...otherProps
+}: HeadingProps) {
   const contextLevel = useContext(LevelContext);
   const HeadingComponent = `h${contextLevel}` as const;
-  const baseCls = levelToClass(contextLevel);
+  const baseCls = levelToClass(
+    _.isUndefined(visualLevel) ? contextLevel : visualLevel
+  );
   return (
     <HeadingComponent {...otherProps} className={`${baseCls} ${className}`}>
       {children}

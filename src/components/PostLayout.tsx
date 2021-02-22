@@ -1,7 +1,6 @@
 import React from "react";
 import { PostMetadata } from "src/types/siteData";
 import { Footer, Header } from "src/components";
-import * as twGlobals from "src/twGlobals";
 
 type PropsWithChildren = {
   children: React.ReactNode;
@@ -51,9 +50,9 @@ export function PostLayout(props: Props): JSX.Element {
   const mdxContainerCls = "mdx col-span-4 max-w-xl";
 
   return (
-    <div className={`grid grid-rows-layout min-h-full ${twGlobals.gridGap}`}>
+    <div className={`grid grid-rows-layout min-h-full gap-global`}>
       <Header currentPath={props.data.path} />
-      <main className={`grid grid-cols-12 ${twGlobals.gridGap}`}>
+      <main className={`grid grid-cols-12 gap-global`}>
         <div className="col-span-2"></div>
         <div className="col-span-2 text-sm">
           <div className="text-gray-6 font-bold text">

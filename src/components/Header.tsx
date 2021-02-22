@@ -3,7 +3,6 @@ import { Link } from "src/components";
 import { Icon } from "@iconify/react";
 import githubOutline from "@iconify/icons-teenyicons/github-outline";
 import twitterOutline from "@iconify/icons-teenyicons/twitter-outline";
-import * as twGlobals from "src/twGlobals";
 
 export type HeaderProps = JSX.IntrinsicElements["header"] & {
   className?: string;
@@ -18,14 +17,14 @@ export function Header({
   return (
     <header
       {...otherProps}
-      className={`grid grid-cols-12 ${twGlobals.gridGap} py-10 font-bold ${className}`}
+      className={`grid grid-cols-12 gap-global pt-10 pb-16 font-bold ${className}`}
     >
       <div className="col-start-3 col-span-8 flex flex-row justify-between">
         <ul className="flex flex-row items-center space-x-4">
           <li>
             {/* Requires deploy at domain root */}
             <Link
-              className={currentPath === "/" ? "underline" : ""}
+              className={currentPath === "/" ? "effects active" : "effects"}
               color="rust"
               href="/"
             >
@@ -34,7 +33,9 @@ export function Header({
           </li>
           <li>
             <Link
-              className={currentPath.startsWith("/posts") ? "underline" : ""}
+              className={
+                currentPath.startsWith("/posts") ? "effects active" : "effects"
+              }
               color="rust"
               href="/posts"
             >
@@ -43,10 +44,11 @@ export function Header({
           </li>
         </ul>
 
-        <ul className="flex flex-row items-center">
+        <ul className="flex flex-row items-center -m-2">
           <li>
             <Link
               color="rust"
+              className="effects effects-w-half"
               title="Github"
               href="https://github.com/kimmobrunfeldt"
             >
@@ -56,10 +58,11 @@ export function Header({
           <li>
             <Link
               color="rust"
+              className="effects effects-w-half"
               title="Twitter"
               href="https://twitter.com/kimmobrunfeldt"
             >
-              <Icon className="box-content p-2 -mr-2" icon={twitterOutline} />
+              <Icon className="box-content p-2" icon={twitterOutline} />
             </Link>
           </li>
         </ul>
