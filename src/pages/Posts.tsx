@@ -1,6 +1,6 @@
 import React from "react";
 import { isPostPage, PageMetadata, SiteData } from "src/types/siteData";
-import { H, P, Header, Footer, PostSummary, HLevel } from "src/components";
+import { Header, Footer, PostSummary } from "src/components";
 
 type Props = {
   siteData: SiteData;
@@ -11,24 +11,19 @@ function Posts(props: Props): JSX.Element {
   const postPages = props.siteData.pages.filter(isPostPage);
   return (
     <div className={`grid grid-rows-layout min-h-full gap-global`}>
-      <Header currentPath={props.pageData.path} />
+      <Header siteData={props.siteData} pageData={props.pageData} />
       <main className={`grid grid-cols-12 gap-global`}>
-        <div className="col-start-3 col-span-4">
-          <H visualLevel={2}>Posts</H>
-          <HLevel>
-            <P>All the blog posts.</P>
-            <ul>
-              {postPages.map((page) => {
-                return (
-                  <li className="mt-8 mb-paragraph" key={page.data.path}>
-                    <PostSummary data={page.data} />
-                  </li>
-                );
-              })}
-            </ul>
-          </HLevel>
+        <div className="col-start-3 col-span-6">
+          <ol className="space-y-20">
+            {postPages.map((page) => {
+              return (
+                <li className="mb-paragraph" key={page.data.path}>
+                  <PostSummary post={page.data} />
+                </li>
+              );
+            })}
+          </ol>
         </div>
-        <div className="col-span-4">test</div>
       </main>
       <Footer />
     </div>
@@ -38,9 +33,18 @@ function Posts(props: Props): JSX.Element {
 export async function getData(): Promise<PageMetadata> {
   return {
     title: "Posts",
-    path: "/posts",
-    tags: ["blog", "tech", "posts"],
-    description: "All the latest posts.",
+    path: "/",
+    tags: [
+      "blog",
+      "tech",
+      "typescript",
+      "react",
+      "frontend",
+      "software development",
+      "web development",
+    ],
+    description:
+      "All the latest posts. This blog is about web-focused software development with a hint of design, business, and neat little things.",
   };
 }
 

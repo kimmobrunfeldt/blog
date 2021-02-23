@@ -26,7 +26,7 @@ function Post(props: PostProps): JSX.Element {
       },
     }
   );
-  return <PostLayout data={props.pageData}>{content}</PostLayout>;
+  return <PostLayout siteData={props.siteData} data={props.pageData}>{content}</PostLayout>;
 }
 
 export default Post;

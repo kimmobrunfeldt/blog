@@ -1,57 +1,28 @@
 import React from "react";
-import { PostMetadata } from "src/types/siteData";
+import { PostMetadata, SiteData } from "src/types/siteData";
 import { Footer, Header } from "src/components";
+import { kFormatter, formatPostDate } from "src/util/site";
 
 type PropsWithChildren = {
   children: React.ReactNode;
   data: PostMetadata;
+  siteData: SiteData;
 };
 
 type PropsWithHtml = {
   html: string;
   data: PostMetadata;
+  siteData: SiteData;
 };
 
 type Props = PropsWithChildren | PropsWithHtml;
-
-function formatOrdinalNumber(integer: number): string {
-  const pr = new Intl.PluralRules("en-US", {
-    type: "ordinal",
-  });
-  const suffixes = {
-    one: "st",
-    two: "nd",
-    few: "rd",
-    other: "th",
-  };
-  return `${integer}${suffixes[pr.select(integer) as keyof typeof suffixes]}`;
-}
-
-function formatPostDate(date: string): string {
-  const dateObj = new Date(date);
-
-  const year = dateObj.getFullYear();
-  const month = new Intl.DateTimeFormat("en-US", {
-    month: "long",
-  }).format(new Date(date));
-  const day = formatOrdinalNumber(dateObj.getDay());
-  return `${month} ${day}, ${year}`;
-}
-
-function kFormatter(num: number): string {
-  if (Math.abs(num) > 999) {
-    return Math.sign(num) * (Math.round(Math.abs(num) / 100) / 10) + "k";
-  }
-
-  return String(num);
-}
 
 export function PostLayout(props: Props): JSX.Element {
   const mdxContainerCls = "mdx col-span-4 max-w-xl";
 
   return (
     <div className={`grid grid-rows-layout min-h-full gap-global`}>
-      <Header currentPath={props.data.path} />
+      <Header siteData={props.siteData} pageData={props.data} />
       <main className={`grid grid-cols-12 gap-global`}>
         <div className="col-span-2"></div>
         <div className="col-span-2 text-sm">

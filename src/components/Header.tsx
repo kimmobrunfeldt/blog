@@ -3,17 +3,26 @@ import { Link } from "src/components";
 import { Icon } from "@iconify/react";
 import githubOutline from "@iconify/icons-teenyicons/github-outline";
 import twitterOutline from "@iconify/icons-teenyicons/twitter-outline";
+import { AnyPage, SiteData } from "src/types/siteData";
 
 export type HeaderProps = JSX.IntrinsicElements["header"] & {
   className?: string;
-  currentPath: string;
+  pageData: AnyPage["data"];
+  siteData: SiteData;
 };
 
 export function Header({
   className = "",
-  currentPath,
+  siteData,
+  pageData,
   ...otherProps
 }: HeaderProps) {
+  const currentPath = pageData.path;
+  const postPaths = siteData.pages
+    .filter((page) => page.type === "post")
+    .map((page) => page.data.path);
+  const isPostActive = postPaths.includes(currentPath) || currentPath === "/";
+
   return (
     <header
       {...otherProps}
@@ -22,24 +31,28 @@ export function Header({
       <div className="col-start-3 col-span-8 flex flex-row justify-between">
         <ul className="flex flex-row items-center space-x-4">
           <li>
-            {/* Requires deploy at domain root */}
             <Link
-              className={currentPath === "/" ? "effects active" : "effects"}
+              className={
+                isPostActive ? "underline-effect active" : "underline-effect"
+              }
               color="rust"
               href="/"
             >
-              About
+              Posts
             </Link>
           </li>
           <li>
+            {/* Requires deploy at domain root */}
             <Link
               className={
-                currentPath.startsWith("/posts") ? "effects active" : "effects"
+                currentPath === "/about"
+                  ? "underline-effect active"
+                  : "underline-effect"
               }
               color="rust"
-              href="/posts"
+              href="/about"
             >
-              Posts
+              About
             </Link>
           </li>
         </ul>
@@ -48,7 +61,7 @@ export function Header({
           <li>
             <Link
               color="rust"
-              className="effects effects-w-half"
+              className="underline-effect underline-effect-w-half"
               title="Github"
               href="https://github.com/kimmobrunfeldt"
             >
@@ -58,7 +71,7 @@ export function Header({
           <li>
             <Link
               color="rust"
-              className="effects effects-w-half"
+              className="underline-effect underline-effect-w-half"
               title="Twitter"
               href="https://twitter.com/kimmobrunfeldt"
             >

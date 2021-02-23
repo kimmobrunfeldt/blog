@@ -1,5 +1,5 @@
-/* Add link effects */
-a.effects::after {
+/* Add link underline */
+.underline-effect::after {
   @apply block;
   content: "";
   margin-left: 10%;
@@ -10,18 +10,20 @@ a.effects::after {
   opacity: 0;
 }
 
-a.effects::after,
-a.effects:hover::after {
-  transition: transform 0.2s ease-in-out, opacity 0.15s ease-in-out;
-}
-
-a.effects.effects-w-half::after {
+.underline-effect.underline-effect-w-half::after {
   width: 50%;
   margin-left: 25%;
 }
 
-a.effects:hover::after,
-a.effects.active::after {
+.underline-effect::after,
+.underline-effect:hover::after,
+.underline-effect-trigger:hover .underline-effect::after {
+  transition: transform 0.2s ease-in-out, opacity 0.15s ease-in-out;
+}
+
+.underline-effect-trigger:hover .underline-effect::after,
+.underline-effect:hover::after,
+.underline-effect.active::after {
   transform: scale(1);
   opacity: 0.7;
 }

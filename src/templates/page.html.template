@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="https://use.typekit.net/jyf2raq.css">
     {{{ headAfter }}}
   </head>
-  <body class="h-full bg-rust-0 text-gray-8">
+  <body class="h-full text-gray-8">
     <noscript class="absolute px-2 py-1 top-0 right-0">
       <div class="flex flex-row items-center">
         <svg class="h-4 w-4 fill-current text-warning-5" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
