@@ -76,7 +76,7 @@ export const FloatingProfilePicture = (props: Props) => (
       <img
         alt="Kimmo's picture"
         className="blob-mask relative profile-image-position"
-        src="kimmo.jpg"
+        src="/kimmo.jpg"
       />
     </div>
 
@@ -88,7 +88,7 @@ export const FloatingProfilePicture = (props: Props) => (
       <div className="floating-map-container-layer-1" />
 
       <div className="floating-map-container">
-        <img alt="Map of Helsinki" src="map-light.jpg" />
+        <img alt="Map of Helsinki" src="/map-light.jpg" />
         <div className="colorizer" />
       </div>
     </div>

@@ -1,4 +1,4 @@
-import path, { basename, relative } from "path";
+import path from "path";
 import fs from "fs";
 import { promisify } from "util";
 import React from "react";
@@ -147,7 +147,10 @@ async function parseMdxFile(
   return matterMdx;
 }
 
-async function getFilesForOneMdxPage(mdxFileName: string): Promise<File[]> {
+async function getFilesForOneMdxPage(
+  mdxFileName: string,
+  siteData: siteData.SiteData
+): Promise<File[]> {
   const matterMdx = await parseMdxFile(mdxFileName);
   const postData = await getPostData(mdxFileName);
 
@@ -171,7 +174,11 @@ async function getFilesForOneMdxPage(mdxFileName: string): Promise<File[]> {
 
   const pageHydrateName = `${postName}-post-hydrate`;
   const htmlContent = ReactDOMServer.renderToString(
-    <PostLayout html={renderedMdxSource.renderedOutput} data={postData} />
+    <PostLayout
+      siteData={siteData}
+      data={postData}
+      html={renderedMdxSource.renderedOutput}
+    />
   );
   const html = renderTemplate(TEMPLATES.pageHtml, {
     title: getTitle(postData.title),
@@ -214,8 +221,13 @@ async function getFilesForOneMdxPage(mdxFileName: string): Promise<File[]> {
   ];
 }
 
-async function getFilesForMdxPages(mdxFileNames: string[]): Promise<File[]> {
-  const files = await mapSeriesAsync(mdxFileNames, getFilesForOneMdxPage);
+async function getFilesForMdxPages(
+  mdxFileNames: string[],
+  siteData: siteData.SiteData
+): Promise<File[]> {
+  const files = await mapSeriesAsync(mdxFileNames, (filePath) =>
+    getFilesForOneMdxPage(filePath, siteData)
+  );
   return _.flatten(files);
 }
 
@@ -253,8 +265,13 @@ async function getSiteData(input: SiteInput): Promise<siteData.SiteData> {
   const regularPages = await mapSeriesAsync(input.pages, async (page) =>
     page.getData()
   );
+
+  const sortedPostPages = _.orderBy(postPages, ["createdAt"], ["desc"]);
   const allPages: siteData.AnyPage[] = _.flatten<siteData.AnyPage>([
-    postPages.map((pageData) => ({ type: "post" as const, data: pageData })),
+    sortedPostPages.map((pageData) => ({
+      type: "post" as const,
+      data: pageData,
+    })),
     regularPages.map((pageData) => ({ type: "page" as const, data: pageData })),
   ]);
 
@@ -288,7 +305,7 @@ async function main() {
 
   const files = _.flatten([
     await getFilesForReactPages(PAGES, siteData),
-    await getFilesForMdxPages(mdxFileNames),
+    await getFilesForMdxPages(mdxFileNames, siteData),
     {
       path: "site-data.json",
       content: JSON.stringify(siteData, null, 2),

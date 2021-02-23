@@ -15,10 +15,10 @@ type Props = {
   pageData: PageMetadata;
 };
 
-function Index(props: Props): JSX.Element {
+function About(props: Props): JSX.Element {
   return (
     <div className={`grid grid-rows-layout min-h-full gap-global`}>
-      <Header currentPath={props.pageData.path} />
+      <Header siteData={props.siteData} pageData={props.pageData} />
       <main className={`grid grid-cols-12 gap-global`}>
         <div className="col-start-3 col-span-4">
           <H visualLevel={2}>Welcome</H>
@@ -65,7 +65,7 @@ function Index(props: Props): JSX.Element {
 export async function getData(): Promise<PageMetadata> {
   return {
     title: "About",
-    path: "/",
+    path: "/about",
     tags: [
       "blog",
       "tech",
@@ -75,8 +75,9 @@ export async function getData(): Promise<PageMetadata> {
       "frontend",
       "software development",
     ],
-    description: "Welcome to my blog.",
+    description:
+      "Welcome to my blog. This blog is about web-focused software development with a hint of design, business, and neat little things.",
   };
 }
 
-export default Index;
+export default About;

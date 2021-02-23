@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
-import _ from "lodash";
+import { isUndefined } from "lodash";
+import { overrideTw } from "src/util/site";
 
 export type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
 
@@ -57,10 +58,14 @@ export function H({
   const contextLevel = useContext(LevelContext);
   const HeadingComponent = `h${contextLevel}` as const;
   const baseCls = levelToClass(
-    _.isUndefined(visualLevel) ? contextLevel : visualLevel
+    isUndefined(visualLevel) ? contextLevel : visualLevel
   );
+
   return (
-    <HeadingComponent {...otherProps} className={`${baseCls} ${className}`}>
+    <HeadingComponent
+      {...otherProps}
+      className={overrideTw(baseCls, className)}
+    >
       {children}
     </HeadingComponent>
   );

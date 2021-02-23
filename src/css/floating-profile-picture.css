@@ -23,6 +23,11 @@
   border-radius: 20px;
   transform: rotateX(62deg) rotateZ(-30deg);
   overflow: hidden;
+  transition: transform 0.6s ease;
+}
+
+.floating-profile-picture-hover-trigger:hover .floating-map-container{
+  transform: rotateX(62deg) rotateZ(-30deg) translateZ(10px);
 }
 
 .map-location-line {
@@ -75,13 +80,6 @@
   border-radius: 20px;
 }
 
-.floating-map-container-layer-1,
-.floating-map-container-layer-2,
-.floating-profile-picture-hover-trigger:hover .floating-map-container-layer-1,
-.floating-profile-picture-hover-trigger:hover .floating-map-container-layer-2 {
-  transition: transform 0.6s ease;
-}
-
 .floating-map-container-layer-1 {
   background: #f1e3d9;
   transform: rotateX(62deg) rotateZ(-30deg) translate3d(0px, 0px, -25px);
@@ -95,7 +93,7 @@
   transform: rotateX(62deg) rotateZ(-30deg) translate3d(0px, 0px, -50px);
 }
 .floating-profile-picture-hover-trigger:hover .floating-map-container-layer-2 {
-  transform: rotateX(62deg) rotateZ(-30deg) translate3d(0px, 0px, -20px);
+  transform: rotateX(62deg) rotateZ(-30deg) translate3d(0px, 0px, -30px);
 }
 
 
@@ -123,5 +121,5 @@
 }
 
 .floating-profile-picture-hover-trigger:hover .floating-map-container img {
-  transform: translate(-50%, -50%) scale(1.3);
+  transform: translate(-50%, -50%) scale(1.1);
 }
