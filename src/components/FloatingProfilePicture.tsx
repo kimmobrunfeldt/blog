@@ -80,13 +80,17 @@ export const FloatingProfilePicture = (props: Props) => (
       />
     </div>
 
-    <div className="map-location-line" />
-    <div className="floating-map-container-layer-2" />
-    <div className="floating-map-container-layer-1" />
+    <div className="absolute floating-profile-picture-hover-trigger">
+      <div className="map-location-dot" />
+      <div className="map-location-line" />
 
-    <div className="floating-map-container">
-      <img alt="Map of Helsinki" src="map-light.jpg" />
-      <div className="colorizer" />
+      <div className="floating-map-container-layer-2" />
+      <div className="floating-map-container-layer-1" />
+
+      <div className="floating-map-container">
+        <img alt="Map of Helsinki" src="map-light.jpg" />
+        <div className="colorizer" />
+      </div>
     </div>
   </div>
 );
