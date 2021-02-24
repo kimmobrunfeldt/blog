@@ -59,7 +59,7 @@ export function overrideTw(base: string, extend: string): string {
   const baseSplitted = base.split(/\s+/);
   const extendSplitted = extend.split(/\s+/);
 
-  const notExtendableClasses: string[] = [];
+  const classes: string[] = [];
   const newClasses: {
     [key: string]: string;
   } = {};
@@ -79,14 +79,21 @@ export function overrideTw(base: string, extend: string): string {
       return;
     }
 
-    notExtendableClasses.push(baseCls);
+    classes.push(baseCls);
   });
-  extendSplitted.forEach(maybeAddToMap);
+
+  extendSplitted.forEach((cls) => {
+    if (maybeAddToMap(cls)) {
+      return;
+    }
+
+    classes.push(cls);
+  });
 
   const extendedClasses = Object.keys(newClasses).map((key) => {
     const val = newClasses[key];
     return `${key}-${val}`;
   });
 
-  return notExtendableClasses.concat(extendedClasses).join(" ");
+  return classes.concat(extendedClasses).join(" ");
 }

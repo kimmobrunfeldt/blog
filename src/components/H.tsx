@@ -6,15 +6,15 @@ export type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
 
 export function levelToClass(level: HeadingLevel): string {
   const size = {
-    1: "text-8xl mt-20 mb-7",
-    2: "text-5xl mt-12 mb-5",
-    3: "text-3xl mt-9 mb-4",
-    4: "text-2xl mt-7 mb-3",
-    5: "text-xl mt-5 mb-2",
-    6: "text-l mt-3 mb-1",
+    1: "text-5xl mt-12 mb-5",
+    2: "text-3xl mt-9 mb-4",
+    3: "text-2xl mt-7 mb-3",
+    4: "text-xl mt-5 mb-2",
+    5: "text-lg mt-3 mb-1",
+    6: "text-base mt-2 mb-1",
   }[level];
 
-  return `${size} font-black text-gray-9 font-heading`;
+  return `${size} font-black`;
 }
 
 export const LevelContext = React.createContext(1 as HeadingLevel);
@@ -47,11 +47,15 @@ export type HeadingProps = {
   children?: React.ReactNode;
   className?: string;
   visualLevel?: HeadingLevel;
+  color?: string;
+  font?: "heading" | "sans";
 };
 
 export function H({
   children,
   className = "",
+  color = "gray-9",
+  font = "heading",
   visualLevel,
   ...otherProps
 }: HeadingProps) {
@@ -64,7 +68,7 @@ export function H({
   return (
     <HeadingComponent
       {...otherProps}
-      className={overrideTw(baseCls, className)}
+      className={overrideTw(`${baseCls} font-${font} text-${color}`, className)}
     >
       {children}
     </HeadingComponent>

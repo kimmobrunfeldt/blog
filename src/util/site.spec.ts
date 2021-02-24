@@ -4,13 +4,13 @@ import { overrideTw, splitTwClass } from "./site";
 
 describe("overrideTw", () => {
   it("overrides classes", () => {
-    const newCls = overrideTw("a b-1 m-1 c", "b-2 m-2");
-    assert.strictEqual(newCls, "a b-1 c m-2");
+    const newCls = overrideTw("a b-1 m-1 c", "b-3 m-2");
+    assert.strictEqual(newCls, "a b-1 c b-3 m-2");
   });
 
-  it("does nothing when no extendable classes are passed", () => {
-    const newCls = overrideTw("a b-1 m-1 c", "b-2 c-2");
-    assert.strictEqual(newCls, "a b-1 c m-1");
+  it("classes that are not pre-listed should be concatenated", () => {
+    const newCls = overrideTw("font-sans text-gray-1 m-1", "bg-gray-0");
+    assert.strictEqual(newCls, "font-sans text-gray-1 bg-gray-0 m-1");
   });
 });
 

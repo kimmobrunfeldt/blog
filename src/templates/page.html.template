@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="h-full overflow-y-scroll" lang="en">
+<html class="h-full overflow-y-scroll overflow-x-hidden" lang="en">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
