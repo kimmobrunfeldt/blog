@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "src/components";
+import { ContentWrapper, Link } from "src/components";
 import { Icon } from "@iconify/react";
 import githubOutline from "@iconify/icons-teenyicons/github-outline";
 import twitterOutline from "@iconify/icons-teenyicons/twitter-outline";
@@ -21,64 +21,71 @@ export function Header({
   const postPaths = siteData.pages
     .filter((page) => page.type === "post")
     .map((page) => page.data.path);
-  const isPostActive = postPaths.includes(currentPath) || currentPath === "/";
+  const isPostActive =
+    postPaths.includes(currentPath) || currentPath === "/posts";
 
   return (
     <header
       {...otherProps}
-      className={`grid grid-cols-12 gap-global pt-10 pb-16 font-bold ${className}`}
+      className={`grid grid-cols-12 gap-global pt-3 pb-10 lg:pt-10 lg:pb-20 font-bold ${className}`}
     >
-      <div className="col-start-3 col-span-8 flex flex-row justify-between">
-        <ul className="flex flex-row items-center space-x-4">
-          <li>
-            <Link
-              className={
-                isPostActive ? "underline-effect active" : "underline-effect"
-              }
-              color="rust"
-              href="/"
-            >
-              Posts
-            </Link>
-          </li>
-          <li>
-            {/* Requires deploy at domain root */}
-            <Link
-              className={
-                currentPath === "/about"
-                  ? "underline-effect active"
-                  : "underline-effect"
-              }
-              color="rust"
-              href="/about"
-            >
-              About
-            </Link>
-          </li>
-        </ul>
+      <div className="col-span-12 md:col-start-3 md:col-span-8 ">
+        <ContentWrapper className="flex flex-row justify-between">
+          <ul className="flex flex-row items-center space-x-4">
+            <li>
+              {/* Requires deploy at domain root */}
+              <Link
+                className={
+                  currentPath === "/"
+                    ? "underline-effect active"
+                    : "underline-effect"
+                }
+                color="rust"
+                underline={false}
+                href="/"
+              >
+                Index
+              </Link>
+            </li>
+            <li>
+              <Link
+                className={
+                  isPostActive ? "underline-effect active" : "underline-effect"
+                }
+                color="rust"
+                underline={false}
+                href="/posts"
+              >
+                Posts
+              </Link>
+            </li>
+          </ul>
 
-        <ul className="flex flex-row items-center -m-2">
-          <li>
-            <Link
-              color="rust"
-              className="underline-effect underline-effect-w-half"
-              title="Github"
-              href="https://github.com/kimmobrunfeldt"
-            >
-              <Icon className="box-content p-2" icon={githubOutline} />
-            </Link>
-          </li>
-          <li>
-            <Link
-              color="rust"
-              className="underline-effect underline-effect-w-half"
-              title="Twitter"
-              href="https://twitter.com/kimmobrunfeldt"
-            >
-              <Icon className="box-content p-2" icon={twitterOutline} />
-            </Link>
-          </li>
-        </ul>
+          <ul className="flex flex-row items-center -m-2">
+            <li>
+              <Link
+                color="rust"
+                underline={false}
+                className="underline-effect underline-effect-w-half"
+                title="Github"
+                href="https://github.com/kimmobrunfeldt"
+              >
+                <Icon className="box-content p-2" icon={githubOutline} />
+              </Link>
+            </li>
+            <li>
+              <Link
+                color="rust"
+                underline={false}
+                className="underline-effect underline-effect-w-half"
+                title="Twitter"
+                href="https://twitter.com/kimmobrunfeldt"
+              >
+                <Icon className="box-content p-2" icon={twitterOutline} />
+              </Link>
+            </li>
+          </ul>
+        </ContentWrapper>
       </div>
     </header>
   );

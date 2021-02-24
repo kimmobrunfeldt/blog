@@ -17,7 +17,13 @@ import { PostLayout } from "src/components";
 import { pages as PAGES } from "src/pages/_exports";
 import * as COMPONENTS from "src/components";
 import { theme as prismTheme } from "src/prismTheme";
-import * as siteData from "./types/siteData";
+import {
+  SiteData,
+  PostMetadata,
+  AnyPage,
+  isPostPage,
+  PostMetadataSchema,
+} from "./types/siteData";
 
 type PageComponent = typeof PAGES[0];
 type File = {
@@ -83,7 +89,7 @@ function getRelativePathToRoot(fileDir: string): string {
 
 async function getFilesForOneReactPage(
   page: PageComponent,
-  siteData: siteData.SiteData
+  siteData: SiteData
 ): Promise<File[]> {
   const pageData = await page.getData();
 
@@ -125,7 +131,7 @@ async function getFilesForOneReactPage(
 
 async function getFilesForReactPages(
   pages: PageComponent[],
-  siteData: siteData.SiteData
+  siteData: SiteData
 ): Promise<File[]> {
   return _.flatten(
     await mapSeriesAsync(pages, (page) =>
@@ -149,10 +155,15 @@ async function parseMdxFile(
 
 async function getFilesForOneMdxPage(
   mdxFileName: string,
-  siteData: siteData.SiteData
+  siteData: SiteData
 ): Promise<File[]> {
   const matterMdx = await parseMdxFile(mdxFileName);
-  const postData = await getPostData(mdxFileName);
+  const partialPostData = await getPostData(mdxFileName);
+  const orderNumber = siteData.pages
+    .filter(isPostPage)
+    // Use non-null assertion since the page should be found with path
+    .find((page) => page.data.path === partialPostData.path)!.data.orderNumber;
+  const postData = { ...partialPostData, orderNumber };
 
   const renderedMdxSource = await renderMdxToString(matterMdx.content, {
     components: {
@@ -223,7 +234,7 @@ async function getFilesForOneMdxPage(
 
 async function getFilesForMdxPages(
   mdxFileNames: string[],
-  siteData: siteData.SiteData
+  siteData: SiteData
 ): Promise<File[]> {
   const files = await mapSeriesAsync(mdxFileNames, (filePath) =>
     getFilesForOneMdxPage(filePath, siteData)
@@ -233,14 +244,12 @@ async function getFilesForMdxPages(
 
 async function getPostData(
   mdxFilePath: string
-): Promise<siteData.PostMetadata> {
+): Promise<Omit<PostMetadata, "orderNumber">> {
   const { data, content } = await parseMdxFile(mdxFilePath);
   const plain = remark().use(stripMarkdown).processSync(content).toString();
   const charCount = plain.replace(/\s+/, "").length;
 
-  const validate = new Ajv({ strict: false }).compile(
-    siteData.PostMetadataSchema
-  );
+  const validate = new Ajv({ strict: false }).compile(PostMetadataSchema);
 
   const postData = {
     title: data.title,
@@ -260,14 +269,21 @@ async function getPostData(
   return postData;
 }
 
-async function getSiteData(input: SiteInput): Promise<siteData.SiteData> {
+async function getSiteData(input: SiteInput): Promise<SiteData> {
   const postPages = await mapSeriesAsync(input.mdxFileNames, getPostData);
   const regularPages = await mapSeriesAsync(input.pages, async (page) =>
     page.getData()
   );
 
-  const sortedPostPages = _.orderBy(postPages, ["createdAt"], ["desc"]);
-  const allPages: siteData.AnyPage[] = _.flatten<siteData.AnyPage>([
+  const sortedPostPages: PostMetadata[] = _.orderBy(
+    postPages,
+    ["createdAt"],
+    ["desc"]
+  ).map((page, index) => ({
+    ...page,
+    orderNumber: postPages.length - index,
+  }));
+  const allPages: AnyPage[] = _.flatten<AnyPage>([
     sortedPostPages.map((pageData) => ({
       type: "post" as const,
       data: pageData,

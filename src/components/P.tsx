@@ -11,7 +11,7 @@ export function P({ children, className = "", ...otherProps }: ParagraphProps) {
   return (
     <p
       {...otherProps}
-      className={`font-sans mb-paragraph ${textColor} ${className}`}
+      className={`max-w-xl font-sans mb-paragraph ${textColor} ${className}`}
     >
       {children}
     </p>

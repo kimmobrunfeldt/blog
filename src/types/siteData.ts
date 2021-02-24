@@ -9,7 +9,10 @@ export const PostMetadataSchema = Type.Object({
   description: Type.String(),
   charCount: Type.Number(),
 });
-export type PostMetadata = Static<typeof PostMetadataSchema>;
+export type PostMetadata = Static<typeof PostMetadataSchema> & {
+  // Generated dynamically
+  orderNumber: number;
+};
 
 export type PageMetadata = {
   title: string;

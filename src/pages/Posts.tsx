@@ -1,6 +1,6 @@
 import React from "react";
 import { isPostPage, PageMetadata, SiteData } from "src/types/siteData";
-import { Header, Footer, PostSummary } from "src/components";
+import { Header, Footer, PostSummary, ContentWrapper } from "src/components";
 
 type Props = {
   siteData: SiteData;
@@ -13,16 +13,18 @@ function Posts(props: Props): JSX.Element {
     <div className={`grid grid-rows-layout min-h-full gap-global`}>
       <Header siteData={props.siteData} pageData={props.pageData} />
       <main className={`grid grid-cols-12 gap-global`}>
-        <div className="col-start-3 col-span-6">
-          <ol className="space-y-20">
-            {postPages.map((page) => {
-              return (
-                <li className="mb-paragraph" key={page.data.path}>
-                  <PostSummary post={page.data} />
-                </li>
-              );
-            })}
-          </ol>
+        <div className="col-span-12 md:col-start-3 md:col-span-6">
+          <ContentWrapper>
+            <ol reversed className="space-y-20">
+              {postPages.map((page) => {
+                return (
+                  <li className="mb-paragraph" key={page.data.path}>
+                    <PostSummary post={page.data} />
+                  </li>
+                );
+              })}
+            </ol>
+          </ContentWrapper>
         </div>
       </main>
       <Footer />
@@ -33,7 +35,7 @@ function Posts(props: Props): JSX.Element {
 export async function getData(): Promise<PageMetadata> {
   return {
     title: "Posts",
-    path: "/",
+    path: "/posts",
     tags: [
       "blog",
       "tech",
