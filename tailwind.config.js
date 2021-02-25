@@ -52,6 +52,7 @@ module.exports = {
     extend: {
       gridTemplateRows: {
         layout: `auto 1fr auto`,
+        post: `auto auto`,
       },
       gap: {
         global: defaultTheme.spacing["4"],
