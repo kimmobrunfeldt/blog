@@ -9,3 +9,4 @@ export * from "./Header";
 export * from "./PostSummary";
 export * from "./FloatingProfilePicture";
 export * from "./ContentWrapper";
+export * from "./Chip";

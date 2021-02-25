@@ -5,13 +5,13 @@
   "scripts": {
     "start": "npm run build && concurrently --exit -c blue,yellow -n watch,serve 'npm run watch' 'npm run serve'",
     "test": "jest",
-    "build": "npm run clean && npm run build:templates && npm run rollup && npm run postcss && npm run copy-public && npm run clean:temp-files",
+    "build": "npm run clean && npm run build:pages && npm run rollup && npm run postcss && npm run copy-public && npm run clean:temp-files",
     "copy-public": "cp -r public/* output/",
     "serve": "http-server -g -c-1 ./output",
     "watch": "chokidar 'src/**/*' 'posts/*.mdx' -c 'npm run build'",
     "postcss": "postcss src/css/main.css -o output/styles.css",
     "rollup": "rollup -c rollup.config.js",
-    "build:templates": "NODE_PATH=./ ts-node --project tsconfig.node.json src/render.tsx",
+    "build:pages": "NODE_PATH=./ ts-node --project tsconfig.node.json src/render.tsx",
     "clean": "rm -rf ./output && mkdir output",
     "clean:temp-files": "find ./output -regex '.*\\.\\(ts\\|tsx\\|txt\\)' -type f -delete"
   },
