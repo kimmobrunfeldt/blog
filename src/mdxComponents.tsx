@@ -27,12 +27,12 @@ export const components = {
   strong: (props: any) => <strong className="font-bold" {...props} />,
   em: (props: any) => <em className="italic" {...props} />,
   del: (props: any) => <del className="line-through" {...props} />,
-  li: (props: any) => <li className={`leading-normal`} {...props} />,
+  li: (props: any) => <li className={`pl-2`} {...props} />,
   ul: (props: any) => (
-    <ul className={`${textColor} pl-6 list-disc`} {...props} />
+    <ul className={`${textColor} pl-12 list-disc space-y-1`} {...props} />
   ),
   ol: (props: any) => (
-    <ol className={`${textColor} pl-6 list-decimal`} {...props} />
+    <ol className={`${textColor} pl-12 list-decimal space-y-1`} {...props} />
   ),
   a: (props: any) => <Link {...props} />,
   code: (props: any) => <Prism {...props} />,
@@ -40,7 +40,12 @@ export const components = {
   hr: (props: any) => <hr className="border-gray-2 mx-8 my-10" {...props} />,
   pre: (props: any) => <pre className={`py-0`} {...props} />,
   inlineCode: (props: any) => <code {...props} />,
-  blockquote: (props: any) => <blockquote {...props} />,
+  blockquote: (props: any) => (
+    <blockquote
+      className="text-gray-6 italic py-2 px-7 my-10 text-center text-lg md:relative md:-left-6"
+      {...props}
+    />
+  ),
   table: (props: any) => <table {...props} />,
   td: (props: any) => <td {...props} />,
   th: (props: any) => <th {...props} />,

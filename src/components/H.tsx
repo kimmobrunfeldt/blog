@@ -6,12 +6,12 @@ export type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
 
 export function levelToClass(level: HeadingLevel): string {
   const size = {
-    1: "text-5xl mt-12 mb-5",
-    2: "text-3xl mt-9 mb-4",
-    3: "text-2xl mt-7 mb-3",
-    4: "text-xl mt-5 mb-2",
-    5: "text-lg mt-3 mb-1",
-    6: "text-base mt-2 mb-1",
+    1: "text-5xl mt-12 mb-9",
+    2: "text-3xl mt-9 mb-7",
+    3: "text-2xl mt-7 mb-6",
+    4: "text-xl mt-5 mb-4",
+    5: "text-lg mt-3 mb-3",
+    6: "text-base mt-2 mb-2",
   }[level];
 
   return `${size} font-black`;

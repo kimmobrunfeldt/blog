@@ -54,11 +54,14 @@ module.exports = {
         layout: `auto 1fr auto`,
         post: `auto auto`,
       },
+      lineHeight: {
+        normal: "1.6",
+      },
       gap: {
-        global: defaultTheme.spacing["4"],
+        global: defaultTheme.spacing["6"],
       },
       spacing: {
-        paragraph: defaultTheme.spacing["5"],
+        paragraph: defaultTheme.spacing["6"],
       },
     },
   },

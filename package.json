@@ -66,6 +66,7 @@
     "postcss": "^8.2.6",
     "postcss-cli": "^8.3.1",
     "postcss-import": "^14.0.0",
+    "postcss-nested": "^5.0.4",
     "prettier": "^2.2.1",
     "prism-react-renderer": "^1.1.1",
     "remark": "^13.0.0",
