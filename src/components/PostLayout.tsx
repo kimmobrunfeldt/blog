@@ -61,9 +61,13 @@ export function PostLayout(props: Props): JSX.Element {
         </div>
 
         {"children" in props ? (
-          <article className={mdxContainerCls}>{props.children}</article>
+          <article className={mdxContainerCls}>
+            <H>{props.data.title}</H>
+            {props.children}
+          </article>
         ) : (
           <article className={mdxContainerCls}>
+            <H>{props.data.title}</H>
             {/* Frontend hydrate adds an additional div inside article, we must match it */}
             <div dangerouslySetInnerHTML={{ __html: props.html }} />
           </article>

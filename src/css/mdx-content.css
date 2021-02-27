@@ -5,8 +5,11 @@
 
 /* Top level lists */
 .mdx :not(li) > ol,
-.mdx :not(li) > ul {
-  @apply mb-paragraph
+.mdx :not(li) > ul,
+/* For cases where ol and ul are direct children of .mdx element*/
+.mdx:not(li) > ol,
+.mdx:not(li) > ul {
+  @apply mb-paragraph;
 }
 
 /* Sublists */
@@ -23,4 +26,11 @@
 /* Inline code */
 .mdx :not(pre) > code {
   @apply px-0.5 pb-0.5 pt-1 inline-block bg-gray-1 rounded-sm text-xs leading-normal;
+}
+
+/* Blockquote text */
+
+.mdx blockquote > * {
+  @apply m-0 p-0;
+  color: currentColor;
 }

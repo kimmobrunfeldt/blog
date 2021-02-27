@@ -1,0 +1,55 @@
+.ChatDiscussion {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.ChatMessage {
+  max-width: 300px;
+  word-wrap: break-word;
+  margin-bottom: 12px;
+  line-height: 24px;
+  position: relative;
+  padding: 10px 20px;
+  border-radius: 25px;
+
+  &:before, &:after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    height: 25px;
+  }
+}
+
+.ChatMessage.from-me {
+  @apply text-white bg-amber-6 self-end;
+
+  &:before {
+    @apply border-amber-6;
+    right: -7px;
+    border-right-width: 20px;
+    border-style: solid;
+    border-bottom-left-radius: 16px 14px;
+  }
+
+  &:after {
+    right: -26px;
+    border-right: 26px solid white;
+    border-bottom-left-radius: 10px;
+  }
+}
+.ChatMessage.from-them {
+  background: #E5E5EA;
+  color: black;
+  align-self: flex-start;
+
+  &:before {
+    left: -7px;
+    border-left: 20px solid #E5E5EA;
+    border-bottom-right-radius: 16px 14px;
+  }
+
+  &:after {
+    left: -26px;
+    border-left: 26px solid white;
+    border-bottom-right-radius: 10px;
+  }
+}

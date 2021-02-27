@@ -40,33 +40,11 @@ function Index(props: Props): JSX.Element {
                 of design, business, and neat little things.
               </P>
               <P>
-                I’m Kimmo and I’ve been doing professional software development
-                for nearly ten years. My career can be roughly divided into
-                <em> 5 years </em>
-                of consulting medium and large enterprises, <em>
-                  {" "}
-                  4 years{" "}
-                </em>{" "}
-                of product development in different startups, and{" "}
-                <em> one year </em>
-                developing a <Link href="https://alvarcarto.com">
-                  webshop
-                </Link>{" "}
-                I co-founded.
+                I’m Kimmo and I’ve been in the industry for nearly ten years:
+                consulting enterprises, doing product development in different
+                startups, and managing a{" "}
+                <Link href="https://alvarcarto.com">webshop</Link> I co-founded.
               </P>
-
-              <P>My goals for the blog are:</P>
-
-              <ul className="pl-8 list-disc mb-paragraph">
-                <li className="pl-3">At least a post per month</li>
-                <li className="pl-3 pt-2">
-                  Emphasis on legibility, beautiful typography, and minimal
-                  visual look
-                </li>
-                <li className="pl-3 pt-2">
-                  Build next level tooling to present coding related concepts
-                </li>
-              </ul>
 
               <P>Hope you enjoy!</P>
               <div className="pt-20" />

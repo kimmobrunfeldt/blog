@@ -1,0 +1,78 @@
+---
+title: "It's ok to over-engineer your blog"
+slug: "1-its-ok-to-over-engineer-your-blog"
+createdAt: "2020-02-27"
+description: >
+  Over-engineering a blog site is totally ok. Do it for the fun!
+  Why did I "overengineer" this blog?
+tags:
+  - meta
+  - blog
+  - over-engineering
+  - software development
+  - content creation
+---
+
+Publishing a blog has been on my bucket list for many years. All previous attempts have failed at an early stage: choosing the tech stack. It sounds a bit ridiculous. One could ask: do you want to code or write content?
+
+There's a lot of content platforms or solutions out there: _Medium, dev.to, WordPress, Ghost, Blogger, Jekyll, plain Github Gists_, and many more. Why not use one of them?
+
+Fortunately, it doesn't need to be so binary! _Personal projects can break the rules_. I want to write content without traditional blog limitations. There needs to be a possibility to add code highlighting, SVG animation support, interactive charts, and custom components that help understanding concepts. My thinking is:
+
+> If I start a blog, it needs to be "next level"
+
+**Commercial platforms** have monetisation strategies that will eventually lead to ads, subscriptions, or some form of getting the bucks in. There's nothing wrong with that, but I have no plans to monetise my blog. There will be:
+
+* no ads
+* no _"kimmo.blog wants to know your location"_
+* no _"kimmo.blog wants to send you notifications"_ right after closing the location request
+* no logins
+* no distractions of the real content
+
+Of course, there may be a healthy amount of self-promotion, but the blog itself will stay free and open.
+
+
+**Open-source projects** are high-quality and very tempting, but there are a few buts. Many of them offer a bit too much to my liking. I'd want to start small and grow the tech solution naturally. They also didn't seem to fulfill my vision of a _"next level"_ blog, whatever it means. So DIY it is. I'm familiar with React ecosystem and [MDX](https://mdxjs.com/) has worked before.
+
+<ChatDiscussion>
+  <ChatMessage from="them">
+    Alright, I kinda get the points. Will you be using Gatsby or React Static then?
+  </ChatMessage>
+  <ChatMessage from="me">
+    Well...
+  </ChatMessage>
+</ChatDiscussion>
+
+After a bit of initial hesitation between do-it-yourself or `npm install`, I decided to `git init` and started coding a site generator. That's right, I ignored many rational arguments and started wasting my time on a DIY solution.
+
+But actually I don't think it's a waste of time at all.
+
+First of all it's intruiging and fun. It's very refreshing to jump out of the business box for a while. Your free time projects don't need to be lean and cost-effective, just wing it and have fun! _(or skip free time coding, that's totally fine too)_
+
+Reinventing the wheel is a great learning opportunity, but it less often makes sense when cost-effectively solving end users' problems. I've used [Gatsby](https://www.gatsbyjs.com/) in a few work projects but haven't _really_ dug into the internals. Occasionally I find myself wondering:
+
+> Why's Gatsby's output directory so huge?
+>
+> Why's there so many requests on page load?
+
+Now I know. Server-side rendered *(SSR)* React sites are complex, there's no way around it. _"Server-side rendered"_ and _"static site generation"_ are practically the same in this context: both render React components as HTML for the initial page load, which is later *[React.hydrate()](https://reactjs.org/docs/react-dom.html#hydrate)d* in the browser.
+
+If server-side rendering React is so complicated, **what are the benefits?**
+For me, server-side rendering an app is more fluent tooling for the job. Traditionally, the main HTML content is rendered in the backend. Empty containers with a known `#id`s are added to the DOM to be later filled with content using JavaScript. There's many benefits in the traditional model, no doubt about it. One major drawback though is that the dynamic content isn't available at page load. It becomes an afterthought.
+
+Pre-rendered React ties it nicely together: you get good performance, SEO, benefits of TypeScript everywhere, and rich dynamic frontend functionality. Backend returns a frozen snapshot of the app and frontend brings it back to life.
+
+I'm using [MDX](https://mdxjs.com/) for the blog post content. It allows writing familiar Markdown and injecting React components in the content. The components are useful for adding [visual](http://www.r2d3.us/visual-intro-to-machine-learning-part-1/) cues that support the textual content.
+
+The benefits may or may not be worth the added complexity.
+
+Even though I learned a lot, the developer experience with my DIY static site generator is pretty archaic. More on that in another post.
+
+In addition to the goals mentioned before, I have a few other plans for the blog:
+
+* Keep the site legible and visually minimal.
+* Content should be readable without JavaScript.
+* Posts have permanent URLs. There's no dynamic rendering currently, but I'll make sure to have IDs in the slugs. That allows changing the textual titles in slugs later.
+* Since the blog is already _too_ high-tech for many folks, keep [Lighthouse](https://github.com/GoogleChrome/lighthouse) performance metrics happy.
+
+I'm not sure what _"next level"_ blog means yet. It could mean a bloated blog site or something cool. Time will tell.
