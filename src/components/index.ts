@@ -5,7 +5,7 @@ export * from "./P";
 export * from "./Link";
 export * from "./Prism";
 export * from "./Footer";
-export * from "./Header";
+export * from "./NavBar";
 export * from "./PostSummary";
 export * from "./FloatingProfilePicture";
 export * from "./ContentWrapper";

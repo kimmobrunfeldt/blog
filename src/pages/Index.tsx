@@ -8,7 +8,7 @@ import {
 import {
   H,
   P,
-  Header,
+  NavBar,
   Footer,
   HLevel,
   FloatingProfilePicture,
@@ -29,7 +29,7 @@ function getLatestPost(siteData: SiteData): PostMetadata {
 function Index(props: Props): JSX.Element {
   return (
     <div className={`grid grid-rows-layout min-h-full gap-global`}>
-      <Header siteData={props.siteData} pageData={props.pageData} />
+      <NavBar siteData={props.siteData} pageData={props.pageData} />
       <main className={`grid grid-cols-12 gap-global`}>
         <div className="md:col-start-3 col-span-4">
           <ContentWrapper>
