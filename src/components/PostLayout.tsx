@@ -3,9 +3,11 @@ import { findIndex } from "lodash";
 import { Icon } from "@iconify/react";
 import arrowLeftOutline from "@iconify/icons-teenyicons/left-small-outline";
 import { isPostPage, PostMetadata, SiteData } from "src/types/siteData";
-import { Footer, H, Header, levelToClass, Link } from "src/components";
+import { Footer } from "src/components/Footer";
+import { H } from "src/components/H";
+import { Link } from "src/components/Link";
+import { NavBar } from "src/components/NavBar";
 import { kFormatter, formatPostDate } from "src/util/site";
-import { PostSummary } from "./PostSummary";
 
 type PropsWithChildren = {
   children: React.ReactNode;
@@ -41,7 +43,7 @@ export function PostLayout(props: Props): JSX.Element {
 
   return (
     <div className={`grid grid-rows-layout min-h-full gap-global`}>
-      <Header siteData={props.siteData} pageData={props.data} />
+      <NavBar siteData={props.siteData} pageData={props.data} />
       <main className={`grid grid-cols-12 grid-rows-post gap-global`}>
         <div className="row-start-0 col-start-3 col-span-2 text-sm">
           <div className="text-gray-6 font-bold text">

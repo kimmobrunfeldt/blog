@@ -2,7 +2,9 @@ import React from "react";
 import { padStart } from "lodash";
 import { Icon } from "@iconify/react";
 import arrowRightOutline from "@iconify/icons-teenyicons/right-small-outline";
-import { Link, H, Chip } from "src/components";
+import { Link } from "src/components/Link";
+import { H } from "src/components/H";
+import { Chip } from "src/components/Chip";
 import { PostMetadata } from "src/types/siteData";
 import { kFormatter, formatPostDate } from "src/util/site";
 
@@ -30,7 +32,7 @@ export function PostSummary({ post }: PostSummaryProps) {
     <div className="w-full">
       <a
         href={post.path}
-        className="cursor-pointer flex flex-row underline-effect-trigger"
+        className="cursor-pointer flex flex-row underline-effect-trigger children:min-w-0"
       >
         <OrderNum orderNumber={post.orderNumber} className="underline-effect" />
 
@@ -46,17 +48,17 @@ export function PostSummary({ post }: PostSummaryProps) {
           className="invisible"
         />
 
-        <div>
+        <div className="min-w-0">
           <p className="mb-3">{post.description}</p>
 
-          <div className="flex flex-row items-center space-x-2 text-xs text-gray-6 mb-2">
+          <div className="flex flex-row items-center space-x-2 text-xs text-gray-6 mb-2 children:min-w-0">
             <time dateTime={post.createdAt}>
               {formatPostDate(post.createdAt)}
             </time>
             <span>&middot;</span>
             <span>{kFormatter(post.charCount)} chars</span>
             <span>&middot;</span>
-            <ul className="text-gray-5 space-x-2 flex flex-row">
+            <ul className="text-gray-5 space-x-2 flex flex-row children:min-w-0">
               {post.tags.map((tag) => (
                 <li key={tag}>
                   <Chip>{tag}</Chip>

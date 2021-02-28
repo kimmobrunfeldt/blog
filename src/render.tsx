@@ -298,7 +298,11 @@ async function getSiteData(input: SiteInput): Promise<SiteData> {
 
 async function writeFiles(files: File[]): Promise<void> {
   await mapSeriesAsync(files, async (file) => {
-    const absPath = getProjectPath(`output/${file.path}`);
+    const ext = path.extname(file.path);
+    const isForRollup = [".tsx", ".ts", ".json", ".txt"].includes(ext);
+    const absPath = isForRollup
+      ? getProjectPath(`output-rollup/${file.path}`)
+      : getProjectPath(`output/${file.path}`);
     const relativeToOutput = path.relative(getProjectPath("."), absPath);
 
     if (!_.startsWith(relativeToOutput, "output")) {

@@ -65,4 +65,8 @@ module.exports = {
       },
     },
   },
+  variants: {
+    minWidth: ["children"],
+  },
+  plugins: [require("tailwindcss-children")],
 };
