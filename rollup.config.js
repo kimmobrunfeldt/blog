@@ -5,10 +5,38 @@ import commonjs from "@rollup/plugin-commonjs";
 import multiInput from "rollup-plugin-multi-input";
 import progress from "rollup-plugin-progress";
 import json from "@rollup/plugin-json";
-import rename from "rollup-plugin-rename";
+import { terser } from "rollup-plugin-terser";
 import { string } from "rollup-plugin-string";
 
 const INPUT = ["output-rollup/**/*.tsx", "output-rollup/**/*.ts"];
+
+const plugins = [
+  multiInput({
+    relative: "output-rollup/",
+  }),
+  progress(),
+  replace({
+    "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV),
+  }),
+  nodeResolve({
+    browser: true,
+    dedupe: ["react", "react-dom", "lodash"],
+    rootDir: __dirname,
+  }),
+  string({
+    // Required to be specified
+    include: "**/*.txt",
+  }),
+  commonjs(),
+  json(),
+  typescript({
+    tsconfig: "tsconfig.json",
+  }),
+];
+
+if (process.env.NODE_ENV === "production") {
+  plugins.push(terser());
+}
 
 export default {
   input: INPUT,
@@ -32,34 +60,6 @@ export default {
 
       return `node_modules/${depName}`;
     }
-
-    /*if (id.includes("output-rollup/")) {
-      const [_head, tail] = id.split("output-rollup/");
-      console.log("tail", tail.split(".")[0]);
-      return tail.split(".")[0];
-    }*/
   },
-  plugins: [
-    multiInput({
-      relative: "output-rollup/",
-    }),
-    progress(),
-    replace({
-      "process.env.NODE_ENV": JSON.stringify("development"),
-    }),
-    nodeResolve({
-      browser: true,
-      dedupe: ["react", "react-dom", "lodash"],
-      rootDir: __dirname,
-    }),
-    string({
-      // Required to be specified
-      include: "**/*.txt",
-    }),
-    commonjs(),
-    json(),
-    typescript({
-      tsconfig: "tsconfig.json",
-    }),
-  ],
+  plugins,
 };

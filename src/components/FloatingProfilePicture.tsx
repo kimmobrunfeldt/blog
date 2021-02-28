@@ -6,6 +6,7 @@ const blobDimensions = {
 };
 const BlobSvg = (
   <svg
+    focusable="false"
     width={blobDimensions.width}
     height={blobDimensions.height}
     viewBox="0 0 505 516"
@@ -22,6 +23,7 @@ const BlobSvg = (
 
 const BlobSvg2 = (
   <svg
+    focusable="false"
     width="0"
     height="0"
     viewBox="0 0 363 324"

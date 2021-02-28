@@ -69,6 +69,7 @@ export function NavBar({
                 underline={false}
                 className="underline-effect underline-effect-w-half"
                 title="Github"
+                aria-label="Github profile"
                 href="https://github.com/kimmobrunfeldt"
               >
                 <Icon className="box-content p-2" icon={githubOutline} />
@@ -80,6 +81,7 @@ export function NavBar({
                 underline={false}
                 className="underline-effect underline-effect-w-half"
                 title="Twitter"
+                aria-label="Twitter profile"
                 href="https://twitter.com/kimmobrunfeldt"
               >
                 <Icon className="box-content p-2" icon={twitterOutline} />
