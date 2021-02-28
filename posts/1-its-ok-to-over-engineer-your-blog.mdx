@@ -13,17 +13,17 @@ tags:
   - content creation
 ---
 
-Publishing a blog has been on my bucket list for many years. All previous attempts have failed at an early stage: choosing the tech stack. It sounds a bit ridiculous. One could ask: *do you want to code or write content?*
+Publishing a blog has been on my bucket list for many years.
 
-There's a lot of existing solutions out there: Medium, dev.to, WordPress, Ghost, Blogger, Jekyll, plain Github Gists, and many more. *Why not just pick one and start writing?*
+All previous attempts have failed at an early stage: choosing the tech stack. There's a lot of existing solutions out there: Medium, dev.to, WordPress, Blogger, Jekyll, plain Github Gists, and many more. *Why not just pick one and start writing?*
 
-Because none of them feel right.
+For a couple of years, the question has been popping into my head every once in a while. I've tried [Medium](https://medium.com/@kimmobrunfeldt/introduction-to-sauce-labs-3ad082fc7dd5) for a few testing related posts, [Blogger](http://scouringmacbook.blogspot.com/2012/10/setting-everything.html) for macOS configuration posts, [WordPress](https://alvarcarto.com/) for a business website, [Github repo](https://github.com/kimmobrunfeldt/howto-everything) with `.md` files, and many open-source solutions like Jekyll, Ghost, Hugo, and Hexo. They all worked and most can be customised completely, but somehow they didn't *feel* like the _"ultimate solution"_.
 
-General purpose blog platforms are quite limiting for coding related content. Developer focused platforms are lacking in design. All of them have some downsides. My thinking is:
+The content I want to share is tightly related code and my vision is to make the posts interactive, visual, and understandable. That already requires a lot from the platform. I'm thinking:
 
 > If I start a blog, the platform shouldn't come in the way of expressing ideas.
 
-I've gathered a list of requirements for the platform:
+In addition to the subjective arguments and feelings, I've gathered a list of other goals and requirements:
 
 * custom domain
 * permanent URLs for posts
@@ -34,9 +34,7 @@ I've gathered a list of requirements for the platform:
 * no _"kimmo.blog wants to send you notifications"_ right after closing the location request
 * no distractions from the real content
 
-
-
-Self-hosted open source projects sounded very tempting, but it felt more appealing and interesting to start one from scratch and grow the tech solution organically.
+Self-hosted open source blog platforms looked very tempting, but in the end I chose to start one from scratch and grow the tech solution organically. It felt more interesting.
 
 So DIY it is. I'm familiar with React ecosystem and [MDX](https://mdxjs.com/) has worked before.
 
@@ -49,11 +47,11 @@ So DIY it is. I'm familiar with React ecosystem and [MDX](https://mdxjs.com/) ha
   </ChatMessage>
 </ChatDiscussion>
 
-After a bit of initial hesitation between do-it-yourself or `npm install`, I decided to `git init` and started coding a site generator. That's right, I ignored all rational arguments and started wasting my time on a DIY solution.
+After a bit of initial hesitation between do-it-yourself or `npm install`, I decided to `git init` and started coding a DIY Gatsby-like static site generator. That's right, I ignored all rational arguments and started wasting my time on irrelevant details.
 
 But actually I don't think it's a waste of time at all.
 
-First of all it's intruiging and fun. It's very refreshing to jump out of the business boundaries for a while. Your free time projects don't need to be cost-efficient, just wing it and have fun! _(or skip free time coding, that's totally fine too)_
+First, it's intruiging and fun. It's very refreshing to jump out of the business boundaries for a while. Your casual projects don't need to be cost-efficient or lean, you can just wing it and have fun! _(or skip free time coding, that's totally fine too)_
 
 Reinventing the wheel is a great learning opportunity, but it less often makes sense when solving end users' problems. I've used [Gatsby](https://www.gatsbyjs.com/) in a few work projects but haven't _really_ dug into the internals. Occasionally I find myself wondering:
 
@@ -63,13 +61,8 @@ Reinventing the wheel is a great learning opportunity, but it less often makes s
 
 Now I know. Server-side rendered *(SSR)* React sites are complex, there's no way around it. _"Server-side rendered"_ and _"static site generation"_ are practically the same in this context: both render React components as HTML for the initial page load, which is later *[React.hydrate()](https://reactjs.org/docs/react-dom.html#hydrate)d* in the browser.
 
-If server-side rendering React is so complicated, **what are the benefits?**
-For me, server-side rendering an app is more fluent tooling for the job. Traditionally, the main HTML content is rendered in the backend. Empty containers with a known `#id`s are added to the DOM to be later filled with content using JavaScript. There's many benefits in the traditional model, no doubt about it. One major drawback though is that the dynamic content isn't available at page load. It becomes an afterthought.
-
-Pre-rendered React ties it nicely together: you get good performance, SEO, benefits of TypeScript everywhere, and rich dynamic frontend functionality. Backend returns a frozen snapshot of the app and frontend brings it back to life.
-
 I'm using [MDX](https://mdxjs.com/) for the blog post content. It allows writing familiar Markdown and injecting React components in the content. The components are useful for adding [visual](http://www.r2d3.us/visual-intro-to-machine-learning-part-1/) cues that support the textual content.
 
-The benefits may or may not be worth the added complexity of SSR. I'll let you decide. Even though I learned a lot, the developer experience with my DIY static site generator is pretty archaic. More on that in another post.
+The benefits may or may not be worth the added complexity of SSR. I'll let you decide. Even though I learned a lot, the developer experience with my static site generator is pretty archaic. I'm not sure if this was the best decision, but I'm happy with the result. More about the solution on another post.
 
-I don't know if this was a good decision, but I have a good feeling about it. It could mean yet another bloated React blog site or something cool. Time will tell.
+I don't know if this will lead to the _"ultimate solution"_. The blog could become a yet another React-bloated site — or something cool.

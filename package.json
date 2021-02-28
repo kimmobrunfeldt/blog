@@ -16,6 +16,7 @@
     "postcss": "postcss src/css/main.css -o output/styles.css --verbose",
     "rollup": "rollup -c rollup.config.js",
     "build:pages": "NODE_PATH=./ ts-node --project tsconfig.node.json src/render.tsx",
+    "build:rss": "NODE_PATH=./ ts-node --project tsconfig.node.json src/generateRss.ts",
     "clean": "rm -rf ./output ./output-rollup && mkdir output output-rollup",
     "clean:temp-files": "find ./output-rollup -regex '.*\\.\\(ts\\|tsx\\|txt\\)' -type f -delete"
   },
@@ -48,6 +49,7 @@
     "@types/node": "^14.14.27",
     "@types/react": "^17.0.2",
     "@types/react-dom": "^17.0.1",
+    "@types/rss": "^0.0.28",
     "@typescript-eslint/eslint-plugin": "^4.15.0",
     "@typescript-eslint/parser": "^4.15.0",
     "ajv": "^7.1.1",
@@ -79,6 +81,7 @@
     "rollup-plugin-node-polyfills": "^0.2.1",
     "rollup-plugin-progress": "^1.1.2",
     "rollup-plugin-string": "^3.0.0",
+    "rss": "^1.2.2",
     "strip-markdown": "^4.0.0",
     "tailwindcss": "^2.0.3",
     "tailwindcss-children": "^2.1.0",
