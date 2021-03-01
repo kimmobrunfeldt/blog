@@ -67,7 +67,12 @@ module.exports = {
     },
   },
   variants: {
-    minWidth: ["children"],
+    // https://tailwindcss.com/docs/configuring-variants#default
+    margin: ["children", "responsive", "DEFAULT"],
+    padding: ["children", "responsive", "DEFAULT"],
+    display: ["children", "responsive", "DEFAULT"],
+    minWidth: ["children", "responsive", "DEFAULT"],
+    whitespace: ["children", "responsive", "DEFAULT"],
   },
   plugins: [require("tailwindcss-children")],
 };

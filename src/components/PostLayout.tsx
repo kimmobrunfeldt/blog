@@ -9,6 +9,7 @@ import { H } from "src/components/H";
 import { Link } from "src/components/Link";
 import { NavBar } from "src/components/NavBar";
 import { kFormatter, formatPostDate } from "src/util/site";
+import { cls } from "src/util/tailwind";
 
 type PropsWithChildren = {
   children: React.ReactNode;
@@ -40,17 +41,30 @@ function findRelated(
 }
 
 export function PostLayout(props: Props): JSX.Element {
-  const mdxContainerCls =
-    "mdx row-start-2 md:row-start-1 col-span-12 col-start-1 md:col-start-5 md:col-span-6 max-w-md";
+  const mdxContainerCls = cls(`
+    mdx max-w-md
+    row-start-2 col-span-12 col-start-1
+    sm:col-start-2 sm:col-span-10
+    lg:row-start-1 lg:col-start-4 lg:col-span-7
+    xl:row-start-1 xl:col-start-5 xl:col-span-6
+  `);
 
   return (
     <div className={`grid grid-rows-layout min-h-full gap-global`}>
       <NavBar siteData={props.siteData} pageData={props.data} />
       <ContentWrapper>
         <main
-          className={`grid grid-cols-12 grid-rows-post-sm md:grid-rows-post gap-global`}
+          className={`grid grid-cols-12 grid-rows-post-sm lg:grid-rows-post gap-global`}
         >
-          <div className="row-start-1 text-sm col-start-1 col-span-12 md:col-start-3 md:col-span-2 mb-10 md:mb-0">
+          <div
+            className={cls(`
+              text-sm mb-10
+              row-start-1 col-start-1 col-span-12
+              sm:col-start-2 sm:col-span-10
+              lg:col-start-2 lg:col-span-2 lg:mb-0
+              xl:col-start-3 xl:col-span-2
+            `)}
+          >
             <div className="text-gray-6 font-bold text">
               {formatPostDate(props.data.createdAt)}
             </div>
@@ -63,7 +77,7 @@ export function PostLayout(props: Props): JSX.Element {
 
             {/* It's ~OK to have this visible for screenreaders */}
             <Link
-              className="hidden md:visible md:inline-block pt-7"
+              className="hidden lg:visible lg:inline-block pt-7"
               href="/posts"
             >
               <Icon className="inline-block" icon={arrowLeftOutline} /> Back to
@@ -84,7 +98,14 @@ export function PostLayout(props: Props): JSX.Element {
             </article>
           )}
 
-          <div className="row-start-3 md:row-start-2 col-start-1 col-span-12 md:col-start-5 md:col-span-4">
+          <div
+            className={cls(`
+              row-start-3 col-start-1 col-span-12
+              sm:col-start-2 sm:col-span-10
+              lg:row-start-2 lg:col-start-4 lg:col-span-5
+              xl:row-start-2 xl:col-start-5 xl:col-span-4
+            `)}
+          >
             <Link className="inline-block pt-5" href="/posts">
               <Icon className="inline-block" icon={arrowLeftOutline} /> Back to
               all posts

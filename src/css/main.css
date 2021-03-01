@@ -5,5 +5,7 @@
 @import "./typography.css";
 @import "./mdx-content.css";
 @import "./transitions.css";
+
 @import "./FloatingProfilePicture.css";
 @import "./ChatDiscussion.css";
+@import "./Icon.css";
