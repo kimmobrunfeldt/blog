@@ -11,3 +11,4 @@ export * from "./FloatingProfilePicture";
 export * from "./ContentWrapper";
 export * from "./Chip";
 export * from "./ChatDiscussion";
+export * from "./GlobalErrorBoundary";
