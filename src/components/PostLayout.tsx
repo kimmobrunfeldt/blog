@@ -1,5 +1,5 @@
 import React from "react";
-import { findIndex } from "lodash";
+import findIndex from "lodash/findIndex";
 import { Icon } from "@iconify/react";
 import arrowLeftOutline from "@iconify/icons-teenyicons/left-small-outline";
 import { isPostPage, PostMetadata, SiteData } from "src/types/siteData";
