@@ -1,5 +1,5 @@
 import path from "path";
-import _ from "lodash";
+import { default as lodashTemplate } from "lodash/template";
 
 export function getProjectPath(relativePath: string): string {
   return path.join(__dirname, "../..", relativePath);
@@ -10,7 +10,7 @@ export function renderTemplate(
   template: string,
   varsObj: Record<string, any>
 ): string {
-  const compiled = _.template(template, {
+  const compiled = lodashTemplate(template, {
     interpolate: /{{{([\s\S]+?)}}}/g,
   });
   return compiled(varsObj);

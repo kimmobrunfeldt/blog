@@ -1,5 +1,5 @@
 import React from "react";
-import { padStart } from "lodash";
+import padStart from "lodash/padStart";
 import { Icon } from "@iconify/react";
 import arrowRightOutline from "@iconify/icons-teenyicons/right-small-outline";
 import { Link } from "src/components/Link";

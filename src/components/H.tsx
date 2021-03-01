@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { isUndefined } from "lodash";
+import isUndefined from "lodash/isUndefined";
 import { overrideTw } from "src/util/site";
 
 export type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
