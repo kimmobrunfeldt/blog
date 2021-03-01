@@ -1,0 +1,10 @@
+svg.rss-icon {
+  position: relative;
+  top: 2px;
+  left: -2px;
+}
+
+svg.rss-icon path {
+  transform: rotate(45deg);
+  transform-origin: center;
+}

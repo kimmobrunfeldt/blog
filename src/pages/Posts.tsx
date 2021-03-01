@@ -13,7 +13,7 @@ function Posts(props: Props): JSX.Element {
     <div className={`grid grid-rows-layout min-h-full gap-global`}>
       <NavBar siteData={props.siteData} pageData={props.pageData} />
       <main className={`grid grid-cols-12 gap-global`}>
-        <div className="col-span-12 md:col-start-3 md:col-span-6">
+        <div className="col-span-12 sm:col-start-2 sm:col-span-10 md:col-start-2 md:col-span-9 xl:col-start-3 xl:col-span-8">
           <ContentWrapper>
             <ol reversed className="space-y-20">
               {postPages.map((page) => {
