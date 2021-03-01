@@ -2,13 +2,23 @@ import React from "react";
 import ReactDOM from "react-dom";
 import siteData from "{{{ relativePathToRoot }}}site-data.json";
 import PageComponent from "{{{ pageImportPath }}}";
+import { GlobalErrorBoundary } from "src/components";
 
+const reactRoot = "react-root";
 const pagePath = "{{{ pagePath }}}";
 const page = siteData.pages.find((page) => page.data.path === pagePath);
 
 window.addEventListener("load", () => {
+  (window as any).kimmoBlogInitialContentInnerHTML = (document.getElementById(
+    reactRoot
+  ) as HTMLElement).innerHTML;
+
   ReactDOM.hydrate(
-    <PageComponent pageData={page.data} siteData={siteData} />,
-    document.getElementById("react-root")
+    (
+      <GlobalErrorBoundary>
+        <PageComponent pageData={page.data} siteData={siteData} />
+      </GlobalErrorBoundary>
+    ),
+    document.getElementById(reactRoot)
   );
 });

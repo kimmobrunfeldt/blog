@@ -4,3 +4,4 @@
 * bash commands
 * Multiple windows at once demo
 * minification for prod
+* add RSS icon link
