@@ -5,5 +5,6 @@
 * Multiple windows at once demo
 * minification for prod
 * add RSS icon link
+* Make images fade-in, maybe it eliminates the initial 3d transform of map
 * Fix index page animation in Safari
 * Fix index page profile image in Safari (https://stackoverflow.com/questions/41860477/why-doesnt-css-clip-path-with-svg-work-in-safari)
