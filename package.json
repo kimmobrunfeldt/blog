@@ -2,6 +2,9 @@
   "name": "kimmo.blog",
   "version": "1.0.0",
   "description": "Kimmo Brunfeldt's blog",
+  "browserslist": [
+    "defaults"
+  ],
   "scripts": {
     "start": "npm run build:development && concurrently --exit -c blue,yellow,green,cyan,pink -n pages,css,rollup,output,serve 'npm run watch:pages' 'npm run watch:postcss' 'npm run watch:rollup' 'npm run watch:output' 'npm run serve'",
     "test": "jest",
