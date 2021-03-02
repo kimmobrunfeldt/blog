@@ -30,11 +30,14 @@ function Index(props: Props): JSX.Element {
   return (
     <div className={`grid grid-rows-layout min-h-full gap-global`}>
       <NavBar siteData={props.siteData} pageData={props.pageData} />
-      <main className={`grid grid-cols-12 gap-global`}>
-        <div className="md:col-start-3 col-span-4">
-          <ContentWrapper>
-            <H>Welcome</H>
-            <HLevel>
+      <main
+        className={`grid grid-rows-post-sm grid-cols-12 gap-global gap-y-0`}
+      >
+        <div className="col-span-12 sm:col-start-2 sm:col-span-10 xl:col-start-3 xl:col-span-8">
+          <ContentWrapper className="md:grid md:grid-cols-12">
+            <div className="col-span-12 md:col-span-5">
+              <H>Welcome</H>
+
               <P>
                 This blog is about web-focused software development with a hint
                 of design, business, and neat little things.
@@ -47,7 +50,17 @@ function Index(props: Props): JSX.Element {
               </P>
 
               <P>Hope you enjoy!</P>
-              <div className="pt-20" />
+            </div>
+
+            <div className="col-span-12 md:col-span-7 lg:-mt-10 relative">
+              <FloatingProfilePicture className="-right-14 fadein" />
+            </div>
+          </ContentWrapper>
+        </div>
+
+        <div className="grid row-start-2 grid-cols-12 gap-global col-span-12">
+          <div className="col-span-12 sm:col-start-2 sm:col-span-10 xl:col-start-3 xl:col-span-8 pt-20">
+            <ContentWrapper>
               <H
                 className="mt-0 mb-0 pb-1 border-gray-2 border-b font-sans"
                 color="gray-5"
@@ -55,17 +68,20 @@ function Index(props: Props): JSX.Element {
               >
                 Latest post
               </H>
-              <div className="pt-7" />
-              <PostSummary post={getLatestPost(props.siteData)} />
-              <div className="pt-16" />
-              <Link href="/posts" type="button">
-                See all posts
-              </Link>
-            </HLevel>
-          </ContentWrapper>
+            </ContentWrapper>
+          </div>
         </div>
-        <div className="col-span-4 -mt-10">
-          <FloatingProfilePicture className="-right-14" />
+        <div className="grid row-start-3 grid-cols-12 gap-global col-span-12 z-10 bg-white">
+          <div className="col-span-12 sm:col-start-2 sm:col-span-10 xl:col-start-3 xl:col-span-8">
+            <ContentWrapper className="pt-7">
+              <PostSummary post={getLatestPost(props.siteData)} />
+              <div className="pt-12 flex justify-center lg:pl-11 lg:justify-start">
+                <Link href="/posts" type="button">
+                  See all posts
+                </Link>
+              </div>
+            </ContentWrapper>
+          </div>
         </div>
       </main>
       <Footer />

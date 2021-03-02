@@ -82,7 +82,7 @@ export const FloatingProfilePicture = (props: Props) => (
       />
     </div>
 
-    <div className="absolute floating-profile-picture-hover-trigger">
+    <div className="absolute floating-profile-picture-hover-trigger hidden xl:block">
       <div className="map-location-dot" />
       <div className="map-location-line" />
 

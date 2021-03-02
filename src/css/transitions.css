@@ -55,3 +55,12 @@
 .trigger-hover:hover .trigger-underline {
   text-decoration: underline;
 }
+
+.fadein {
+  animation: fadein 0.4s;
+}
+
+@keyframes fadein {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
