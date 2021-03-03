@@ -13,6 +13,8 @@ window.addEventListener("load", () => {
     reactRoot
   ) as HTMLElement).innerHTML;
 
+  document.body.classList.add('loaded')
+
   ReactDOM.hydrate(
     (
       <GlobalErrorBoundary>

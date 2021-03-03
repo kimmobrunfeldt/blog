@@ -56,11 +56,11 @@
   text-decoration: underline;
 }
 
-.fadein {
-  animation: fadein 0.4s;
+.load-fadein {
+  opacity: 0;
+  transition: opacity 1s;
 }
 
-@keyframes fadein {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+body.loaded .load-fadein {
+  opacity: 1;
 }
