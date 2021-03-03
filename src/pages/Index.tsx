@@ -53,7 +53,7 @@ function Index(props: Props): JSX.Element {
             </div>
 
             <div className="col-span-12 md:col-span-7 lg:-mt-10 relative">
-              <FloatingProfilePicture className="-right-14 fadein" />
+              <FloatingProfilePicture className="-right-14 load-fadein" />
             </div>
           </ContentWrapper>
         </div>
