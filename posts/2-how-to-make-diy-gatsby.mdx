@@ -1,0 +1,39 @@
+---
+title: "How to make a do-it-yourself Gatsby"
+slug: "2-how-to-make-diy-gatsby"
+createdAt: "2020-02-27"
+description: >
+  Over-engineering can be a great learning experience. If it feels fun,
+  just go for it! Casual projects can break the rules.
+tags:
+  - over-engineering
+  - react
+  - server-side rendering
+  - gatsby
+---
+
+<ChatDiscussion>
+  <ChatMessage from="them">
+    Can you tell exactly why did you just re-create Gatsby?
+  </ChatMessage>
+</ChatDiscussion>
+
+After a bit of initial hesitation between do-it-yourself or `npm install`, I decided to `git init` and started coding a DIY Gatsby-like static site generator. That's right, I ignored all rational arguments and started wasting my time on irrelevant details.
+
+But actually I don't think it's a waste of time at all.
+
+First, it's intruiging and fun. It's very refreshing to jump out of the business boundaries for a while. Your casual projects don't need to be cost-efficient or lean, you can just wing it and have fun! _(or skip free time coding, that's totally fine too)_
+
+Reinventing the wheel is a great learning opportunity, but it less often makes sense when solving end users' problems. I've used [Gatsby](https://www.gatsbyjs.com/) in a few work projects but haven't _really_ dug into the internals. Occasionally I find myself wondering:
+
+> Why's Gatsby's output directory so huge?
+>
+> Why's there so many requests on page load?
+
+Now I know. Server-side rendered *(SSR)* React sites are complex, there's no way around it. _"Server-side rendered"_ and _"static site generation"_ are practically the same in this context: both render React components as HTML for the initial page load, which is later *[React.hydrate()](https://reactjs.org/docs/react-dom.html#hydrate)d* in the browser.
+
+I'm using [MDX](https://mdxjs.com/) for the blog post content. It allows writing familiar Markdown and injecting React components in the content. The components are useful for adding [visual](http://www.r2d3.us/visual-intro-to-machine-learning-part-1/) cues that support the textual content.
+
+The benefits may or may not be worth the added complexity of SSR. I'll let you decide. Even though I learned a lot, the developer experience with my static site generator is pretty archaic. I'm not sure if this was the best decision, but I'm happy with the result. More about the solution on another post.
+
+I don't know if this will lead to the _"ultimate solution"_. The blog could become a yet another React-bloated site — or something cool.

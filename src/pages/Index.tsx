@@ -5,12 +5,12 @@ import {
   PostMetadata,
   SiteData,
 } from "src/types/siteData";
+import take from "lodash/take";
 import {
   H,
   P,
   NavBar,
   Footer,
-  HLevel,
   FloatingProfilePicture,
   Link,
   PostSummary,
@@ -22,8 +22,11 @@ type Props = {
   pageData: PageMetadata;
 };
 
-function getLatestPost(siteData: SiteData): PostMetadata {
-  return siteData.pages.filter(isPostPage).map((p) => p.data)[0];
+function takeLatestPosts(siteData: SiteData, n: number): PostMetadata[] {
+  return take(
+    siteData.pages.filter(isPostPage).map((p) => p.data),
+    n
+  );
 }
 
 function Index(props: Props): JSX.Element {
@@ -66,7 +69,7 @@ function Index(props: Props): JSX.Element {
                 color="gray-5"
                 visualLevel={6}
               >
-                Latest post
+                Latest posts
               </H>
             </ContentWrapper>
           </div>
@@ -74,7 +77,11 @@ function Index(props: Props): JSX.Element {
         <div className="grid row-start-3 grid-cols-12 gap-global col-span-12 z-10 bg-white">
           <div className="col-span-12 sm:col-start-2 sm:col-span-10 xl:col-start-3 xl:col-span-8">
             <ContentWrapper className="pt-7">
-              <PostSummary post={getLatestPost(props.siteData)} />
+              <div className="space-y-8">
+                {takeLatestPosts(props.siteData, 2).map((post) => (
+                  <PostSummary key={post.slug} post={post} />
+                ))}
+              </div>
               <div className="pt-12 flex justify-center lg:pl-11 lg:justify-start">
                 <Link href="/posts" type="button">
                   See all posts

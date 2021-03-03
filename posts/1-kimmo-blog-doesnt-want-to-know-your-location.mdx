@@ -1,0 +1,66 @@
+---
+title: "kimmo.blog doesn't want to know your location"
+slug: "1-kimmo-blog-doesnt-want-to-know-your-location"
+createdAt: "2020-02-27"
+description: >
+  The goal of this blog is to share my thoughts and ideally help other people.
+tags:
+  - meta
+  - blog
+  - software development
+  - content creation
+---
+
+There's so many blogging solutions out there. Medium, dev.to, WordPress, Blogger, Jekyll, Github Gists, and more. Yet I ended up making the site from scratch. *But why? Why not just pick one and start writing?*
+
+For a couple of years, the question has been popping into my head every once in a while. I've tried [Medium](https://medium.com/@kimmobrunfeldt/introduction-to-sauce-labs-3ad082fc7dd5) for a few testing related posts, [Blogger](http://scouringmacbook.blogspot.com/2012/10/setting-everything.html) for macOS configuration posts, [WordPress](https://alvarcarto.com/) for a business website, [Github repo](https://github.com/kimmobrunfeldt/howto-everything) with `.md` files, and many open-source solutions like Jekyll, Ghost, Hugo, and Hexo.
+
+_Let's talk about the hosted platforms first._
+
+The goal of this blog is to share my thoughts and ideally help other people. To achieve that, there's no need to track users, ask if they want to receive notifications via service workers, ask their location, ask them to sign up, their name, or anything like that. There's just the content in a minimal digital frame.
+
+Talking about content — it should be accessible, searchable, open, and permanent. This site was built those ideas in mind.
+
+
+_What about open source solutions then?_
+
+This is where it gets a bit more blurry. The content I want to share is tightly related code and my vision is to make the posts interactive, visual, and understandable. I'm thinking:
+
+> If I start a blog, the platform shouldn't come in the way of expressing ideas.
+
+Self-hosted open source blog platforms looked very polished and tempting, but somehow they didn't *feel* like the _"ultimate solution"_ that I'm looking for. I chose to write it from ground up and grow the tech solution organically. It felt more interesting.
+
+In addition to the subjective arguments and feelings, I gathered a list of other goals and requirements:
+
+* custom domain
+* permanent URLs for posts
+* technically flexible for possible needs in the future: *code highlighting*, *SVG animations*, *interactive charts*, and *any custom components* that help understanding concepts
+* content should be readable without JavaScript
+
+
+So DIY it was. Since the posts would have dynamic components and visualisations, I chose React and [MDX](https://mdxjs.com/). They were familiar tools.
+
+<ChatDiscussion>
+  <ChatMessage from="them">
+    Don't tell me you included 128.1kB of react + react-dom just to display this "dynamic" CSS-only chat bubble..
+  </ChatMessage>
+  <ChatMessage from="me">
+    There's going to be more!
+  </ChatMessage>
+  <ChatMessage from="them">
+    Alright, I sure hope. Will you be using Gatsby or React Static then?
+  </ChatMessage>
+  <ChatMessage from="me">
+    Well..
+  </ChatMessage>
+</ChatDiscussion>
+
+After a bit of initial hesitation between do-it-yourself or `npm i gatsby`, I decided to `git init` and started coding a Gatsby-like static site generator. It sounded like a huge time sink but it had to be done. I wanted to know how minimal can it get. Will the page bundle be even smaller? How hard can it be to just `renderToString` and `hydrate`?
+
+It wasn't easy that's for sure, but I'm happy with the result. More about the actual solution on another post.
+
+I don't know if this path will lead to the _"ultimate solution"_. The blog could become a yet another React-bloated site — or something cool.
+
+<hr/>
+
+*To get an email whenever a new post is published, you can subscribe with this [Google Form](https://docs.google.com/forms/d/e/1FAIpQLSeqxCof8DcwK_DYCNyNmJfDj-bWG8tuxyEiAiuTQLdL6h4bpg/viewform?usp=sf_link). There's also an RSS feed at [kimmo.blog/rss.xml](https://kimmo.blog/rss.xml).*

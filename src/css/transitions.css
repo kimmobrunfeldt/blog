@@ -61,6 +61,7 @@
   transition: opacity 1s;
 }
 
-body.loaded .load-fadein {
+body.loaded .load-fadein,
+.no-js .load-fadein {
   opacity: 1;
 }

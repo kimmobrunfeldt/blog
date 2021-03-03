@@ -37,7 +37,9 @@ export const components = {
   a: (props: any) => <Link {...props} />,
   code: (props: any) => <Prism {...props} />,
   img: (props: any) => <img {...props} />,
-  hr: (props: any) => <hr className="border-gray-2 mx-8 my-10" {...props} />,
+  hr: (props: any) => (
+    <hr className="border-gray-2 border-t-2 w-16 mx-auto my-20" {...props} />
+  ),
   pre: (props: any) => <pre className={`py-0`} {...props} />,
   inlineCode: (props: any) => <code {...props} />,
   blockquote: (props: any) => (
