@@ -45,54 +45,60 @@ type Props = {
   className?: string;
 };
 
-export const FloatingProfilePicture = (props: Props) => (
-  <div className={`relative floating-profile-picture ${props.className}`}>
-    <div
-      className="tk-blob absolute animated-blob-container"
-      style={
-        {
-          ...blobDimensions,
-          "--time": "50s",
-          "--amount": 1,
-          "--fill": "#BE8D6A",
-        } as React.CSSProperties
-      }
-    >
-      {BlobSvg}
-    </div>
+export const FloatingProfilePicture = (props: Props) => {
+  const isSafari = global.navigator
+    ? /^((?!chrome|android).)*safari/i.test(global.navigator.userAgent)
+    : false;
 
-    <div className="absolute">
+  return (
+    <div className={`relative floating-profile-picture ${props.className}`}>
       <div
-        className="tk-blob absolute"
+        className="tk-blob absolute animated-blob-container"
         style={
           {
             ...blobDimensions,
-            "--time": "40s",
-            "--amount": 0.5,
-            "--fill": "none",
+            "--time": "50s",
+            "--amount": 1,
+            "--fill": "#BE8D6A",
           } as React.CSSProperties
         }
       >
-        {BlobSvg2}
+        {BlobSvg}
       </div>
-      <img
-        alt="Kimmo's picture"
-        className="blob-mask relative profile-image-position"
-        src="/kimmo.jpg"
-      />
-    </div>
 
-    <div className="absolute floating-profile-picture-hover-trigger hidden xl:block">
-      <div className="map-location-dot" />
-      <div className="map-location-line" />
+      <div className="absolute">
+        <div
+          className={`${isSafari ? "" : "tk-blob"} absolute`}
+          style={
+            {
+              ...blobDimensions,
+              "--time": "40s",
+              "--amount": 0.5,
+              "--fill": "none",
+            } as React.CSSProperties
+          }
+        >
+          {BlobSvg2}
+        </div>
+        <img
+          alt="Kimmo's picture"
+          className="blob-mask relative profile-image-position"
+          src="/kimmo.jpg"
+        />
+      </div>
 
-      <div className="floating-map-container-layer-2" />
-      <div className="floating-map-container-layer-1" />
+      <div className="absolute floating-profile-picture-hover-trigger hidden xl:block">
+        <div className="map-location-dot" />
+        <div className="map-location-line" />
 
-      <div className="floating-map-container">
-        <img alt="Map of Helsinki" src="/map-light.jpg" />
-        <div className="colorizer" />
+        <div className="floating-map-container-layer-2" />
+        <div className="floating-map-container-layer-1" />
+
+        <div className="floating-map-container">
+          <img alt="Map of Helsinki" src="/map-light.jpg" />
+          <div className="colorizer" />
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
