@@ -14,7 +14,7 @@ export function levelToClass(level: HeadingLevel): string {
     6: "text-base mt-2 mb-2",
   }[level];
 
-  return `${size} font-black`;
+  return size;
 }
 
 export const LevelContext = React.createContext(1 as HeadingLevel);
@@ -49,6 +49,7 @@ export type HeadingProps = {
   visualLevel?: HeadingLevel;
   color?: string;
   font?: "heading" | "sans";
+  weight?: "black" | "bold";
 };
 
 export function H({
@@ -56,6 +57,7 @@ export function H({
   className = "",
   color = "gray-9",
   font = "heading",
+  weight = "black",
   visualLevel,
   ...otherProps
 }: HeadingProps) {
@@ -68,7 +70,10 @@ export function H({
   return (
     <HeadingComponent
       {...otherProps}
-      className={overrideTw(`${baseCls} font-${font} text-${color}`, className)}
+      className={overrideTw(
+        `${baseCls} font-${font} font-${weight} text-${color}`,
+        className
+      )}
     >
       {children}
     </HeadingComponent>
