@@ -51,12 +51,10 @@ export function PostLayout(props: Props): JSX.Element {
   `);
 
   return (
-    <div className={`grid grid-rows-layout min-h-full ${twGlobals.gap}`}>
+    <div className={`grid grid-rows-layout min-h-full w-full ${twGlobals.gap}`}>
       <NavBar siteData={props.siteData} pageData={props.data} />
       <ContentWrapper>
-        <main
-          className={`grid grid-cols-12 grid-rows-auto-sm lg:grid-rows-auto ${twGlobals.gap}`}
-        >
+        <main className={`grid grid-cols-12 grid-rows-auto ${twGlobals.gap}`}>
           <div
             className={cls(`
               text-sm mb-10
