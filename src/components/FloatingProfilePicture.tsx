@@ -46,12 +46,14 @@ type Props = {
 };
 
 export const FloatingProfilePicture = (props: Props) => {
-  const isSafari = global.navigator
-    ? /^((?!chrome|android).)*safari/i.test(global.navigator.userAgent)
+  const isSafari = globalThis.navigator
+    ? /^((?!chrome|android).)*safari/i.test(globalThis.navigator.userAgent)
     : false;
 
   return (
-    <div className={`relative floating-profile-picture ${props.className}`}>
+    <div
+      className={`overflow-hidden relative floating-profile-picture ${props.className}`}
+    >
       <div
         className="tk-blob absolute animated-blob-container"
         style={
@@ -91,7 +93,6 @@ export const FloatingProfilePicture = (props: Props) => {
         <div className="map-location-dot" />
         <div className="map-location-line" />
 
-        <div className="floating-map-container-layer-2" />
         <div className="floating-map-container-layer-1" />
 
         <div className="floating-map-container">

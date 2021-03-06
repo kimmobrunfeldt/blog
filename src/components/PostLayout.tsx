@@ -10,6 +10,7 @@ import { Link } from "src/components/Link";
 import { NavBar } from "src/components/NavBar";
 import { kFormatter, formatPostDate } from "src/util/site";
 import { cls } from "src/util/tailwind";
+import * as twGlobals from "src/twGlobals";
 
 type PropsWithChildren = {
   children: React.ReactNode;
@@ -50,11 +51,11 @@ export function PostLayout(props: Props): JSX.Element {
   `);
 
   return (
-    <div className={`grid grid-rows-layout min-h-full gap-global`}>
+    <div className={`grid grid-rows-layout min-h-full ${twGlobals.gap}`}>
       <NavBar siteData={props.siteData} pageData={props.data} />
       <ContentWrapper>
         <main
-          className={`grid grid-cols-12 grid-rows-post-sm lg:grid-rows-post gap-global`}
+          className={`grid grid-cols-12 grid-rows-auto-sm lg:grid-rows-auto ${twGlobals.gap}`}
         >
           <div
             className={cls(`
@@ -74,15 +75,6 @@ export function PostLayout(props: Props): JSX.Element {
             <div className="text-gray-5 mt-4 italic text-xs">
               {props.data.tags.join(", ")}
             </div>
-
-            {/* It's ~OK to have this visible for screenreaders */}
-            <Link
-              className="hidden lg:visible lg:inline-block pt-7"
-              href="/posts"
-            >
-              <Icon className="inline-block" icon={arrowLeftOutline} /> Back to
-              posts
-            </Link>
           </div>
 
           {"children" in props ? (
