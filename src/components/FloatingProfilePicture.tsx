@@ -69,7 +69,7 @@ export const FloatingProfilePicture = (props: Props) => {
         {BlobSvg}
       </div>
 
-      <div className="absolute">
+      <div className="absolute z-50">
         <div
           className={`${isSafari || isNode ? "" : "tk-blob"} absolute`}
           style={
