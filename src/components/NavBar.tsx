@@ -6,6 +6,7 @@ import githubOutline from "@iconify/icons-teenyicons/github-outline";
 import twitterOutline from "@iconify/icons-teenyicons/twitter-outline";
 import rssIcon from "@iconify/icons-teenyicons/wifi-full-outline";
 import { AnyPage, SiteData } from "src/types/siteData";
+import * as twGlobals from "src/twGlobals";
 
 export type NavBarProps = JSX.IntrinsicElements["header"] & {
   className?: string;
@@ -29,7 +30,7 @@ export function NavBar({
   return (
     <header
       {...otherProps}
-      className={`grid grid-cols-12 gap-global pt-3 pb-10 lg:pt-10 lg:pb-20 font-bold ${className}`}
+      className={`grid grid-cols-12 ${twGlobals.gap} pt-3 pb-10 lg:pt-10 lg:pb-20 font-bold ${className}`}
     >
       <div className="col-span-12 sm:col-start-2 sm:col-span-10 xl:col-start-3 xl:col-span-8">
         <ContentWrapper className="flex flex-row justify-between">

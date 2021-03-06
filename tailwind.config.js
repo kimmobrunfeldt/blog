@@ -52,14 +52,16 @@ module.exports = {
     extend: {
       gridTemplateRows: {
         layout: "auto 1fr auto",
-        post: "auto auto",
-        "post-sm": "auto auto auto",
       },
       lineHeight: {
         normal: "1.6",
       },
       gap: {
-        global: defaultTheme.spacing["6"],
+        "global-xl": defaultTheme.spacing["8"],
+        "global-lg": defaultTheme.spacing["8"],
+        "global-md": defaultTheme.spacing["6"],
+        "global-sm": defaultTheme.spacing["6"],
+        global: defaultTheme.spacing["2"],
       },
       spacing: {
         paragraph: defaultTheme.spacing["6"],

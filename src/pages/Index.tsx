@@ -16,6 +16,7 @@ import {
   PostSummary,
 } from "src/components";
 import { ContentWrapper } from "src/components/ContentWrapper";
+import * as twGlobals from "src/twGlobals";
 
 type Props = {
   siteData: SiteData;
@@ -31,66 +32,62 @@ function takeLatestPosts(siteData: SiteData, n: number): PostMetadata[] {
 
 function Index(props: Props): JSX.Element {
   return (
-    <div className={`grid grid-rows-layout min-h-full gap-global`}>
+    <div className={`grid grid-rows-layout min-h-full ${twGlobals.gap}`}>
       <NavBar siteData={props.siteData} pageData={props.pageData} />
       <main
-        className={`grid grid-rows-post-sm grid-cols-12 gap-global gap-y-0`}
+        className={`grid grid-rows-auto grid-cols-12 ${twGlobals.gap} gap-y-0`}
       >
-        <div className="col-span-12 sm:col-start-2 sm:col-span-10 xl:col-start-3 xl:col-span-8">
-          <ContentWrapper className="md:grid md:grid-cols-12">
-            <div className="col-span-12 md:col-span-5">
-              <H>Welcome</H>
+        <div className="col-span-12 sm:col-start-2 sm:col-span-10 lg:row-start-1 lg:col-start-2 lg:col-span-5 xl:col-start-3 xl:col-span-4">
+          <ContentWrapper>
+            <H>Welcome</H>
 
-              <P>
-                This blog is about web-focused software development with a hint
-                of design, business, and neat little things.
-              </P>
-              <P>
-                I’m Kimmo and I’ve been in the industry for nearly ten years:
-                consulting enterprises, doing product development in different
-                startups, and managing a{" "}
-                <Link href="https://alvarcarto.com">webshop</Link> I co-founded.
-              </P>
+            <P>
+              This blog is about web-focused software development with a hint of
+              design, business, and neat little things.
+            </P>
+            <P>
+              I’m Kimmo and I’ve been in the industry for nearly ten years:
+              consulting enterprises, doing product development in different
+              startups, and managing a{" "}
+              <Link href="https://alvarcarto.com">webshop</Link> I co-founded.
+            </P>
 
-              <P>Hope you enjoy!</P>
-            </div>
-
-            <div className="col-span-12 md:col-span-7 lg:-mt-10 relative">
-              <FloatingProfilePicture className="-right-14 load-fadein" />
-            </div>
+            <P>Hope you enjoy!</P>
           </ContentWrapper>
         </div>
 
-        <div className="grid row-start-2 grid-cols-12 gap-global col-span-12">
-          <div className="col-span-12 sm:col-start-2 sm:col-span-10 xl:col-start-3 xl:col-span-8 pt-20">
-            <ContentWrapper>
-              <H
-                className="mt-0 mb-0 pb-1 border-gray-2 border-b font-sans"
-                color="gray-5"
-                visualLevel={6}
-              >
-                Latest posts
-              </H>
-            </ContentWrapper>
-          </div>
+        <div className="relative overflow-hidden col-span-12 lg:row-start-1 lg:col-start-6 lg:col-span-7 lg:-mt-10 xl:-col-start-5 xl:col-span-8">
+          <FloatingProfilePicture className="load-fadein" />
         </div>
-        <div className="grid row-start-3 grid-cols-12 gap-global col-span-12 z-10 bg-white">
-          <div className="col-span-12 sm:col-start-2 sm:col-span-10 xl:col-start-3 xl:col-span-8">
-            <ContentWrapper className="pt-7">
-              <div className="space-y-8">
-                {takeLatestPosts(props.siteData, 2).map((post) => (
-                  <PostSummary key={post.slug} post={post} />
-                ))}
-              </div>
-              <div className="pt-12 flex justify-center lg:pl-11 lg:justify-start">
-                <Link href="/posts" type="button">
-                  See all posts
-                </Link>
-              </div>
-            </ContentWrapper>
-          </div>
+
+        <div className="col-span-12 sm:col-start-2 sm:col-span-10 xl:col-start-3 xl:col-span-6 lg:mt-8 xl:-mt-6">
+          <ContentWrapper>
+            <H
+              className="mt-0 mb-0 pb-1 border-gray-2 border-b font-sans"
+              color="gray-5"
+              visualLevel={6}
+            >
+              Latest posts
+            </H>
+          </ContentWrapper>
+        </div>
+
+        <div className="col-span-12 sm:col-start-2 sm:col-span-10 xl:col-start-3 xl:col-span-6">
+          <ContentWrapper className="pt-7">
+            <div className="space-y-8">
+              {takeLatestPosts(props.siteData, 2).map((post) => (
+                <PostSummary key={post.slug} post={post} />
+              ))}
+            </div>
+            <div className="pt-12 flex justify-center lg:pl-11 lg:justify-start">
+              <Link href="/posts" type="button">
+                See all posts
+              </Link>
+            </div>
+          </ContentWrapper>
         </div>
       </main>
+
       <Footer />
     </div>
   );

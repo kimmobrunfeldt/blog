@@ -1,6 +1,7 @@
 import React from "react";
 import { isPostPage, PageMetadata, SiteData } from "src/types/siteData";
 import { NavBar, Footer, PostSummary, ContentWrapper } from "src/components";
+import * as twGlobals from "src/twGlobals";
 
 type Props = {
   siteData: SiteData;
@@ -10,9 +11,9 @@ type Props = {
 function Posts(props: Props): JSX.Element {
   const postPages = props.siteData.pages.filter(isPostPage);
   return (
-    <div className={`grid grid-rows-layout min-h-full gap-global`}>
+    <div className={`grid grid-rows-layout min-h-full ${twGlobals.gap}`}>
       <NavBar siteData={props.siteData} pageData={props.pageData} />
-      <main className={`grid grid-cols-12 gap-global`}>
+      <main className={`grid grid-cols-12 ${twGlobals.gap}`}>
         <div className="col-span-12 sm:col-start-2 sm:col-span-10 md:col-start-2 md:col-span-9 xl:col-start-3 xl:col-span-8">
           <ContentWrapper>
             <ol reversed className="space-y-20">
