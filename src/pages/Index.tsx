@@ -56,7 +56,7 @@ function Index(props: Props): JSX.Element {
           </ContentWrapper>
         </div>
 
-        <div className="relative overflow-hidden col-span-12 lg:row-start-1 lg:col-start-6 lg:col-span-7 lg:-mt-10 xl:-col-start-5 xl:col-span-8">
+        <div className="relative overflow-hidden col-span-12 lg:row-start-1 lg:col-start-6 lg:col-span-7 lg:-mt-10 xl:-col-start-5 xl:col-span-5">
           <FloatingProfilePicture className="load-fadein" />
         </div>
 

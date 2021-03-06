@@ -31,6 +31,13 @@
   }
 }
 
+@screen 2xl {
+  .floating-profile-picture {
+    margin-left: -80px;
+    left: 13%
+  }
+}
+
 .blob-mask {
   min-width: 370px;
   width: 370px;
