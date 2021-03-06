@@ -14,7 +14,7 @@
     <link defer rel="stylesheet" href="https://use.typekit.net/jyf2raq.css"/>
     {{{ headAfter }}}
   </head>
-  <body class="h-full w-full text-gray-8">
+  <body class="h-full w-full text-gray-8 overflow-x-hidden">
     <noscript class="absolute px-2 py-1 top-0 right-0">
       <div class="flex flex-row items-center">
         <svg focusable="false" class="h-4 w-4 fill-current text-warning-5" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -24,7 +24,7 @@
       </div>
     </noscript>
 
-    <div class="h-full w-full" id="react-root">{{{ htmlContent }}}</div>
+    <div class="h-full w-full overflow-x-hidden" id="react-root">{{{ htmlContent }}}</div>
 
     <script src="https://polyfill.io/v3/polyfill.min.js?features=Intl%2CrequestIdleCallback"></script>
     <script type="module" src="{{{ hydrateScriptPath }}}"></script>
