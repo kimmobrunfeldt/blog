@@ -98,7 +98,6 @@ export const FloatingProfilePicture = (props: Props) => {
 
         <div className="floating-map-container">
           <img alt="Map of Helsinki" src="/map-light.jpg" />
-          <div className="colorizer" />
         </div>
       </div>
     </div>

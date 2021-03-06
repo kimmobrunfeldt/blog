@@ -125,13 +125,6 @@
   transform: rotateX(62deg) rotateZ(-30deg) translate3d(0px, 0px, -8px);
 }
 
-.floating-map-container .colorizer {
-  @apply absolute w-full h-full;
-  background: #56514c;
-  mix-blend-mode: color;
-  z-index: 10;
-}
-
 .floating-map-container img {
   max-width: initial; /* this needs to be overridden from tailwind defaults */
   height: auto;
