@@ -49,6 +49,7 @@ export const FloatingProfilePicture = (props: Props) => {
   const isSafari = globalThis.navigator
     ? /^((?!chrome|android).)*safari/i.test(globalThis.navigator.userAgent)
     : false;
+  const isNode = globalThis.window === undefined;
 
   return (
     <div
@@ -70,7 +71,7 @@ export const FloatingProfilePicture = (props: Props) => {
 
       <div className="absolute">
         <div
-          className={`${isSafari ? "" : "tk-blob"} absolute`}
+          className={`${isSafari || isNode ? "" : "tk-blob"} absolute`}
           style={
             {
               ...blobDimensions,
