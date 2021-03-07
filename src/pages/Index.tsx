@@ -64,7 +64,7 @@ function Index(props: Props): JSX.Element {
         <div className="col-span-12 sm:col-start-2 sm:col-span-10 xl:col-start-3 xl:col-span-6 lg:mt-8 xl:-mt-6">
           <ContentWrapper>
             <H
-              className="mt-0 mb-0 pb-1 border-gray-2 border-b"
+              className="mt-0 mb-0 pb-1 border-gray-2 dark:border-gray-8 border-b"
               color="text-gray-5"
               weight="font-bold"
               visualLevel={6}

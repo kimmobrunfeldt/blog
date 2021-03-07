@@ -21,7 +21,7 @@ type OrderNumProps = JSX.IntrinsicElements["span"] & {
 const OrderNum = ({ orderNumber, className, ...otherProps }: OrderNumProps) => (
   <span
     style={{ top: "-3px" }}
-    className={`relative inline-block mr-3 sm:mr-5 font-heading text-3xl text-gray-7 ${className}`}
+    className={`relative inline-block mr-3 sm:mr-5 font-heading text-3xl text-gray-7 dark:text-gray-4 ${className}`}
     {...otherProps}
   >
     {padStart(`${orderNumber}`, 2, "0")}
@@ -55,7 +55,7 @@ export function PostSummary({ post }: PostSummaryProps) {
         <div className="min-w-0">
           <p className="mb-2">{post.description}</p>
 
-          <ul className="text-gray-6 mb-5 children:inline-block children:mr-2 children:mb-0.5">
+          <ul className="text-gray-6 dark:text-gray-4 mb-5 children:inline-block children:mr-2 children:mb-0.5">
             {post.tags.map((tag) => (
               <li key={tag}>
                 <Chip>{tag}</Chip>

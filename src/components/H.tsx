@@ -55,7 +55,7 @@ export type HeadingProps = {
 export function H({
   children,
   className = "",
-  color = "text-gray-9",
+  color = "text-gray-9 dark:text-gray-2",
   font = "font-heading",
   weight = "font-black",
   visualLevel,
