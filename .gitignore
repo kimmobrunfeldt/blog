@@ -2,6 +2,7 @@
 
 output
 output-rollup
+output-gz
 
 # Logs
 logs
