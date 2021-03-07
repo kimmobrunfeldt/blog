@@ -1,50 +1,69 @@
 import React from "react";
 
 import { levelToClass } from "src/components/H";
-import { P, textColor, Link, Prism } from "./components";
+import { P, Link, Prism } from "./components";
 
 // Note: more complex css is done at mdx-content.css
 export const components = {
   h1: (props: any) => (
-    <h1 className={`${levelToClass(1)} font-heading text-gray-9`} {...props} />
+    <h1
+      className={`${levelToClass(1)} font-heading text-gray-9 dark:text-gray-2`}
+      {...props}
+    />
   ),
   h2: (props: any) => (
-    <h2 className={`${levelToClass(2)} font-heading text-gray-9`} {...props} />
+    <h2
+      className={`${levelToClass(2)} font-heading text-gray-9 dark:text-gray-2`}
+      {...props}
+    />
   ),
   h3: (props: any) => (
-    <h3 className={`${levelToClass(3)} font-heading text-gray-9`} {...props} />
+    <h3
+      className={`${levelToClass(3)} font-heading text-gray-9 dark:text-gray-2`}
+      {...props}
+    />
   ),
   h4: (props: any) => (
-    <h4 className={`${levelToClass(4)} font-heading text-gray-9`} {...props} />
+    <h4
+      className={`${levelToClass(4)} font-heading text-gray-9 dark:text-gray-2`}
+      {...props}
+    />
   ),
   h5: (props: any) => (
-    <h5 className={`${levelToClass(5)} font-heading text-gray-9`} {...props} />
+    <h5
+      className={`${levelToClass(5)} font-heading text-gray-9 dark:text-gray-2`}
+      {...props}
+    />
   ),
   h6: (props: any) => (
-    <h6 className={`${levelToClass(6)} font-heading text-gray-9`} {...props} />
+    <h6
+      className={`${levelToClass(6)} font-heading text-gray-9 dark:text-gray-2`}
+      {...props}
+    />
   ),
   p: (props: any) => <P {...props} />,
   strong: (props: any) => <strong className="font-bold" {...props} />,
   em: (props: any) => <em className="italic" {...props} />,
   del: (props: any) => <del className="line-through" {...props} />,
   li: (props: any) => <li className={`pl-2`} {...props} />,
-  ul: (props: any) => (
-    <ul className={`${textColor} pl-12 list-disc space-y-1`} {...props} />
-  ),
+  ul: (props: any) => <ul className={`pl-12 list-disc space-y-1`} {...props} />,
   ol: (props: any) => (
-    <ol className={`${textColor} pl-12 list-decimal space-y-1`} {...props} />
+    <ol className={`pl-12 list-decimal space-y-1`} {...props} />
   ),
   a: (props: any) => <Link {...props} />,
   code: (props: any) => <Prism {...props} />,
   img: (props: any) => <img {...props} />,
   hr: (props: any) => (
-    <hr className="border-gray-2 border-t-2 w-16 mx-auto my-20" {...props} />
+    <hr
+      className="border-gray-2 dark:border-gray-8 border-t-2 w-16 mx-auto my-20"
+      {...props}
+    />
   ),
   pre: (props: any) => <pre className={`py-0`} {...props} />,
   inlineCode: (props: any) => <code {...props} />,
   blockquote: (props: any) => (
     <blockquote
-      className="text-gray-6 italic py-2 px-7 my-10 text-center text-lg md:relative md:-left-6"
+      className="text-gray-6 dark:text-gray-4 italic py-2 px-7 my-10 text-center text-lg md:relative md:-left-6"
       {...props}
     />
   ),
