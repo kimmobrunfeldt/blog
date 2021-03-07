@@ -56,7 +56,9 @@ export const FloatingProfilePicture = (props: Props) => {
       className={`overflow-hidden relative floating-profile-picture ${props.className}`}
     >
       <div
-        className="tk-blob absolute animated-blob-container"
+        className={`${
+          isNode ? "" : "tk-blob"
+        } absolute animated-blob-container`}
         style={
           {
             ...blobDimensions,
@@ -83,11 +85,15 @@ export const FloatingProfilePicture = (props: Props) => {
         >
           {BlobSvg2}
         </div>
-        <img
-          alt="Kimmo's picture"
-          className="blob-mask relative profile-image-position"
-          src="/kimmo.jpg"
-        />
+        <picture>
+          <source srcSet="/kimmo.webp" type="image/webp" />
+          <source srcSet="/kimmo.jpg" type="image/jpeg" />
+          <img
+            alt="Kimmo's picture"
+            className="blob-mask relative profile-image-position"
+            src="/kimmo.jpg"
+          />
+        </picture>
       </div>
 
       <div className="absolute floating-profile-picture-hover-trigger hidden xl:block">

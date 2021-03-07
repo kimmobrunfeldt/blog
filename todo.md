@@ -3,5 +3,4 @@
 * Diff code
 * bash commands
 * Multiple windows at once demo
-* Fix index page animation in Safari
-* Fix index page profile image in Safari (https://stackoverflow.com/questions/41860477/why-doesnt-css-clip-path-with-svg-work-in-safari)
+* UC Browser crash polyfill

@@ -14,6 +14,7 @@ import {
   FloatingProfilePicture,
   Link,
   PostSummary,
+  ButtonLink,
 } from "src/components";
 import { ContentWrapper } from "src/components/ContentWrapper";
 import * as twGlobals from "src/twGlobals";
@@ -64,8 +65,8 @@ function Index(props: Props): JSX.Element {
           <ContentWrapper>
             <H
               className="mt-0 mb-0 pb-1 border-gray-2 border-b"
-              color="gray-5"
-              weight="bold"
+              color="text-gray-5"
+              weight="font-bold"
               visualLevel={6}
             >
               Latest posts
@@ -81,9 +82,7 @@ function Index(props: Props): JSX.Element {
               ))}
             </div>
             <div className="pt-12 flex justify-center lg:pl-11 lg:justify-start">
-              <Link href="/posts" type="button">
-                See all posts
-              </Link>
+              <ButtonLink href="/posts">See all posts</ButtonLink>
             </div>
           </ContentWrapper>
         </div>
