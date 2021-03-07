@@ -48,16 +48,16 @@ export type HeadingProps = {
   className?: string;
   visualLevel?: HeadingLevel;
   color?: string;
-  font?: "heading" | "sans";
-  weight?: "black" | "bold";
+  font?: "font-heading" | "font-sans";
+  weight?: "font-black" | "font-bold";
 };
 
 export function H({
   children,
   className = "",
-  color = "gray-9",
-  font = "heading",
-  weight = "black",
+  color = "text-gray-9",
+  font = "font-heading",
+  weight = "font-black",
   visualLevel,
   ...otherProps
 }: HeadingProps) {
@@ -70,10 +70,7 @@ export function H({
   return (
     <HeadingComponent
       {...otherProps}
-      className={overrideTw(
-        `${baseCls} font-${font} font-${weight} text-${color}`,
-        className
-      )}
+      className={overrideTw(`${baseCls} ${font} ${weight} ${color}`, className)}
     >
       {children}
     </HeadingComponent>
