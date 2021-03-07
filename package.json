@@ -10,7 +10,7 @@
     "test": "jest",
     "build:development": "npm run clean && npm run build:pages && npm run copy-public",
     "build": "npm run clean && NODE_ENV=production npm run build:pages && NODE_ENV=production npm run rollup && NODE_ENV=production npm run postcss && npm run build:rss && npm run copy-public && npm run lint:html && npm run minify:html && npm run build:lighthouse",
-    "build:lighthouse": "concurrently --kill-others 'http-server -p 12345 -g -c-1 ./output' 'wait-port 12345 && CHROME_PATH=\"$(pwd)/$(find node_modules/puppeteer/ -name chrome)\" lighthouse http://localhost:12345 --chrome-flags=\"--no-sandbox --headless --disable-gpu\" --output html --output-path ./output/perf.html'",
+    "build:lighthouse": "concurrently --kill-others 'http-server -p 12345 -g -c-1 ./output' 'wait-port 12345 && ls -lah && CHROME_PATH=\"$(pwd)/$(find node_modules/puppeteer/ -name chrome)\" lighthouse http://localhost:12345 --chrome-flags=\"--no-sandbox --headless --disable-gpu\" --output html --output-path ./output/perf.html'",
     "copy-public": "cp -r public/* output/",
     "minify:html": "find output/ -name \"*.html\" -exec html-minifier -o {} {} --collapse-whitespace --remove-comments --remove-optional-tags --remove-redundant-attributes --remove-tag-whitespace --use-short-doctype \\;",
     "lint:html": "find output/ -name \"*.html\" -exec html-validate {} +",
