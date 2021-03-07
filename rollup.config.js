@@ -54,8 +54,13 @@ export default {
       const [_head, tail] = id.split("node_modules/");
       const pathComponents = tail.split("/");
       let depName = pathComponents[0];
+
       if (tail[0] === "@") {
         depName = `${pathComponents[0]}/${pathComponents[1]}`;
+      }
+
+      if (depName === "react" || depName === "react-dom") {
+        return "node_modules/react-and-dom";
       }
 
       return `node_modules/${depName}`;
