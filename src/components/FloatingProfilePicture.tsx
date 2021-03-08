@@ -46,19 +46,23 @@ type Props = {
 };
 
 export const FloatingProfilePicture = (props: Props) => {
+  const [animation, setAnimation] = React.useState(false);
   const isSafari = globalThis.navigator
     ? /^((?!chrome|android).)*safari/i.test(globalThis.navigator.userAgent)
     : false;
   const isNode = globalThis.window === undefined;
 
+  React.useEffect(() => {
+    setAnimation(true);
+  }, []);
+
+  const shouldAnimate = animation && !isNode && !isSafari;
   return (
     <div
       className={`overflow-hidden relative floating-profile-picture ${props.className}`}
     >
       <div
-        className={`${
-          isNode ? "" : "tk-blob"
-        } absolute animated-blob-container`}
+        className={`tk-blob absolute animated-blob-container`}
         style={
           {
             ...blobDimensions,
@@ -73,7 +77,7 @@ export const FloatingProfilePicture = (props: Props) => {
 
       <div className="absolute z-50">
         <div
-          className={`${isSafari || isNode ? "" : "tk-blob"} absolute`}
+          className={`${shouldAnimate ? "tk-blob" : ""} absolute`}
           style={
             {
               ...blobDimensions,
@@ -103,7 +107,13 @@ export const FloatingProfilePicture = (props: Props) => {
         <div className="floating-map-container-layer-1" />
 
         <div className="floating-map-container">
-          <img alt="Map of Helsinki" src="/map-light.jpg" />
+          <picture>
+            <source
+              srcSet="/map-dark.jpg"
+              media="(prefers-color-scheme: dark)"
+            />
+            <img alt="Map of Helsinki" src="/map-light.jpg" />
+          </picture>
         </div>
       </div>
     </div>

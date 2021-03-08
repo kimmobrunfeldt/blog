@@ -17,13 +17,13 @@ export function Footer({ className = "", ...otherProps }: FooterProps) {
         className="cursor-pointer underline-effect-trigger inline-block"
         href="/"
       >
-        <span className="text-gray-7 dark:text-gray-4 font-heading">kimmo</span>
+        <span className="text-gray-7 dark:text-gray-5 font-heading">kimmo</span>
         <span className="text-rust-6 font-heading underline-effect underline-effect-w-half inline-block">
           .blog
         </span>
       </a>
 
-      <span className="text-gray-4 dark:text-gray-7">
+      <span className="text-gray-4 dark:text-gray-5">
         <Icon icon={codeIcon} />
       </span>
 
