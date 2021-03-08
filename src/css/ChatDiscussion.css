@@ -53,3 +53,25 @@
     border-bottom-right-radius: 10px;
   }
 }
+
+@media (prefers-color-scheme: dark) {
+  .ChatMessage.from-me {
+    @apply text-gray-2;
+
+    &:after {
+      @apply border-gray-9;
+    }
+  }
+
+  .ChatMessage.from-them {
+    @apply bg-gray-7 text-gray-2;
+
+    &:before {
+      @apply border-gray-7;
+    }
+
+    &:after {
+      @apply border-gray-9;
+    }
+  }
+}

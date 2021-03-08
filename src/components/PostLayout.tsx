@@ -64,7 +64,7 @@ export function PostLayout(props: Props): JSX.Element {
               xl:col-start-3 xl:col-span-2
             `)}
           >
-            <div className="text-gray-6 font-bold text">
+            <div className="text-gray-6 dark:text-gray-4 font-bold text">
               {formatPostDate(props.data.createdAt)}
             </div>
             <div className="text-gray-5">

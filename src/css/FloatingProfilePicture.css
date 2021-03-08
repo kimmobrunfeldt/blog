@@ -144,3 +144,21 @@
 .floating-profile-picture-hover-trigger:hover .floating-map-container img {
   transform: translate(-50%, -50%) scale(1);
 }
+
+
+@media (prefers-color-scheme: dark) {
+  .floating-map-container-layer-1 {
+    background: #BE8D6A;
+    opacity: 0.15;
+  }
+  .map-location-dot {
+    background: #666;
+  }
+  .floating-profile-picture-hover-trigger:hover .map-location-dot {
+    background: #BE8D6A;
+  }
+  .map-location-line {
+    opacity: 0.4;
+    background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='%23BE8D6A' stroke-width='4' stroke-dasharray='2%2c 8' stroke-dashoffset='0' stroke-linecap='butt'/%3e%3c/svg%3e");
+  }
+}
