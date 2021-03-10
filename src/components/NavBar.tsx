@@ -90,7 +90,7 @@ export function NavBar({
                 ? "Change to dark theme"
                 : "Change to light theme"
             }
-            aria-label="Change visual theme"
+            aria-label={stateTheme === "light" ? "Dark theme" : "Light theme"}
             onClick={() =>
               context.setTheme(stateTheme === "light" ? "dark" : "light")
             }
@@ -122,7 +122,7 @@ export function NavBar({
               <Link
                 color="rust"
                 underline={false}
-                className="underline-effect underline-effect-w-half"
+                className="underline-effect underline-effect-w-half hidden sm:block"
                 title="Github"
                 aria-label="Github profile"
                 href="https://github.com/kimmobrunfeldt"
@@ -134,7 +134,7 @@ export function NavBar({
               <Link
                 color="rust"
                 underline={false}
-                className="underline-effect underline-effect-w-half"
+                className="underline-effect underline-effect-w-half hidden sm:block"
                 title="Twitter"
                 aria-label="Twitter profile"
                 href="https://twitter.com/kimmobrunfeldt"
