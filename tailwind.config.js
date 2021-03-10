@@ -37,7 +37,7 @@ module.exports = {
       safelist: [],
     },
   },
-  darkMode: "media",
+  darkMode: "class",
   theme: {
     fontFamily: {
       heading: ["freight-display-pro", ...defaultTheme.fontFamily.sans],

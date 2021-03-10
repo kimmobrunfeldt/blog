@@ -2,7 +2,8 @@ import React from "react";
 import ReactDOM from "react-dom";
 import siteData from "{{{ relativePathToRoot }}}site-data.json";
 import PageComponent from "{{{ pageImportPath }}}";
-import { GlobalErrorBoundary } from "src/components";
+import { GlobalErrorBoundary, App } from "src/components";
+import { getKey } from "src/util/storage";
 
 const reactRoot = "react-root";
 const pagePath = "{{{ pagePath }}}";
@@ -13,12 +14,14 @@ window.addEventListener("load", () => {
     reactRoot
   ) as HTMLElement).innerHTML;
 
-  document.body.classList.add('loaded')
+  document.body.classList.add('loaded');
 
   ReactDOM.hydrate(
     (
       <GlobalErrorBoundary>
-        <PageComponent pageData={page.data} siteData={siteData} />
+        <App>
+          <PageComponent pageData={page.data} siteData={siteData} />
+        </App>
       </GlobalErrorBoundary>
     ),
     document.getElementById(reactRoot)

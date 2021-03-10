@@ -27,7 +27,7 @@ This is where it gets a bit more blurry. The content I want to share is tightly 
 
 > If I start a blog, the platform shouldn't come in the way of expressing ideas.
 
-Self-hosted open source blogging tools looked very polished and tempting, but somehow they didn't feel like the _"ultimate solution"_ that I'm looking for. I had a feeling that my motivation would slowly fade away trying to customise them.
+Self-hosted open source blogging tools looked very polished and tempting, but somehow they didn't feel like the _"ultimate solution"_ that I'm looking for. I had a feeling that my motivation would slowly fade away while trying to customise them.
 
 In addition to the subjective arguments and feelings, I gathered a list of other hard requirements and goals:
 
@@ -38,9 +38,9 @@ In addition to the subjective arguments and feelings, I gathered a list of other
 
 So DIY it was. It felt the most interesting and fun approach. Since the posts would have dynamic components and visualisations, I chose React and [MDX](https://mdxjs.com/). They were familiar tools.
 
-If up until this point you've agreed with my decisions, awesome! What comes next might be a different story though.
+If you've agreed with my decisions up until this point, great! However the process of reinventing the wheel is definitely not over yet.
 
-Lately I've been a bit obsessed about web performance. It's starting to get normal for a website to download 15 MB of uncompressed data to display simple information. That's too much! I wanted to make this site as minimal in size as possible, while considering the vision of interactive and dynamic content.
+Lately I've been obsessed about web performance. It's starting to get normal for a website to download 15 MB of uncompressed data to display simple information. That's too much! I wanted to make this site [as minimal in size as possible](/perf), while considering the vision of interactive and dynamic content.
 
 <ChatDiscussion>
   <ChatMessage from="them">
@@ -51,11 +51,12 @@ Lately I've been a bit obsessed about web performance. It's starting to get norm
   </ChatMessage>
 </ChatDiscussion>
 
-After a bit of initial hesitation between do-it-yourself or `npm i gatsby`, I decided to `git init` and started coding a Gatsby-like static site generator. It sounded like a huge time sink but I wanted to know how minimal it can get. The benefits of a custom static site generator compared to Gatsby are most probably microscopical, but why not? It'll be a good learning experience, it provides answers to a few questions I've been wondering.
+After a bit of initial hesitation between do-it-yourself or `npm i gatsby`, I decided to `git init` and started coding a Gatsby-like static site generator. It sounded like a huge time sink but I wanted to know how minimal it can get. The benefits of a custom static site generator compared to Gatsby would be most probably microscopical, but why not? Reinventing a thing is always a good learning experience. It would also provide answers to a few questions I've been wondering.
 
-> Will the page bundle be even smaller?
+> What benefits do Gatsby or React Static really have?
+> Could the page bundle be even smaller?
 >
-> How hard can it be to just `renderToString` and `hydrate`?
+> How hard can it be to just renderToString and hydrate?
 
 It wasn't easy that's for sure, but I'm really happy with the result. More about the actual solution on another post.
 

@@ -1,12 +1,15 @@
 import React from "react";
 import { ContentWrapper } from "src/components/ContentWrapper";
-import { Link } from "src/components/Link";
+import { Link, linkStyles } from "src/components/Link";
 import { Icon } from "@iconify/react";
+import { AnyPage, SiteData } from "src/types/siteData";
+import * as twGlobals from "src/twGlobals";
 import githubOutline from "@iconify/icons-teenyicons/github-outline";
 import twitterOutline from "@iconify/icons-teenyicons/twitter-outline";
 import rssIcon from "@iconify/icons-teenyicons/wifi-full-outline";
-import { AnyPage, SiteData } from "src/types/siteData";
-import * as twGlobals from "src/twGlobals";
+import sunIcon from "@iconify/icons-teenyicons/sun-outline";
+import moonIcon from "@iconify/icons-teenyicons/moon-outline";
+import { AppContext } from "src/components/App";
 
 export type NavBarProps = JSX.IntrinsicElements["header"] & {
   className?: string;
@@ -20,12 +23,22 @@ export function NavBar({
   pageData,
   ...otherProps
 }: NavBarProps) {
+  const context = React.useContext(AppContext);
+
   const currentPath = pageData.path;
   const postPaths = siteData.pages
     .filter((page) => page.type === "post")
     .map((page) => page.data.path);
   const isPostActive =
     postPaths.includes(currentPath) || currentPath === "/posts";
+
+  const [stateTheme, setStateTheme] = React.useState("light");
+  const [themeButtonHidden, setThemeButtonHidden] = React.useState(true);
+
+  React.useEffect(() => {
+    setStateTheme(context.theme);
+    setThemeButtonHidden(false);
+  }, [context.theme]);
 
   return (
     <header
@@ -63,6 +76,29 @@ export function NavBar({
               </Link>
             </li>
           </ul>
+
+          <button
+            style={{ top: "1px" }}
+            className={`${linkStyles.rust} block relative ${
+              themeButtonHidden ? "opacity-0" : "opacity-100"
+            }`}
+            title={
+              stateTheme === "light"
+                ? "Change to dark theme"
+                : "Change to light theme"
+            }
+            aria-label="Change visual theme"
+            onClick={() =>
+              context.setTheme(stateTheme === "light" ? "dark" : "light")
+            }
+          >
+            <span style={{ fontSize: "1.1em" }}>
+              <Icon
+                className="box-content p-2"
+                icon={stateTheme === "light" ? sunIcon : moonIcon}
+              />
+            </span>
+          </button>
 
           <ul className="flex flex-row items-center -m-2 space-x-1">
             <li>
