@@ -28,13 +28,13 @@ export function Footer({ className = "", ...otherProps }: FooterProps) {
           </span>
         </a>
 
-        <span className="text-gray-4 dark:text-gray-5 hidden sm:block">
+        <span className="text-gray-4 dark:text-gray-5">
           <Icon icon={codeIcon} />
         </span>
 
         <Link
           style={{ top: "1px" }}
-          className="relative text-xs underline-effect underline-effect-w-half hidden sm:block"
+          className="relative text-xs underline-effect underline-effect-w-half"
           underline={false}
           color="rust"
           href="https://docs.google.com/forms/d/e/1FAIpQLSeqxCof8DcwK_DYCNyNmJfDj-bWG8tuxyEiAiuTQLdL6h4bpg/viewform?usp=sf_link"
