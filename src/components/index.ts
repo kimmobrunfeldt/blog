@@ -13,3 +13,4 @@ export * from "./Chip";
 export * from "./ChatDiscussion";
 export * from "./GlobalErrorBoundary";
 export * from "./ButtonLink";
+export * from "./App";

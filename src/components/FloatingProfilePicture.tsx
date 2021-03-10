@@ -1,4 +1,5 @@
 import React from "react";
+import { AppContext } from "src/components/App";
 
 const blobDimensions = {
   width: 505,
@@ -46,6 +47,8 @@ type Props = {
 };
 
 export const FloatingProfilePicture = (props: Props) => {
+  const context = React.useContext(AppContext);
+
   const [animation, setAnimation] = React.useState(false);
   const isSafari = globalThis.navigator
     ? /^((?!chrome|android).)*safari/i.test(globalThis.navigator.userAgent)
@@ -55,6 +58,13 @@ export const FloatingProfilePicture = (props: Props) => {
   React.useEffect(() => {
     setAnimation(true);
   }, []);
+
+  const [stateTheme, setStateTheme] = React.useState("light");
+  const [mapHidden, setMapHidden] = React.useState(true);
+  React.useEffect(() => {
+    setMapHidden(false);
+    setStateTheme(context.theme);
+  }, [context.theme]);
 
   const shouldAnimate = animation && !isNode && !isSafari;
   return (
@@ -107,13 +117,13 @@ export const FloatingProfilePicture = (props: Props) => {
         <div className="floating-map-container-layer-1" />
 
         <div className="floating-map-container">
-          <picture>
-            <source
-              srcSet="/map-dark.jpg"
-              media="(prefers-color-scheme: dark)"
-            />
-            <img alt="Map of Helsinki" src="/map-light.jpg" />
-          </picture>
+          <img
+            className={`transition-opacity duration-500 ${
+              mapHidden ? "opacity-0" : "opacity-100"
+            }`}
+            alt="Map of Helsinki"
+            src={`/map-${stateTheme}.jpg`}
+          />
         </div>
       </div>
     </div>
