@@ -80,7 +80,9 @@ export function NavBar({
           <button
             type="button"
             style={{ top: "1px" }}
-            className={`${linkStyles.rust} block relative ${
+            className={`${
+              linkStyles.rust
+            } transition-opacity duration-300 block relative ${
               themeButtonHidden ? "opacity-0" : "opacity-100"
             }`}
             title={
