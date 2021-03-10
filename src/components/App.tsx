@@ -32,7 +32,7 @@ export const App = ({ children }: Props) => {
       document.documentElement.classList.remove("dark");
     }
   }, [localStorageTheme]);
-  console.log("context", theme);
+
   return (
     <AppContext.Provider value={{ theme, setTheme: setLocalStorageTheme }}>
       {children}
