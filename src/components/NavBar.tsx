@@ -78,6 +78,7 @@ export function NavBar({
           </ul>
 
           <button
+            type="button"
             style={{ top: "1px" }}
             className={`${linkStyles.rust} block relative ${
               themeButtonHidden ? "opacity-0" : "opacity-100"
