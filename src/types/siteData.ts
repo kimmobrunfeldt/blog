@@ -12,6 +12,7 @@ export const PostMetadataSchema = Type.Object({
 export type PostMetadata = Static<typeof PostMetadataSchema> & {
   // Generated dynamically
   orderNumber: number;
+  html: string;
 };
 
 export type PageMetadata = {

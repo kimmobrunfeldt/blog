@@ -1,13 +1,24 @@
 import fs from "fs";
+import { promisify } from "util";
 import RSS from "rss";
-import { SiteData, isPostPage } from "./types/siteData";
-import siteDataJson from "../output-rollup/site-data.json";
-import { getProjectPath } from "./util";
+import glob from "glob";
+import { isPostPage } from "src/types/siteData";
+import { getSiteData } from "src/render";
+import { getProjectPath } from "src/util";
+
+const globAsync = promisify(glob);
 
 const OUTPUT_PATH = getProjectPath("output/rss.xml");
 
 async function main() {
-  const siteData = siteDataJson as SiteData;
+  const mdxFileNames = await globAsync("*.mdx", {
+    cwd: getProjectPath("posts/"),
+  });
+  const siteData = await getSiteData({
+    pages: [],
+    mdxFileNames,
+  });
+
   const posts = siteData.pages.filter(isPostPage).map((page) => page.data);
 
   const feed = new RSS({
@@ -17,6 +28,9 @@ async function main() {
     feed_url: "https://kimmo.blog/rss.xml",
     site_url: "https://kimmo.blog",
     managingEditor: "Kimmo Brunfeldt",
+    custom_namespaces: {
+      content: "http://purl.org/rss/1.0/modules/content/",
+    },
   });
 
   posts.forEach((post) => {
@@ -27,6 +41,13 @@ async function main() {
       guid: post.path,
       categories: post.tags,
       date: post.createdAt,
+      custom_elements: [
+        {
+          "content:encoded": {
+            _cdata: post.html,
+          },
+        },
+      ],
     });
   });
 

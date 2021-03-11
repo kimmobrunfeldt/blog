@@ -24,6 +24,7 @@ import {
   isPostPage,
   PostMetadataSchema,
 } from "./types/siteData";
+import { resolveLinks } from "./util/remark-resolve-links";
 
 type PageComponent = typeof PAGES[0];
 type File = {
@@ -247,6 +248,16 @@ async function getPostData(
 ): Promise<Omit<PostMetadata, "orderNumber">> {
   const { data, content } = await parseMdxFile(mdxFilePath);
   const plain = remark().use(stripMarkdown).processSync(content).toString();
+
+  const fullContent = `# ${data.title}\n\n${content}`;
+  const renderedMdxSource = await renderMdxToString(fullContent, {
+    components: {
+      ...COMPONENTS,
+    },
+    mdxOptions: {
+      remarkPlugins: [resolveLinks],
+    },
+  });
   const charCount = plain.replace(/\s+/, "").length;
 
   const validate = new Ajv({ strict: false }).compile(PostMetadataSchema);
@@ -259,6 +270,7 @@ async function getPostData(
     description: data.description,
     path: `/posts/${data.slug}`,
     charCount,
+    html: renderedMdxSource.renderedOutput,
   };
 
   const isValid = validate(postData);
@@ -269,7 +281,7 @@ async function getPostData(
   return postData;
 }
 
-async function getSiteData(input: SiteInput): Promise<SiteData> {
+export async function getSiteData(input: SiteInput): Promise<SiteData> {
   const postPages = await mapSeriesAsync(input.mdxFileNames, getPostData);
   const regularPages = await mapSeriesAsync(input.pages, async (page) =>
     page.getData()
@@ -323,12 +335,24 @@ async function main() {
     mdxFileNames,
   });
 
+  const minimalPages = siteData.pages.map((page) => {
+    if (!isPostPage(page)) {
+      return page;
+    }
+
+    const { html, ...other } = page.data;
+    return {
+      ...page,
+      data: other,
+    };
+  });
+
   const files = _.flatten([
     await getFilesForReactPages(PAGES, siteData),
     await getFilesForMdxPages(mdxFileNames, siteData),
     {
       path: "site-data.json",
-      content: JSON.stringify(siteData, null, 2),
+      content: JSON.stringify({ pages: minimalPages }, null, 2),
     },
     {
       path: "prism-theme.css",
