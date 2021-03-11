@@ -84,3 +84,10 @@ Production build with approximate times:
 1. `HTML` stage. Lints accessibility and minifies the HTML.
 
 1. `Lighthouse` stage. Builds a Lighthouse CI report which is deployed to https://kimmo.blog/perf. It is being ran in Netlify's slow build machine, so performance shows lower than it should.
+
+
+
+
+# License
+
+The code is MIT licensed. MIT license **does not apply** to any other content such as images and text content for the blog.
