@@ -2,7 +2,9 @@ import visit from "unist-util-visit";
 
 export function resolveLinks() {
   return (tree: any) => {
-    visit(tree, ["link", "image"], (node) => {
+    // Visit all nodes that have .url attribute
+    // https://github.com/syntax-tree/mdast
+    visit(tree, ["link", "image", "definition"], (node) => {
       if (!node.url) {
         return;
       }
