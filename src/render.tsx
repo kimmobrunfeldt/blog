@@ -249,8 +249,7 @@ async function getPostData(
   const { data, content } = await parseMdxFile(mdxFilePath);
   const plain = remark().use(stripMarkdown).processSync(content).toString();
 
-  const fullContent = `# ${data.title}\n\n${content}`;
-  const renderedMdxSource = await renderMdxToString(fullContent, {
+  const renderedMdxSource = await renderMdxToString(content, {
     components: {
       ...COMPONENTS,
     },
