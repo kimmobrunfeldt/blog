@@ -27,7 +27,7 @@ async function main() {
       "This blog is about web-focused software development with a hint of design, business, and neat little things.",
     feed_url: "https://kimmo.blog/rss.xml",
     site_url: "https://kimmo.blog",
-    managingEditor: "Kimmo Brunfeldt",
+    // managingEditor: "me@kimmo.blog",
     custom_namespaces: {
       content: "http://purl.org/rss/1.0/modules/content/",
     },
