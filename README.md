@@ -11,7 +11,7 @@ https://kimmo.blog
     Shipped to browsers -> `dependencies`.
     Used only dev-time -> `devDependencies`.
 
-* `npm start`
+* `npm start` to start dev mode
 
 ## Tech stack
 
@@ -21,9 +21,9 @@ https://kimmo.blog
 
 ### Build pipeline
 
-The aim was a simple build pipeline that is a bunch of CLI commands. I think
-the end result is quite simple considering the task, but it takes 30 seconds
-on each file change to update the site locally.
+The aim was a simple build pipeline that is a bunch of CLI commands. The end result is quite simple considering the task, but lack of hot reloading makes the iteration somewhat slow (5-10s after each file change).
+
+Production build with approximate times:
 
 1. (11.8s) `Render pages` stage. Generates entrypoint files for each page
 
@@ -61,7 +61,7 @@ on each file change to update the site locally.
     * `site-data.json` file that contains all metadata of the site, including pages
     * `prism-theme.css` contains dynamically rendered Prism theme CSS, based on [tailwind.config.js](tailwind.config.js)
 
-2. (11.98s) `Bundle modules` stage. Bundles the dynamically created files for each page to one JS bundle per page
+1. (11.98s) `Bundle modules` stage. Bundles the dynamically created files for each page to one JS bundle per page
 
     Rollup seemed like a good fit for this type of setup where we want absolute
     control over the build. Rollup requires quite precise configuration, the following plugins are used:
@@ -73,12 +73,14 @@ on each file change to update the site locally.
     * `json` to be able to import json file (site data)
     * `typescript`
 
-
-
-3. (9.9s) `CSS` stage. Generate distributable CSS file with PostCSS
+1. (9.9s) `CSS` stage. Generate distributable CSS file with PostCSS
 
     Tailwind is used as the main CSS framework.
 
-4. `Static files` stage. Copies everything from [public/](public/) to the root of output
+1. `Static files` stage. Copies everything from [public/](public/) to the root of output
 
-5. `Clean up` stage. Removes the temporary TS and TSX files under output directory
+1. `RSS` stage. Generates RSS feed of the content.
+
+1. `HTML` stage. Lints accessibility and minifies the HTML.
+
+1. `Lighthouse` stage. Builds a Lighthouse CI report which is deployed to https://kimmo.blog/perf. It is being ran in Netlify's slow build machine, so performance shows lower than it should.
