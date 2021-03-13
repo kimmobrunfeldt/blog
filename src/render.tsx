@@ -265,6 +265,7 @@ async function getPostData(
   const postData = {
     title: data.title,
     createdAt: data.createdAt,
+    coverImage: data.coverImage,
     slug: data.slug,
     tags: data.tags,
     description: data.description,

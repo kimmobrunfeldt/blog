@@ -5,6 +5,7 @@ export const PostMetadataSchema = Type.Object({
   slug: Type.String(),
   path: Type.String(),
   createdAt: Type.String(),
+  coverImage: Type.String(),
   tags: Type.Array(Type.String()),
   description: Type.String(),
   charCount: Type.Number(),
