@@ -249,12 +249,13 @@ async function getPostData(
   const { data, content } = await parseMdxFile(mdxFilePath);
   const plain = remark().use(stripMarkdown).processSync(content).toString();
 
+  const postPath = `/posts/${data.slug}/`;
   const renderedMdxSource = await renderMdxToString(content, {
     components: {
       ...COMPONENTS,
     },
     mdxOptions: {
-      remarkPlugins: [resolveLinks],
+      remarkPlugins: [[resolveLinks, { currentPath: postPath }]],
     },
   });
   const charCount = plain.replace(/\s+/, "").length;
@@ -267,7 +268,7 @@ async function getPostData(
     slug: data.slug,
     tags: data.tags,
     description: data.description,
-    path: `/posts/${data.slug}`,
+    path: postPath,
     charCount,
     html: renderedMdxSource.renderedOutput,
   };
