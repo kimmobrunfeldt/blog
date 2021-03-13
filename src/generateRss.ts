@@ -24,10 +24,10 @@ async function main() {
   const feed = new RSS({
     title: "kimmo.blog",
     description:
-      "This blog is about web-focused software development with a hint of design, business, and neat little things.",
+      "Blog about web-focused software development with a hint of design, business, and neat little things.",
     feed_url: "https://kimmo.blog/rss.xml",
     site_url: "https://kimmo.blog",
-    // managingEditor: "me@kimmo.blog",
+    image_url: "https://kimmo.blog/icon-square.png",
     custom_namespaces: {
       content: "http://purl.org/rss/1.0/modules/content/",
     },
@@ -41,6 +41,10 @@ async function main() {
       guid: post.path,
       categories: post.tags,
       date: post.createdAt,
+      enclosure: {
+        url: `https://kimmo.blog${post.coverImage}`,
+        type: "image/jpeg",
+      },
       custom_elements: [
         {
           "content:encoded": {
