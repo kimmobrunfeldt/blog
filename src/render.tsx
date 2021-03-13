@@ -108,6 +108,7 @@ async function getFilesForOneReactPage(
     hydrateScriptPath: "./hydrate.js",
     relativePathToRoot,
     ogTitle: pageData.title,
+    ogUrl: `https://kimmo.blog${pageData.path}`,
     ogImage: "https://kimmo.blog/icon-square.png",
     headAfter: "",
   });
@@ -202,6 +203,7 @@ async function getFilesForOneMdxPage(
     hydrateScriptPath: `./${pageHydrateName}.js`,
     relativePathToRoot,
     ogTitle: postData.title,
+    ogUrl: `https://kimmo.blog${postData.path}`,
     ogImage: `https://kimmo.blog${postData.coverImage}`,
     headAfter: `<link rel="stylesheet" href="${relativePathToRoot}prism-theme.css" />`,
   });
