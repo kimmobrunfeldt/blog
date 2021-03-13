@@ -13,6 +13,7 @@
     <meta property="og:description" content="{{{ description }}}"/>
     <meta property="og:image" content="{{{ ogImage }}}"/>
     <meta property="og:url" content="{{{ ogUrl }}}"/>
+    <link rel="alternate" type="application/rss+xml" title="RSS feed for kimmo.blog" href="/rss.xml" />
 
     <script>
       document.documentElement.classList.remove("no-js");
