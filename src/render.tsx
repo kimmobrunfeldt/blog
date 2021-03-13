@@ -109,7 +109,7 @@ async function getFilesForOneReactPage(
     relativePathToRoot,
     ogTitle: pageData.title,
     ogUrl: `https://kimmo.blog${pageData.path}`,
-    ogImage: "https://kimmo.blog/icon-square.png",
+    ogImage: "https://kimmo.blog/social-cover.png",
     headAfter: "",
   });
 
