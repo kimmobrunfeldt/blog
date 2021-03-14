@@ -8,6 +8,7 @@
     "attr-case": "off",
     "void-style": ["error", { "style": "selfclosing" }],
     "no-trailing-whitespace": "off",
-    "attribute-boolean-style": "off"
+    "attribute-boolean-style": "off",
+    "no-autoplay": "off"
   }
 }
