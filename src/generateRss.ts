@@ -42,7 +42,9 @@ async function main() {
       categories: post.tags,
       date: post.createdAt,
       enclosure: {
-        url: `https://kimmo.blog${post.coverImage}`,
+        url: post.coverImage.startsWith("http")
+          ? post.coverImage
+          : `https://kimmo.blog${post.coverImage}`,
         type: "image/jpeg",
       },
       custom_elements: [

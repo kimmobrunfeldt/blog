@@ -204,7 +204,9 @@ async function getFilesForOneMdxPage(
     relativePathToRoot,
     ogTitle: postData.title,
     ogUrl: `https://kimmo.blog${postData.path}`,
-    ogImage: `https://kimmo.blog${postData.coverImage}`,
+    ogImage: postData.coverImage.startsWith("http")
+      ? postData.coverImage
+      : `https://kimmo.blog${postData.coverImage}`,
     headAfter: `<link rel="stylesheet" href="${relativePathToRoot}prism-theme.css" />`,
   });
 

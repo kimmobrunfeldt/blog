@@ -3,6 +3,7 @@
 output
 output-rollup
 output-gz
+output-links
 
 # Logs
 logs
