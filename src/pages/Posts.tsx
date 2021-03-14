@@ -36,7 +36,7 @@ function Posts(props: Props): JSX.Element {
 export async function getData(): Promise<PageMetadata> {
   return {
     title: "Posts",
-    path: "/posts",
+    path: "/posts/",
     tags: [
       "blog",
       "tech",
