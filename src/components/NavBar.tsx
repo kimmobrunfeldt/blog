@@ -30,7 +30,7 @@ export function NavBar({
     .filter((page) => page.type === "post")
     .map((page) => page.data.path);
   const isPostActive =
-    postPaths.includes(currentPath) || currentPath === "/posts";
+    postPaths.includes(currentPath) || currentPath === "/posts/";
 
   const [stateTheme, setStateTheme] = React.useState("light");
   const [themeButtonHidden, setThemeButtonHidden] = React.useState(true);
@@ -70,7 +70,7 @@ export function NavBar({
                 }
                 color="rust"
                 underline={false}
-                href="/posts"
+                href="/posts/"
               >
                 Posts
               </Link>
