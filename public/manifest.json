@@ -1,0 +1,11 @@
+{
+  "name": "kimmo.blog",
+  "short_name": "kimmo.blog",
+  "icons": [{
+    "src": "/icon-square.png",
+    "sizes": "512x512"
+  }],
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "display": "fullscreen"
+}
