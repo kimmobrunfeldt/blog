@@ -6,7 +6,7 @@
     <link rel="icon" href="/favicon.svg"/>
     <link rel="mask-icon" href="/favicon.svg" color="#D19069"/>
     <link rel="apple-touch-icon" href="/icon-square.png"/>
-    <link rel="manifest" href="manifest.json"/>
+    <link rel="manifest" href="/manifest.json"/>
 
     <title>{{{ title }}}</title>
 
