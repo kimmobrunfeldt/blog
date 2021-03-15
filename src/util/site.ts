@@ -1,3 +1,5 @@
+import isFunction from "lodash/isFunction";
+
 function formatOrdinalNumber(integer: number): string {
   const pr = new Intl.PluralRules("en-US", {
     type: "ordinal",
@@ -96,4 +98,28 @@ export function overrideTw(base: string, extend: string): string {
   });
 
   return classes.concat(extendedClasses).join(" ");
+}
+
+export function addMediaListener(
+  query: MediaQueryList,
+  cb: (event: MediaQueryListEvent) => void
+): void {
+  if (isFunction(query.addEventListener)) {
+    query.addEventListener("change", cb);
+    return;
+  }
+
+  query.addListener(cb);
+}
+
+export function removeMediaListener(
+  query: MediaQueryList,
+  cb: (event: MediaQueryListEvent) => void
+): void {
+  if (isFunction(query.removeEventListener)) {
+    query.removeEventListener("change", cb);
+    return;
+  }
+
+  query.removeListener(cb);
 }
