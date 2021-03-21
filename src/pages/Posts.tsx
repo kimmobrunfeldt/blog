@@ -47,7 +47,7 @@ export async function getData(): Promise<PageMetadata> {
       "web development",
     ],
     description:
-      "All the latest posts. This blog is about web-focused software development with a hint of design, business, and neat little things.",
+      "All the latest posts. This blog is about web-focused software development with a hint of design, business, and tiny perfect details.",
   };
 }
 
