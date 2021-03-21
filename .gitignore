@@ -1,9 +1,8 @@
 # Custom ignores
 
 output
-output-rollup
-output-gz
-output-links
+output-tmp-rollup
+.tmp
 
 # Logs
 logs

@@ -3,8 +3,8 @@ import { promisify } from "util";
 import RSS from "rss";
 import glob from "glob";
 import { isPostPage } from "src/types/siteData";
-import { getSiteData } from "src/render";
-import { getProjectPath } from "src/util";
+import { getSiteData } from "src/generator/render";
+import { getProjectPath } from "src/generator/util";
 
 const globAsync = promisify(glob);
 
