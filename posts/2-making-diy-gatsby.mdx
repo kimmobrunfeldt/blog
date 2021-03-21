@@ -30,16 +30,16 @@ Production build with approximate times:
 
 1. (11.8s) `Render pages` stage. Generates entrypoint files for each page
 
-    * For each "regular" page under [src/pages](src/pages)
+    * For each "regular" page under [src/pages]((https://github.com/kimmobrunfeldt/blog/blob/main/src/pages)
         * `index.html` the main HTML for the page.
         * `hydrate.tsx` the script that `React.hydrate`s the given page when loaded at frontend
 
-            [src/pages/_exports.ts](src/pages/_exports.ts) has information that tells which
+            [src/pages/_exports.ts]((https://github.com/kimmobrunfeldt/blog/blob/main/src/pages/_exports.ts) has information that tells which
             React component file we should import (e.g. Index.tsx).
 
             The static parts of the page work just well without this script.
 
-    * For each MDX "post" page under [posts](posts)
+    * For each MDX "post" page under [posts]((https://github.com/kimmobrunfeldt/blog/blob/main/posts)
         * `index.html`  same as above
         * `<postName>-post-hydrate.tsx` same as above, except it imports `PostPage` component that is also generated dynamically
         * `<postName>-post.tsx` which is is responsible for hydrating the MDX content
@@ -62,7 +62,7 @@ Production build with approximate times:
         * `renderedOutput.txt` The HTML content of the MDX blog post.
 
     * `site-data.json` file that contains all metadata of the site, including pages
-    * `prism-theme.css` contains dynamically rendered Prism theme CSS, based on [tailwind.config.js](tailwind.config.js)
+    * `prism-theme.css` contains dynamically rendered Prism theme CSS, based on [tailwind.config.js]((https://github.com/kimmobrunfeldt/blog/blob/main/tailwind.config.js)
 
 1. (11.98s) `Bundle modules` stage. Bundles the dynamically created files for each page to one JS bundle per page
 
@@ -80,7 +80,7 @@ Production build with approximate times:
 
     Tailwind is used as the main CSS framework.
 
-1. `Static files` stage. Copies everything from [public/](public/) to the root of output
+1. `Static files` stage. Copies everything from [public/]((https://github.com/kimmobrunfeldt/blog/blob/main/public/) to the root of output
 
 1. `RSS` stage. Generates RSS feed of the content.
 
