@@ -8,11 +8,13 @@ import json from "@rollup/plugin-json";
 import { terser } from "rollup-plugin-terser";
 import { string } from "rollup-plugin-string";
 
-const INPUT = ["output-rollup/**/*.tsx", "output-rollup/**/*.ts"];
+// Rollup is quite specific of the directory structure
+// For example ".tmp-output-rollup" would break the typescript support
+const INPUT = ["output-tmp-rollup/**/*.tsx", "output-tmp-rollup/**/*.ts"];
 
 const plugins = [
   multiInput({
-    relative: "output-rollup/",
+    relative: "output-tmp-rollup/",
   }),
   progress(),
   replace({
@@ -60,6 +62,7 @@ export default {
       }
 
       if (depName === "react" || depName === "react-dom") {
+        // To fix error where react-dom was loaded before react
         return "node_modules/react-and-dom";
       }
 

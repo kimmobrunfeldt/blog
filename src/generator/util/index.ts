@@ -2,7 +2,7 @@ import path from "path";
 import { default as lodashTemplate } from "lodash/template";
 
 export function getProjectPath(relativePath: string): string {
-  return path.join(__dirname, "../..", relativePath);
+  return path.join(__dirname, "../../..", relativePath);
 }
 
 // Three brackets because e.g. react style attributes already have two

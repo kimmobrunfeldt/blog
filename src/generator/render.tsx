@@ -11,20 +11,20 @@ import _ from "lodash";
 import Ajv from "ajv";
 import renderMdxToString from "next-mdx-remote/render-to-string";
 import { components as mdxComponents } from "src/mdxComponents";
-import { mapSeriesAsync } from "src/util/promise";
-import { getProjectPath, renderTemplate } from "src/util/index";
+import { mapSeriesAsync } from "src/generator/util/promise";
+import { getProjectPath, renderTemplate } from "src/generator/util/index";
 import { PostLayout } from "src/components";
 import { pages as PAGES } from "src/pages/_exports";
 import * as COMPONENTS from "src/components";
-import { theme as prismTheme } from "src/prismTheme";
+import { theme as prismTheme } from "src/generator/prismTheme";
 import {
   SiteData,
   PostMetadata,
   AnyPage,
   isPostPage,
   PostMetadataSchema,
-} from "./types/siteData";
-import { resolveLinks } from "./util/remark-resolve-links";
+} from "src/types/siteData";
+import { resolveLinks } from "src/generator/util/remark-resolve-links";
 
 type PageComponent = typeof PAGES[0];
 type File = {
@@ -36,8 +36,6 @@ type SiteInput = {
   mdxFileNames: string[];
 };
 
-const readFileAsync = promisify(fs.readFile);
-const writeFileAsync = promisify(fs.writeFile);
 const globAsync = promisify(glob);
 
 const TEMPLATES = {
@@ -88,6 +86,19 @@ function getRelativePathToRoot(fileDir: string): string {
   return _.trimEnd(pathToRoot, "/");
 }
 
+//  "", "index.html" -> "index.html"
+//  "posts", "index.html" -> "posts/index.html"
+function getRelativePathFromRoot(
+  fileDir: string,
+  relativePath: string
+): string {
+  if (fileDir === "") {
+    return relativePath;
+  }
+
+  return `${fileDir}/${relativePath}`;
+}
+
 async function getFilesForOneReactPage(
   page: PageComponent,
   siteData: SiteData
@@ -95,7 +106,7 @@ async function getFilesForOneReactPage(
   const pageData = await page.getData();
 
   const fileDir = getStaticFileDir(pageData.path.toLowerCase());
-  const pageHydratePath = `${fileDir}/hydrate`;
+  const pageHydratePath = getRelativePathFromRoot(fileDir, "hydrate");
   const htmlContent = ReactDOMServer.renderToString(
     <page.Component pageData={pageData} siteData={siteData} />
   );
@@ -123,7 +134,7 @@ async function getFilesForOneReactPage(
 
   return [
     {
-      path: `${fileDir}/index.html`,
+      path: getRelativePathFromRoot(fileDir, "index.html"),
       content: html,
     },
     {
@@ -147,7 +158,7 @@ async function getFilesForReactPages(
 async function parseMdxFile(
   mdxFileName: string
 ): Promise<GrayMatterFile<string>> {
-  const mdxContent = await readFileAsync(
+  const mdxContent = await fs.promises.readFile(
     getProjectPath(`posts/${mdxFileName}`),
     {
       encoding: "utf8",
@@ -318,20 +329,27 @@ export async function getSiteData(input: SiteInput): Promise<SiteData> {
 }
 
 async function writeFiles(files: File[]): Promise<void> {
+  console.log(files);
   await mapSeriesAsync(files, async (file) => {
     const ext = path.extname(file.path);
     const isForRollup = [".tsx", ".ts", ".json", ".txt"].includes(ext);
     const absPath = isForRollup
-      ? getProjectPath(`output-rollup/${file.path}`)
+      ? getProjectPath(`output-tmp-rollup/${file.path}`)
       : getProjectPath(`output/${file.path}`);
+
     const relativeToOutput = path.relative(getProjectPath("."), absPath);
 
-    if (!_.startsWith(relativeToOutput, "output")) {
+    if (
+      !_.startsWith(relativeToOutput, "output/") &&
+      !_.startsWith(relativeToOutput, "output-tmp-rollup/")
+    ) {
       throw new Error(`File path outside output directory: ${file.path}`);
     }
 
     await fs.promises.mkdir(path.dirname(absPath), { recursive: true });
-    await writeFileAsync(relativeToOutput, file.content, { encoding: "utf8" });
+    await fs.promises.writeFile(relativeToOutput, file.content, {
+      encoding: "utf8",
+    });
   });
 }
 
@@ -374,7 +392,8 @@ async function main() {
 
 if (require.main === module) {
   main().catch((err) => {
-    console.log(err);
+    console.error(err);
+    console.error(err.stack);
     process.exit(1);
   });
 }
