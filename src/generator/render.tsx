@@ -329,7 +329,6 @@ export async function getSiteData(input: SiteInput): Promise<SiteData> {
 }
 
 async function writeFiles(files: File[]): Promise<void> {
-  console.log(files);
   await mapSeriesAsync(files, async (file) => {
     const ext = path.extname(file.path);
     const isForRollup = [".tsx", ".ts", ".json", ".txt"].includes(ext);
