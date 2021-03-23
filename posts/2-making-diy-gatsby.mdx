@@ -2,7 +2,7 @@
 title: "Making a do-it-yourself Gatsby"
 slug: "2-making-diy-gatsby"
 createdAt: "2021-03-04"
-coverImage: "/img/2/cover.png"
+coverImage: "/content-assets/2/cover.png"
 description: >
   Over-engineering can be a great learning experience. If it feels fun,
   just go for it! Casual projects can break the rules.
@@ -13,22 +13,27 @@ tags:
   - gatsby
 ---
 
-*This post focuses on the technical implementation of the site. For motivation and background, take a look at ["kimmo.blog doesn't want to know your location"](../1-kimmo-blog-doesnt-want-to-know-your-location/)*.
+Gatsby has many more features than the self-rolled site generator this blog has been built with. In any case, the custom generator works. It's been a great way to get to know [rollup](https://rollupjs.org/), React static site rendering, and [ES6 modules](https://hacks.mozilla.org/2015/08/es6-in-depth-modules/).
 
+At the beginning, I already had some ideas for the site build pipeline and developer experience:
 
-To set the correct expectations, the post title is slightly overselling. Gatsby has much more features than the self rolled site generator this blog has been built with. In any case, the generator does everything I need, and does it in "just" (TODO add link) about [500 lines of code](https://github.com/kimmobrunfeldt/blog/blob/main/src/generator/render.tsx).
-
-
-I had some ideas of the tooling:
-
-* Output is a static site directory
-* *"Unix"* build pipeline using CLI tools and file transforms
+* Output should be a static site directory
+* *Unix-style* build pipeline using CLI tools and file transforms
 * MDX support for content
-* Minimal page bundle sizes
-* No frontend routing or data fetching. New page load for each route change
-* No hot reload
+* Minimal page bundle size
+* Hot reloading is not mandatory
+* No frontend routing or data fetching
 
 
+*Let's start building the tooling.*
+
+
+![Build pipeline overview](/content-assets/2/build-pipeline-overview.svg)
+
+
+Since the tooling is custom-made, it can be opinionated in many areas. Gatsby is a general purpose tool that allows a lot of flexibility. Many areas can be customised: data sources, build pipeline, or functionality via plugins. Gatsby also needs to support async data sources such as Contentful, so it has nicely wrapped the sources behind a GraphQL API. It's a good standardised way to allow pages to access data.
+
+But in some cases solving something in a generic way, makes it less optimal for single use cases. Plugin architecture is a good example of that.
 
 ## How does the generator work?
 
