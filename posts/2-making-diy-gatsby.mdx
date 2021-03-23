@@ -1,5 +1,5 @@
 ---
-title: "Making a do-it-yourself Gatsby"
+title: "Making a do-it-yourself Gatsby*"
 slug: "2-making-diy-gatsby"
 createdAt: "2021-03-04"
 coverImage: "/content-assets/2/cover.png"
@@ -13,9 +13,21 @@ tags:
   - gatsby
 ---
 
-Gatsby has many more features than the self-rolled site generator this blog has been built with. In any case, the custom generator works. It's been a great way to get to know [rollup](https://rollupjs.org/), React static site rendering, and [ES6 modules](https://hacks.mozilla.org/2015/08/es6-in-depth-modules/).
+\* _Gatsby has many more features than the self-rolled site generator this blog has been built with._
 
-At the beginning, I already had some ideas for the site build pipeline and developer experience:
+The disclaimer out of the way, *let's start building.* I made a few tech choices early on: React, TypeScript, Tailwind, and MDX for content.
+
+![Build pipeline overview](/content-assets/2/build-pipeline-overview.svg)
+
+The high level idea is pretty straightforward: convert a bunch of source files and content to a static site directory. We ["simply"](https://www.knowledgeowl.com/home/dont-say-simply-jim-fisher) need to implement the Build pipeline box in the middle.
+
+Module bundler sounds like the next step. I looked into [Webpack](https://webpack.js.org/), [Snowpack](https://www.snowpack.dev/), [Parcel](https://parceljs.org/), [Rollup](https://rollupjs.org/), and [Babel](https://babeljs.io/). They all have a slightly different abstraction level and philosophy, but Rollup was my favorite for this task. Rollup configuration format is simple and the core is very minimal. It allows a presice control on the bundling process.
+
+More control usually equals more work. Rollup is no exception. Most tasks that Webpack and others do by default, need a plugin in Rollup. It's amazing how Webpack is able to bundle practically any dependency you might install from NPM. The dependency might expose its code with CommonJS, UMD, global export, ES6 modules, or any of the module exporting standards the community has come up with. Webpack 4 just chews it up, even if it means a large bundle size. SIDENOTE: Fortunately Webpack 5 [will make users more aware](https://webpack.js.org/blog/2020-10-10-webpack-5-release/#automatic-nodejs-polyfills-removed).
+
+Rollup configuration forces you to think about the details. If a dependency uses Node.js core library like `crypto`, do you want to polyfill it? Lower level configuration sounds tedious, but on the other hand it makes you aware of what's happening under the hood. The payoff is a smaller bundle size.
+
+After the bundler, we still need to implement the logic that brings the site pages together, that's the beef of the generator.
 
 * Output should be a static site directory
 * *Unix-style* build pipeline using CLI tools and file transforms
@@ -24,11 +36,6 @@ At the beginning, I already had some ideas for the site build pipeline and devel
 * Hot reloading is not mandatory
 * No frontend routing or data fetching
 
-
-*Let's start building the tooling.*
-
-
-![Build pipeline overview](/content-assets/2/build-pipeline-overview.svg)
 
 
 Since the tooling is custom-made, it can be opinionated in many areas. Gatsby is a general purpose tool that allows a lot of flexibility. Many areas can be customised: data sources, build pipeline, or functionality via plugins. Gatsby also needs to support async data sources such as Contentful, so it has nicely wrapped the sources behind a GraphQL API. It's a good standardised way to allow pages to access data.
@@ -111,3 +118,7 @@ Generate RSS feed of the posts using [node-rss](https://www.npmjs.com/package/rs
 ### 7. Lighthouse
 
 Build a Lighthouse CI report which is deployed to https://kimmo.blog/perf. It is being ran in Netlify's slow build machine, so performance shows lower than it should.
+
+### TODO
+
+* Add svg fonts
