@@ -15,3 +15,4 @@ export * from "./GlobalErrorBoundary";
 export * from "./ButtonLink";
 export * from "./App";
 export * from "./Video";
+export * from "./Image";
