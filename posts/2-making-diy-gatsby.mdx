@@ -1,5 +1,5 @@
 ---
-title: "Making a do-it-yourself Gatsby*"
+title: "Making a do-it-yourself Gatsby"
 slug: "2-making-diy-gatsby"
 createdAt: "2021-03-04"
 coverImage: "/content-assets/2/cover.png"
@@ -13,21 +13,17 @@ tags:
   - gatsby
 ---
 
-\* _Gatsby has many more features than the self-rolled site generator this blog has been built with._
+Let's jump straight into building the tooling. The high level idea is pretty straightforward: convert a bunch of source files and content to a static site directory.
 
-The disclaimer out of the way, *let's start building.* I made a few tech choices early on: React, TypeScript, Tailwind, and MDX for content.
+<Image alt="Build pipeline overview" src="/content-assets/2/build-pipeline-overview.svg" maxWidth="65%" />
 
-![Build pipeline overview](/content-assets/2/build-pipeline-overview.svg)
+We ["simply"](https://www.knowledgeowl.com/home/dont-say-simply-jim-fisher) need to implement the Build pipeline box in the middle.
 
-The high level idea is pretty straightforward: convert a bunch of source files and content to a static site directory. We ["simply"](https://www.knowledgeowl.com/home/dont-say-simply-jim-fisher) need to implement the Build pipeline box in the middle.
+Module bundler sounds like the next step. I looked into [Webpack](https://webpack.js.org/), [Snowpack](https://www.snowpack.dev/), [Parcel](https://parceljs.org/), [Rollup](https://rollupjs.org/), and [Babel](https://babeljs.io/). They all have a slightly different abstraction levels and philosophies, but _Rollup_ was my choice for the task. Its configuration format is simple and the core is very minimal. _Rollup_ allows presice low level control on the bundling process.
 
-Module bundler sounds like the next step. I looked into [Webpack](https://webpack.js.org/), [Snowpack](https://www.snowpack.dev/), [Parcel](https://parceljs.org/), [Rollup](https://rollupjs.org/), and [Babel](https://babeljs.io/). They all have a slightly different abstraction level and philosophy, but Rollup was my favorite for this task. Rollup configuration format is simple and the core is very minimal. It allows a presice control on the bundling process.
+More control usually equals more work. _Rollup_ is no exception. Most tasks that Webpack and other bundlers do by default, need a plugin setup in _Rollup_. The configuration forces you to think about some details. If a dependency uses _Node.js_ core library such as `crypto`, do you want to polyfill it? It sounds tedious, but on the other hand it makes you very aware of what's happening under the hood. The payoff is smaller bundle size and increased understanding of the system.
 
-More control usually equals more work. Rollup is no exception. Most tasks that Webpack and others do by default, need a plugin in Rollup. It's amazing how Webpack is able to bundle practically any dependency you might install from NPM. The dependency might expose its code with CommonJS, UMD, global export, ES6 modules, or any of the module exporting standards the community has come up with. Webpack 4 just chews it up, even if it means a large bundle size. SIDENOTE: Fortunately Webpack 5 [will make users more aware](https://webpack.js.org/blog/2020-10-10-webpack-5-release/#automatic-nodejs-polyfills-removed).
-
-Rollup configuration forces you to think about the details. If a dependency uses Node.js core library like `crypto`, do you want to polyfill it? Lower level configuration sounds tedious, but on the other hand it makes you aware of what's happening under the hood. The payoff is a smaller bundle size.
-
-After the bundler, we still need to implement the logic that brings the site pages together, that's the beef of the generator.
+The bundler solves many complicated problems for us, but we still need to implement the logic that brings the site together. We need to iterate through all React pages and MDX posts, and generate static HTML counterparts. This is often [Gulp](https://gulpjs.com/) or Webpack territory. I've always favored CLI tools over JS configuration, so I'll be using it here too.
 
 * Output should be a static site directory
 * *Unix-style* build pipeline using CLI tools and file transforms
@@ -46,8 +42,7 @@ But in some cases solving something in a generic way, makes it less optimal for 
 
 The aim was a simple build pipeline that is a bunch of CLI commands. The end result is quite simple considering the task, but lack of hot reloading makes the iteration somewhat slow (5-10s after each file change).
 
-![Build pipeline](/content-assets/2/build-pipeline.svg)
-
+<Image alt="Build pipeline" src="/content-assets/2/build-pipeline.svg" maxWidth="80%" />
 
 Production build with approximate times:
 
