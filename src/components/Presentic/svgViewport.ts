@@ -23,6 +23,11 @@ type ViewportOptionsWithoutDefaults = {
   svgClassNameOnMousedown?: string;
 };
 
+export type ViewportAnimateOptions = {
+  duration?: number;
+  easing?: string;
+};
+
 export type ViewportOptions = Partial<ViewportOptionsWithDefaults> &
   ViewportOptionsWithoutDefaults;
 
@@ -41,18 +46,31 @@ export function viewport(
     ...optsIn,
   };
 
-  console.log("in svgElement", svgElement);
   const rootGroup = svgUtil.injectRootGroup(svgElement);
-
   const { svgClassNameOnMousedown } = opts;
-  if (isString(svgClassNameOnMousedown)) {
-    svgDocument.addEventListener("pointerdown", () => {
-      svgUtil.addClass(svgElement, svgClassNameOnMousedown);
-    });
 
-    svgDocument.addEventListener("pointerup", () => {
-      svgUtil.removeClass(svgElement, svgClassNameOnMousedown);
-    });
+  function onPointerDown() {
+    // Non-null assertion because these are only called when
+    // the type is string
+    svgUtil.addClass(svgElement, svgClassNameOnMousedown!);
+  }
+
+  function onPointerUp() {
+    svgUtil.removeClass(svgElement, svgClassNameOnMousedown!);
+  }
+
+  function addListeners() {
+    svgDocument.addEventListener("pointerdown", onPointerDown);
+    svgDocument.addEventListener("pointerup", onPointerUp);
+  }
+
+  function removeListeners() {
+    svgDocument.removeEventListener("pointerdown", onPointerDown);
+    svgDocument.removeEventListener("pointerup", onPointerUp);
+  }
+
+  if (isString(svgClassNameOnMousedown)) {
+    addListeners();
   }
 
   if (opts.injectCss) {
@@ -89,10 +107,15 @@ export function viewport(
   //   rotation: 45  // optional
   // })
   // Rotation is relative to center of the viewport, in degrees
-  function animateTo(viewIn: View) {
+  function animateTo(viewIn: View, callOpts: ViewportAnimateOptions = {}) {
     const view = {
       rotation: 0,
       ...viewIn,
+    };
+
+    const animateOptions = {
+      ...opts,
+      ...callOpts,
     };
 
     if (isFunction(get(state.tweenable, "stop"))) {
@@ -103,8 +126,8 @@ export function viewport(
     state.tweenable.tween({
       from: state.tweenValues,
       to: { ...view },
-      duration: opts.duration,
-      easing: opts.easing,
+      duration: animateOptions.duration,
+      easing: animateOptions.easing,
       step: (values: View) => {
         const viewBox = [values.x, values.y, values.width, values.height];
         svgElement.setAttribute("viewBox", viewBox.join(" "));
@@ -129,5 +152,10 @@ export function viewport(
 
   return {
     animateTo,
+    destroy: () => {
+      if (isString(svgClassNameOnMousedown)) {
+        removeListeners();
+      }
+    },
   };
 }

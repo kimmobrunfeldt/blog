@@ -1,8 +1,14 @@
 import reverse from "lodash/reverse";
 import forEach from "lodash/forEach";
+import once from "lodash/once";
 import * as mathUtil from "./mathUtil";
 import * as svgUtil from "./svgUtil";
-import { viewport as svgViewport, ViewportOptions } from "./svgViewport";
+import {
+  viewport as svgViewport,
+  ViewportAnimateOptions,
+  ViewportOptions,
+} from "./svgViewport";
+import { isUndefined } from "lodash";
 
 const DEBUG = false;
 const SVG_DOCUMENT_CSS = `.presentation-slides-group > * {
@@ -21,14 +27,24 @@ const SVG_DOCUMENT_CSS = `.presentation-slides-group > * {
 }
 `;
 
-export function initPresentation(
+type PresentationOptions = {
+  initialAnimateToSlide?: number;
+  initialAnimateDuration?: number;
+};
+
+export function initialize(
   document: HTMLDocument,
   svgElement: SVGSVGElement,
-  optsIn: ViewportOptions = {}
+  optsIn: ViewportOptions & PresentationOptions = {}
 ) {
-  const opts: ViewportOptions = {
+  const {
+    initialAnimateToSlide,
+    initialAnimateDuration,
+    ...viewportOptsIn
+  } = optsIn;
+  const viewportOpts: ViewportOptions = {
     injectCss: SVG_DOCUMENT_CSS,
-    ...optsIn,
+    ...viewportOptsIn,
   };
 
   const slidesContainer = document.getElementById("Slides");
@@ -66,9 +82,35 @@ export function initPresentation(
     }
   );
 
+  function initialAnimation() {
+    if (!isUndefined(initialAnimateToSlide)) {
+      animateToSlide(initialAnimateToSlide, {
+        duration: initialAnimateDuration,
+      });
+    }
+  }
+
+  const initialAnimationOnce = once(initialAnimation);
+
+  let observer: IntersectionObserver | undefined = undefined;
+  if (!isUndefined(initialAnimateToSlide)) {
+    observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting === true) {
+          initialAnimationOnce();
+        }
+      },
+      {
+        root: document.body,
+        rootMargin: "0px 0px -60% 0px",
+        threshold: 0,
+      }
+    );
+  }
+
   const state = {
     step: 0,
-    viewport: svgViewport(document, svgElement, opts),
+    viewport: svgViewport(document, svgElement, viewportOpts),
   };
 
   function getSlideElementFromContainer(
@@ -110,11 +152,14 @@ export function initPresentation(
     return el.tagName;
   }
 
-  function animateToSlide(stepIndex: number) {
+  function animateToSlide(
+    stepIndex: number,
+    animationOptions?: ViewportAnimateOptions
+  ) {
     const nextStepIndex = getStepIndex(stepIndex);
     const nextStep = presentation[nextStepIndex];
 
-    state.viewport.animateTo(nextStep.viewportPosition);
+    state.viewport.animateTo(nextStep.viewportPosition, animationOptions);
 
     if (DEBUG) {
       const currentStep = presentation[state.step];
@@ -141,18 +186,31 @@ export function initPresentation(
     return index % presentation.length;
   }
 
-  function initKeyEvents() {
-    // TODO: Teardown event listeners!
+  function addListeners() {
     svgElement.addEventListener("click", next);
+
+    if (!isUndefined(observer)) {
+      observer.observe(svgElement);
+    }
+  }
+
+  function destroy() {
+    svgElement.removeEventListener("click", next);
+    state.viewport.destroy();
+
+    if (!isUndefined(observer)) {
+      observer.disconnect();
+    }
   }
 
   forEach(slideContainers, (e) => e.setAttribute("class", "hidden"));
-  initKeyEvents();
+  addListeners();
   animateToSlide(state.step);
 
   return {
     next,
     previous,
     animateToSlide,
+    destroy,
   };
 }
