@@ -2,7 +2,7 @@ import React from "react";
 import findIndex from "lodash/findIndex";
 import { Icon } from "@iconify/react";
 import arrowLeftOutline from "@iconify/icons-teenyicons/left-small-outline";
-import { isPostPage, PostMetadata, SiteData } from "src/types/siteData";
+import { PostMetadata, SiteData } from "src/types/siteData";
 import { Footer } from "src/components/Footer";
 import { ContentWrapper } from "src/components/ContentWrapper";
 import { H } from "src/components/H";

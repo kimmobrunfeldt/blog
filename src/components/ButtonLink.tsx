@@ -1,6 +1,6 @@
 import React from "react";
 import cn from "classnames";
-import { LinkCommonProps } from "src/components";
+import { LinkCommonProps } from "src/components/Link";
 import { overrideTw } from "src/util/site";
 
 type LinkButtonProps = {

@@ -16,3 +16,4 @@ export * from "./ButtonLink";
 export * from "./App";
 export * from "./Video";
 export * from "./Image";
+export * from "./Presentic/Presentic";

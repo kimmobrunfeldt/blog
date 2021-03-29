@@ -1,7 +1,9 @@
 import React from "react";
 
 import { levelToClass } from "src/components/H";
-import { P, Link, Prism } from "./components";
+import { P } from "src/components/P";
+import { Link } from "src/components/Link";
+import { Prism } from "src/components/Prism";
 
 // Note: more complex css is done at mdx-content.css
 export const components = {

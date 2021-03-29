@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="5600px" height="5484px" viewBox="0 0 5600 5484" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 50.2 (55047) - http://www.bohemiancoding.com/sketch -->
+    <title>test</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="test" transform="translate(4.000000, 3.000000)">
+            <g id="Layer_1" transform="translate(469.000000, 175.000000)">
+                <text id="Hello" fill="#73EFE0" font-family="Helvetica" font-size="1200" font-weight="normal">
+                    <tspan x="763.8607" y="3041.4453">Hello</tspan>
+                </text>
+                <text id="Slide-1" fill="#73EFE0" font-family="Helvetica" font-size="220" font-weight="normal">
+                    <tspan x="1922.3965" y="213.2545">Slide 1</tspan>
+                </text>
+                <text id="Slide-2" fill="#73EFE0" transform="translate(4231.170700, 941.958400) rotate(45.202572) translate(-4231.170700, -941.958400) " font-family="Helvetica" font-size="220" font-weight="normal">
+                    <tspan x="3894.67182" y="1022.95884">Slide 2</tspan>
+                </text>
+                <text id="Slide-3" fill="#73EFE0" transform="translate(4843.544086, 2668.506596) rotate(90.206402) translate(-4843.544086, -2668.506596) " font-family="Helvetica" font-size="220" font-weight="normal">
+                    <tspan x="4507.0419" y="2749.50574">Slide 3</tspan>
+                </text>
+                <circle id="Oval" stroke="#73EFE0" stroke-width="65" cx="2301.9" cy="2671.6" r="2301.2"></circle>
+            </g>
+            <g id="Slides" stroke="#73EFE0">
+                <rect id="Rectangle-path" stroke-width="6.99985131" transform="translate(5242.435743, 2846.510386) rotate(91.577021) translate(-5242.435743, -2846.510386) " x="4446.95264" y="2518.91734" width="1590.96621" height="655.186083"></rect>
+                <rect id="Rectangle-path" stroke-width="6.99995247" transform="translate(4742.352820, 1136.278440) rotate(47.553259) translate(-4742.352820, -1136.278440) " x="3946.85822" y="808.680664" width="1590.9892" height="655.195551"></rect>
+                <rect id="Rectangle-path" stroke-width="7" x="1975.4" y="0.6" width="1591" height="655.2"></rect>
+                <rect id="Rectangle-path" stroke-width="7" x="0.3" y="0.6" width="5591.4" height="5476.1"></rect>
+            </g>
+        </g>
+    </g>
+</svg>

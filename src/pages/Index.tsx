@@ -6,16 +6,14 @@ import {
   SiteData,
 } from "src/types/siteData";
 import take from "lodash/take";
-import {
-  H,
-  P,
-  NavBar,
-  Footer,
-  FloatingProfilePicture,
-  Link,
-  PostSummary,
-  ButtonLink,
-} from "src/components";
+import { H } from "src/components/H";
+import { P } from "src/components/P";
+import { NavBar } from "src/components/NavBar";
+import { Footer } from "src/components/Footer";
+import { FloatingProfilePicture } from "src/components/FloatingProfilePicture";
+import { Link } from "src/components/Link";
+import { PostSummary } from "src/components/PostSummary";
+import { ButtonLink } from "src/components/ButtonLink";
 import { ContentWrapper } from "src/components/ContentWrapper";
 import * as twGlobals from "src/twGlobals";
 

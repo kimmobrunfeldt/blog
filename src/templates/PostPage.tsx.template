@@ -4,7 +4,7 @@
 
 import React from "react";
 import hydrate from "next-mdx-remote/hydrate";
-import { PostLayout } from "src/components";
+import { PostLayout } from "src/components/PostLayout";
 import { SiteData, PostMetadata } from "src/types/siteData";
 import * as components from "src/components";
 import { components as mdxComponents } from "src/mdxComponents";
