@@ -1,6 +1,9 @@
 import React from "react";
 import { isPostPage, PageMetadata, SiteData } from "src/types/siteData";
-import { NavBar, Footer, PostSummary, ContentWrapper } from "src/components";
+import { NavBar } from "src/components/NavBar";
+import { Footer } from "src/components/Footer";
+import { PostSummary } from "src/components/PostSummary";
+import { ContentWrapper } from "src/components/ContentWrapper";
 import * as twGlobals from "src/twGlobals";
 
 type Props = {

@@ -13,7 +13,7 @@ import renderMdxToString from "next-mdx-remote/render-to-string";
 import { components as mdxComponents } from "src/mdxComponents";
 import { mapSeriesAsync } from "src/generator/util/promise";
 import { getProjectPath, renderTemplate } from "src/generator/util/index";
-import { PostLayout } from "src/components";
+import { PostLayout } from "src/components/PostLayout";
 import { pages as PAGES } from "src/pages/_exports";
 import * as COMPONENTS from "src/components";
 import { theme as prismTheme } from "src/generator/prismTheme";

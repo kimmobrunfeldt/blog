@@ -21,16 +21,16 @@ We ["simply"](https://www.knowledgeowl.com/home/dont-say-simply-jim-fisher) need
 
 Module bundler sounds like the next step. I looked into [Webpack](https://webpack.js.org/), [Snowpack](https://www.snowpack.dev/), [Parcel](https://parceljs.org/), [Rollup](https://rollupjs.org/), and [Babel](https://babeljs.io/). They all have a slightly different abstraction levels and philosophies, but _Rollup_ was my choice for the task. Its configuration format is simple and the core is very minimal. _Rollup_ allows presice low level control on the bundling process.
 
-More control usually equals more work. _Rollup_ is no exception. Most tasks that Webpack and other bundlers do by default, need a plugin setup in _Rollup_. The configuration forces you to think about some details. If a dependency uses _Node.js_ core library such as `crypto`, do you want to polyfill it? It sounds tedious, but on the other hand it makes you very aware of what's happening under the hood. The payoff is smaller bundle size and increased understanding of the system.
+More control usually equals more work. _Rollup_ is no exception. Most tasks that Webpack and other bundlers do by default, need a plugin setup in _Rollup_. The configuration forces you to think about the details. If a dependency uses _Node.js_ core library such as `crypto`, do you want to polyfill it? It sounds tedious, but on the other hand it makes you very aware of what's happening under the hood. The payoff is increased understanding of the system and most probably smaller bundle size.
 
-The bundler solves many complicated problems for us, but we still need to implement the logic that brings the site together. We need to iterate through all React pages and MDX posts, and generate static HTML counterparts. This is often [Gulp](https://gulpjs.com/) or Webpack territory. I've always favored CLI tools over JS configuration, so I'll be using it here too.
+The bundler solves many complicated problems for us, but we still need to implement the glue logic that brings the site together. We need to iterate through all React pages and MDX posts, and generate their static HTML counterparts. This is often [Gulp](https://gulpjs.com/) or Webpack territory, but I personally favor CLI tools and bash commands. For example the HTML validation is done with `find ./output/ -name '*.html' html-validate {} +`.
 
-* Output should be a static site directory
-* *Unix-style* build pipeline using CLI tools and file transforms
-* MDX support for content
-* Minimal page bundle size
-* Hot reloading is not mandatory
-* No frontend routing or data fetching
+The sweet spot for bash or Make based build pipelines is in relatively simple setups. There's less API layers to learn, but the build time tends to be slower. The standardised plugin API makes it easier for *Gulp* and other tools to cache and optimise. Maybe it could be achieved with bash scripts as well, but I have yet to see a pipeline like that.
+
+At this point we've chosen Rollup for module bundling, and [npm run scripts](https://www.keithcirkel.co.uk/how-to-use-npm-as-a-build-tool/) based build pipeline. Next we need to implement the actual "Gatsby" part.
+
+
+<Presentic src="/content-assets/2/test.svg" />
 
 
 
