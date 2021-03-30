@@ -15,6 +15,78 @@ export function injectRootGroup(svgElement: SVGSVGElement) {
   return g;
 }
 
+export function visitMatching(
+  node: SVGElement,
+  matcher: (node: SVGElement) => boolean,
+  cb: (node: SVGElement) => void
+): void {
+  if (!node.hasChildNodes()) {
+    return;
+  }
+
+  const children = Array.from(node.children) as SVGElement[];
+  children.forEach((child) => {
+    if (matcher(child)) {
+      cb(child);
+    }
+
+    visitMatching(child, matcher, cb);
+  });
+}
+
+export function findMatching(
+  node: SVGElement,
+  matcher: (node: SVGElement) => boolean
+): SVGElement[] {
+  const matches: SVGElement[] = [];
+  visitMatching(node, matcher, (node) => {
+    matches.push(node);
+  });
+  return matches;
+}
+
+export function getSlideElementFromContainer(
+  svgDoc: HTMLDocument,
+  container: SVGGraphicsElement
+): SVGGraphicsElement {
+  if (container.tagName === "rect") {
+    return container;
+  }
+
+  const children = Array.from(container.children);
+  const found = children.find(
+    (child) => getElementTagName(svgDoc, child as SVGElement) === "rect"
+  );
+  if (found) {
+    return found as SVGGraphicsElement;
+  }
+
+  console.warn("No slide element found for container: ", container);
+  console.warn(
+    "Using the container as the slide element. Presentation may behave unexpectedly."
+  );
+  return container;
+}
+
+export function getElementTagName(
+  svgDoc: HTMLDocument,
+  el: SVGElement
+): string {
+  if (el.tagName === "use") {
+    const realElemId = el.getAttributeNS(
+      "http://www.w3.org/1999/xlink",
+      "href"
+    ) as string;
+    const realElem = svgDoc.querySelector(realElemId);
+    if (!realElem) {
+      throw new Error(`Could not resolve use link: ${el}`);
+    }
+    return getElementTagName(svgDoc, realElem as SVGElement);
+  }
+
+  return el.tagName;
+}
+
 export function drawRect(
   svg: SVGSVGElement,
   x: number,

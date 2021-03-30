@@ -41,7 +41,7 @@ export class GlobalErrorBoundary extends React.Component<Props, State> {
                 (window as CustomWindow).kimmoBlogInitialContentInnerHTML || "",
             }}
           />
-          <div className="fixed bg-white px-2 py-1 top-0 right-0 flex flex-row items-center">
+          <div className="fixed bg-white dark:bg-gray-8 px-2 py-1 top-0 right-0 flex flex-row items-center">
             <span className="children:inline-block text-sm text-danger-4">
               <InlineIcon icon={bugIcon} />
             </span>

@@ -58,7 +58,7 @@
 
 .load-fadein {
   opacity: 0;
-  transition: opacity 1s;
+  transition: opacity 1s ease !important;
 }
 
 body.loaded .load-fadein,

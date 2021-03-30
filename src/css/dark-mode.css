@@ -1,3 +1,8 @@
 html.dark img, html.dark video {
   opacity: 0.8;
 }
+
+.loaded, .loaded * {
+  transition: all 500ms ease;
+  transition-property: box-shadow, background-color, border-color;
+}
