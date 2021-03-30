@@ -5,3 +5,6 @@
 * Multiple windows at once demo
 * UC Browser crash polyfill
 * Add gzipping server for perf report
+
+* images downloaded twice?
+* lodash fully loaded
