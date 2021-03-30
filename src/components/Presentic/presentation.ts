@@ -16,11 +16,9 @@ const SVG_DOCUMENT_CSS = `.presentation-slides-group > * {
   transition: all 0.3s ease;
 }
 
-/* Disabled
-.mousedown .presentation-slides-group > * {
-  fill: rgba(102, 215, 209, 0.3);
+.fade-in-out {
+  transition: opacity 0.3s ease;
 }
-*/
 
 .hidden {
   opacity: 0;
@@ -47,9 +45,9 @@ export function initialize(
     ...viewportOptsIn,
   };
 
-  const slidesContainer = document.getElementById("Slides");
+  const slidesContainer = document.getElementById("slides");
   if (!slidesContainer) {
-    throw new Error("Invalid presentation, no element with id #Slides found!");
+    throw new Error("Invalid presentation, no element with id 'slides' found!");
   }
 
   slidesContainer.setAttribute("class", "presentation-slides-group");
@@ -58,18 +56,30 @@ export function initialize(
     Array.from(slidesContainer.children)
   ) as SVGGraphicsElement[];
 
-  slideContainers.forEach((container) => svgUtil.hide(container));
   const presentation = slideContainers.map((container) => {
-    const elem = getSlideElementFromContainer(
+    const elem = svgUtil.getSlideElementFromContainer(
       document,
       container as SVGGraphicsElement
     );
     return {
       viewportPosition: svgUtil.getFinalBBox(elem),
-      container: container,
+      container,
       element: elem,
+      fadeInOut: svgUtil.findMatching(container, (node: SVGElement) =>
+        node.id.startsWith("fade-in-out")
+      ),
     };
   });
+
+  presentation.forEach((slide) => {
+    slide.fadeInOut.forEach((element) => {
+      svgUtil.addClass(element, "fade-in-out hidden");
+    });
+
+    svgUtil.addClass(slide.element, "hidden");
+  });
+
+  console.log(presentation);
 
   const rotations = presentation.map((i) => i.viewportPosition.rotation);
   forEach(
@@ -113,58 +123,26 @@ export function initialize(
     viewport: svgViewport(document, svgElement, viewportOpts),
   };
 
-  function getSlideElementFromContainer(
-    svgDoc: HTMLDocument,
-    container: SVGGraphicsElement
-  ): SVGGraphicsElement {
-    if (container.tagName === "rect") {
-      return container;
-    }
-
-    const children = Array.from(container.children);
-    const found = children.find(
-      (child) => getElementTagName(svgDoc, child as SVGElement) === "rect"
-    );
-    if (found) {
-      return found as SVGGraphicsElement;
-    }
-
-    console.warn("No slide element found for container: ", container);
-    console.warn(
-      "Using the container as the slide element. Presentation may behave unexpectedly."
-    );
-    return container;
-  }
-
-  function getElementTagName(svgDoc: HTMLDocument, el: SVGElement): string {
-    if (el.tagName === "use") {
-      const realElemId = el.getAttributeNS(
-        "http://www.w3.org/1999/xlink",
-        "href"
-      ) as string;
-      const realElem = svgDoc.querySelector(realElemId);
-      if (!realElem) {
-        throw new Error(`Could not resolve use link: ${el}`);
-      }
-      return getElementTagName(svgDoc, realElem as SVGElement);
-    }
-
-    return el.tagName;
-  }
-
   function animateToSlide(
     stepIndex: number,
     animationOptions?: ViewportAnimateOptions
   ) {
+    const currentStep = presentation[state.step];
     const nextStepIndex = getStepIndex(stepIndex);
     const nextStep = presentation[nextStepIndex];
+
+    currentStep.fadeInOut.forEach((element) => {
+      svgUtil.addClass(element, "hidden");
+    });
+    nextStep.fadeInOut.forEach((element) => {
+      svgUtil.removeClass(element, "hidden");
+    });
 
     state.viewport.animateTo(nextStep.viewportPosition, animationOptions);
 
     if (DEBUG) {
-      const currentStep = presentation[state.step];
-      currentStep.container.setAttribute("class", "hidden");
-      nextStep.container.setAttribute("class", "");
+      currentStep.element.setAttribute("class", "hidden");
+      nextStep.element.setAttribute("class", "");
     }
 
     state.step = nextStepIndex;
@@ -203,7 +181,6 @@ export function initialize(
     }
   }
 
-  forEach(slideContainers, (e) => e.setAttribute("class", "hidden"));
   addListeners();
   animateToSlide(state.step);
 

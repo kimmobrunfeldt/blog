@@ -1,8 +1,7 @@
 import React from "react";
 import isUndefined from "lodash/isUndefined";
-import SVG from "react-inlinesvg";
+import { SVG } from "./SVG";
 import { initialize } from "./presentation";
-import { ButtonLink } from "../ButtonLink";
 import { linkStyles } from "../Link";
 import { Icon } from "@iconify/react";
 import leftIcon from "@iconify/icons-teenyicons/left-circle-outline";
@@ -28,8 +27,9 @@ export function Presentic({
   const [presentation, setPresentation] = React.useState<
     ReturnType<typeof initialize> | undefined
   >(undefined);
-  const svgRef = React.useCallback((svgEl) => {
-    if (svgEl !== null) {
+  const svgRef = React.useCallback((divEl) => {
+    if (divEl !== null) {
+      const svgEl = divEl.querySelector("svg");
       if (isUndefined(width)) {
         svgEl.removeAttribute("width");
       } else {
@@ -103,7 +103,8 @@ export function Presentic({
           </button>
         </li>
       </ul>
-      <SVG innerRef={svgRef} src={src} />
+
+      <SVG ref={svgRef} src={src} />
     </div>
   );
 }
