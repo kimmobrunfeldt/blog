@@ -30,7 +30,7 @@ export function Presentic({
   duration = 800,
   width = "100%",
   maxWidth,
-  height = "autoLock",
+  height,
 }: PresenticProps) {
   const [presentation, setPresentation] = React.useState<
     ReturnType<typeof initialize> | undefined
