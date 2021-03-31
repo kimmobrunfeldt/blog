@@ -54,7 +54,7 @@
   }
 }
 
-html.dark {
+.dark {
   .ChatMessage.from-me {
     @apply text-gray-2;
 
