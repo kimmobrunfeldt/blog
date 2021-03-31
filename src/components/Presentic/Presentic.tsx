@@ -11,6 +11,8 @@ export type PresenticProps = {
   src: string;
   width: React.CSSProperties["width"];
   height: string;
+  alt: JSX.IntrinsicElements["img"]["alt"];
+  title?: JSX.IntrinsicElements["img"]["title"];
   initialAnimateToSlide?: number;
   initialAnimateDuration?: number;
   duration?: number;
@@ -19,6 +21,8 @@ export type PresenticProps = {
 
 export function Presentic({
   src,
+  alt,
+  title,
   initialAnimateToSlide,
   initialAnimateDuration = 1600,
   duration = 800,
@@ -29,9 +33,9 @@ export function Presentic({
   const [presentation, setPresentation] = React.useState<
     ReturnType<typeof initialize> | undefined
   >(undefined);
-  const svgRef = React.useCallback((divEl) => {
+  const svgRef = React.useCallback((divEl: HTMLDivElement) => {
     if (divEl !== null) {
-      const svgEl = divEl.querySelector("svg");
+      const svgEl = divEl.children[0] as SVGSVGElement;
 
       const p = initialize(document, svgEl, {
         initialAnimateToSlide,
@@ -40,13 +44,13 @@ export function Presentic({
       });
 
       const original = {
-        width: parseFloat(svgEl.getAttribute("width")),
-        height: parseFloat(svgEl.getAttribute("height")),
+        width: parseFloat(svgEl.getAttribute("width") || "1"),
+        height: parseFloat(svgEl.getAttribute("height") || "1"),
       };
       if (isUndefined(width)) {
         svgEl.removeAttribute("width");
       } else {
-        svgEl.setAttribute("width", width);
+        svgEl.setAttribute("width", String(width));
       }
 
       if (isUndefined(height)) {
@@ -56,7 +60,7 @@ export function Presentic({
           const newPxWidth = svgEl.clientWidth;
           const lockedPxHeight =
             (newPxWidth / original.width) * original.height;
-          svgEl.setAttribute("height", lockedPxHeight);
+          svgEl.setAttribute("height", `${lockedPxHeight}`);
         } else {
           svgEl.setAttribute("height", height);
         }
@@ -119,7 +123,13 @@ export function Presentic({
         </li>
       </ul>
 
-      <ImmutableSVG maxWidth={maxWidth} ref={svgRef} src={src} />
+      <ImmutableSVG
+        alt={alt}
+        title={title}
+        maxWidth={maxWidth}
+        ref={svgRef}
+        src={src}
+      />
     </div>
   );
 }

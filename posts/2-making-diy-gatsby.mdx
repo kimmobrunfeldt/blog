@@ -30,7 +30,7 @@ The sweet spot for bash or Make based build pipelines is in relatively simple se
 At this point we've chosen Rollup for module bundling, and [npm run scripts](https://www.keithcirkel.co.uk/how-to-use-npm-as-a-build-tool/) based build pipeline. Next we need to implement the actual "Gatsby" part.
 
 
-<Presentic maxWidth="65%" duration={1200} src="/content-assets/2/build-pipeline-overview.svg" initialAnimateToSlide={1} />
+<Presentic alt="Build pipeline overview presentation" maxWidth="65%" duration={1200} src="/content-assets/2/build-pipeline-overview.svg" initialAnimateToSlide={1} />
 
 
 Since the tooling is custom-made, it can be opinionated in many areas. Gatsby is a general purpose tool that allows a lot of flexibility. Many areas can be customised: data sources, build pipeline, or functionality via plugins. Gatsby also needs to support async data sources such as Contentful, so it has nicely wrapped the sources behind a GraphQL API. It's a good standardised way to allow pages to access data.

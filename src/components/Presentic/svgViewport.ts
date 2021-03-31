@@ -4,7 +4,6 @@ import forEach from "lodash/forEach";
 import get from "lodash/get";
 import Tweenable from "shifty";
 import * as svgUtil from "./svgUtil";
-import { State } from "react-inlinesvg/esm";
 
 export type View = {
   x: number;

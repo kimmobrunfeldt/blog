@@ -25,8 +25,16 @@ function setThemeClass(theme: Context["theme"]): void {
   }
 }
 
+function safeMatchesMediaQuery(query: string): boolean {
+  if (!globalThis.window) {
+    return false;
+  }
+
+  return globalThis.window.matchMedia(query).matches;
+}
+
 export const App = ({ children }: Props) => {
-  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
+  const prefersDark = safeMatchesMediaQuery("(prefers-color-scheme: dark)")
     ? ("dark" as const)
     : ("light" as const);
 

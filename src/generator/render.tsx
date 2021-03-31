@@ -25,6 +25,7 @@ import {
   PostMetadataSchema,
 } from "src/types/siteData";
 import { resolveLinks } from "src/generator/util/remark-resolve-links";
+import { Root } from "src/components/Root";
 
 type PageComponent = typeof PAGES[0];
 type File = {
@@ -108,7 +109,9 @@ async function getFilesForOneReactPage(
   const fileDir = getStaticFileDir(pageData.path.toLowerCase());
   const pageHydratePath = getRelativePathFromRoot(fileDir, "hydrate");
   const htmlContent = ReactDOMServer.renderToString(
-    <page.Component pageData={pageData} siteData={siteData} />
+    <Root>
+      <page.Component pageData={pageData} siteData={siteData} />
+    </Root>
   );
   const relativePathToRoot = `${getRelativePathToRoot(fileDir)}/`;
   const html = renderTemplate(TEMPLATES.pageHtml, {
