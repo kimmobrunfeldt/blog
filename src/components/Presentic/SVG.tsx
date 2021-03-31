@@ -11,11 +11,12 @@ async function getUrl(url: string): Promise<string> {
 
 export type SVGProps = {
   src: string;
+  maxWidth: React.CSSProperties["maxWidth"];
   errorElement?: React.ReactNode;
 };
 
 export const SVG = React.forwardRef<HTMLDivElement, SVGProps>((props, ref) => {
-  const { src, errorElement = "Error fetching SVG" } = props;
+  const { src, maxWidth, errorElement = "Error fetching SVG" } = props;
   const [svg, setSvg] = React.useState<string>();
   const [error, setError] = React.useState<Error | null>(null);
 
@@ -28,7 +29,7 @@ export const SVG = React.forwardRef<HTMLDivElement, SVGProps>((props, ref) => {
         setError(error);
       }
     })();
-  }, []);
+  }, [src]);
 
   if (error) {
     return <>{errorElement}</>;
@@ -38,5 +39,16 @@ export const SVG = React.forwardRef<HTMLDivElement, SVGProps>((props, ref) => {
     return <></>;
   }
 
-  return <div ref={ref} dangerouslySetInnerHTML={{ __html: svg }} />;
+  return (
+    <div
+      className="mx-auto"
+      style={{ maxWidth }}
+      ref={ref}
+      dangerouslySetInnerHTML={{ __html: svg }}
+    />
+  );
 });
+
+// A version of the component that never re-renders
+// Useful when SVG manipulation is done outside react
+export const ImmutableSVG = React.memo(SVG, () => true);

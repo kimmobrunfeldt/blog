@@ -31,11 +31,6 @@ module.exports = {
       "./src/**/*.ts",
       "./src/**/*.tsx",
     ],
-    // https://github.com/FullHuman/purgecss/blob/5314e41edf328e2ad2639549e1587b82a964a42e/docs/configuration.md
-    options: {
-      // for whitelisting patterns, regex or exact string
-      safelist: [],
-    },
   },
   darkMode: "class",
   theme: {
