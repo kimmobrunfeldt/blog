@@ -10,7 +10,7 @@ import rightIcon from "@iconify/icons-teenyicons/right-circle-outline";
 export type PresenticProps = {
   src: string;
   width: React.CSSProperties["width"];
-  height: React.CSSProperties["height"];
+  height: string;
   initialAnimateToSlide?: number;
   initialAnimateDuration?: number;
   duration?: number;
@@ -24,7 +24,7 @@ export function Presentic({
   duration = 800,
   width = "100%",
   maxWidth,
-  height,
+  height = "autoLock",
 }: PresenticProps) {
   const [presentation, setPresentation] = React.useState<
     ReturnType<typeof initialize> | undefined
@@ -32,6 +32,17 @@ export function Presentic({
   const svgRef = React.useCallback((divEl) => {
     if (divEl !== null) {
       const svgEl = divEl.querySelector("svg");
+
+      const p = initialize(document, svgEl, {
+        initialAnimateToSlide,
+        initialAnimateDuration,
+        duration,
+      });
+
+      const original = {
+        width: parseFloat(svgEl.getAttribute("width")),
+        height: parseFloat(svgEl.getAttribute("height")),
+      };
       if (isUndefined(width)) {
         svgEl.removeAttribute("width");
       } else {
@@ -41,14 +52,16 @@ export function Presentic({
       if (isUndefined(height)) {
         svgEl.removeAttribute("height");
       } else {
-        svgEl.setAttribute("height", height);
+        if (height === "autoLock") {
+          const newPxWidth = svgEl.clientWidth;
+          const lockedPxHeight =
+            (newPxWidth / original.width) * original.height;
+          svgEl.setAttribute("height", lockedPxHeight);
+        } else {
+          svgEl.setAttribute("height", height);
+        }
       }
 
-      const p = initialize(document, svgEl, {
-        initialAnimateToSlide,
-        initialAnimateDuration,
-        duration,
-      });
       setPresentation(p);
     }
   }, []);
