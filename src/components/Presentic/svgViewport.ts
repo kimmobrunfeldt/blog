@@ -4,6 +4,7 @@ import forEach from "lodash/forEach";
 import get from "lodash/get";
 import Tweenable from "shifty";
 import * as svgUtil from "./svgUtil";
+import { State } from "react-inlinesvg/esm";
 
 export type View = {
   x: number;
@@ -100,6 +101,37 @@ export function viewport(
     } as Required<View>,
   };
 
+  function setTo(
+    values: View & { fadeInOpacity: number; fadeOutOpacity: number },
+    animateOptions: ViewportAnimateOptions = {}
+  ): void {
+    const viewBox = [values.x, values.y, values.width, values.height];
+    svgElement.setAttribute("viewBox", viewBox.join(" "));
+
+    // The rotation origin is also moving when in each animation frame
+    // until it reaches the next slide's center
+    const rotateOrigin = {
+      x: values.x + values.width / 2,
+      y: values.y + values.height / 2,
+    };
+    const rotate = [values.rotation, rotateOrigin.x, rotateOrigin.y];
+    rootGroup.setAttribute("transform", "rotate(" + rotate.join(", ") + ")");
+
+    forEach(animateOptions.fadeInElements, (el) =>
+      el.setAttribute("opacity", String(values.fadeInOpacity))
+    );
+    forEach(animateOptions.fadeOutElements, (el) =>
+      el.setAttribute("opacity", String(values.fadeOutOpacity))
+    );
+
+    // Save tween state on each frame
+    forEach(values, (val, key) => {
+      if (key in state.tweenValues) {
+        state.tweenValues[key as keyof Required<View>] = val!;
+      }
+    });
+  }
+
   // Example:
   //
   // animateTo({
@@ -135,6 +167,7 @@ export function viewport(
     // when user reverts the animation, making opacity A to be fading out
     const fadeInOpacityKey = fadeInIsA ? "fadeAOpacity" : "fadeBOpacity";
     const fadeOutOpacityKey = fadeInIsA ? "fadeBOpacity" : "fadeAOpacity";
+
     state.tweenable = new Tweenable();
     state.tweenable.tween({
       from: { ...state.tweenValues },
@@ -142,35 +175,23 @@ export function viewport(
       duration: animateOptions.duration,
       easing: animateOptions.easing,
       step: (values: Required<View>) => {
-        const viewBox = [values.x, values.y, values.width, values.height];
-        svgElement.setAttribute("viewBox", viewBox.join(" "));
-
-        // The rotation origin is also moving when in each animation frame
-        // until it reaches the next slide's center
-        const rotateOrigin = {
-          x: values.x + values.width / 2,
-          y: values.y + values.height / 2,
+        const newValues = {
+          ...values,
+          fadeInOpacity: values[fadeInOpacityKey],
+          fadeOutOpacity: values[fadeOutOpacityKey],
         };
-        const rotate = [values.rotation, rotateOrigin.x, rotateOrigin.y];
-        rootGroup.setAttribute(
-          "transform",
-          "rotate(" + rotate.join(", ") + ")"
-        );
 
-        forEach(animateOptions.fadeInElements, (el) =>
-          el.setAttribute("opacity", String(values[fadeInOpacityKey]))
-        );
-        forEach(animateOptions.fadeOutElements, (el) =>
-          el.setAttribute("opacity", String(values[fadeOutOpacityKey]))
-        );
+        setTo(newValues, animateOptions);
 
-        // Save tween state on each frame
-        state.tweenValues = values;
+        // Save the values that are not used by setTo
+        state.tweenValues.fadeAOpacity = values.fadeAOpacity;
+        state.tweenValues.fadeBOpacity = values.fadeBOpacity;
       },
     });
   }
 
   return {
+    setTo,
     animateTo,
     destroy: () => {
       if (isString(svgClassNameOnMousedown)) {

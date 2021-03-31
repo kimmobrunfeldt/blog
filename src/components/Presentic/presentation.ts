@@ -190,7 +190,13 @@ export function initialize(
   }
 
   addListeners();
-  animateToSlide(state.step);
+  const currentStep = presentation[state.step];
+  const values = {
+    ...currentStep.viewportPosition,
+    fadeInOpacity: 1,
+    fadeOutOpacity: 0,
+  };
+  state.viewport.setTo(values);
 
   return {
     next,
