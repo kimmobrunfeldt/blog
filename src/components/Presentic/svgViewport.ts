@@ -102,7 +102,11 @@ export function viewport(
   };
 
   function setTo(
-    values: View & { fadeInOpacity: number; fadeOutOpacity: number },
+    values: View,
+    otherValues: { fadeInOpacity: number; fadeOutOpacity: number } = {
+      fadeInOpacity: 1,
+      fadeOutOpacity: 0,
+    },
     animateOptions: ViewportAnimateOptions = {}
   ): void {
     const viewBox = [values.x, values.y, values.width, values.height];
@@ -118,10 +122,10 @@ export function viewport(
     rootGroup.setAttribute("transform", "rotate(" + rotate.join(", ") + ")");
 
     forEach(animateOptions.fadeInElements, (el) =>
-      el.setAttribute("opacity", String(values.fadeInOpacity))
+      el.setAttribute("opacity", String(otherValues.fadeInOpacity))
     );
     forEach(animateOptions.fadeOutElements, (el) =>
-      el.setAttribute("opacity", String(values.fadeOutOpacity))
+      el.setAttribute("opacity", String(otherValues.fadeOutOpacity))
     );
 
     // Save tween state on each frame
@@ -175,13 +179,12 @@ export function viewport(
       duration: animateOptions.duration,
       easing: animateOptions.easing,
       step: (values: Required<View>) => {
-        const newValues = {
-          ...values,
+        const otherValues = {
           fadeInOpacity: values[fadeInOpacityKey],
           fadeOutOpacity: values[fadeOutOpacityKey],
         };
 
-        setTo(newValues, animateOptions);
+        setTo(values, otherValues, animateOptions);
 
         // Save the values that are not used by setTo
         state.tweenValues.fadeAOpacity = values.fadeAOpacity;
