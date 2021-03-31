@@ -8,7 +8,13 @@ const plugins = [
 if (process.env.NODE_ENV === "production") {
   plugins.push(
     require("cssnano")({
-      preset: "default",
+      preset: [
+        "default",
+        {
+          // To fix bug where one rule was removed from ChatDiscussion.css
+          mergeRules: false,
+        },
+      ],
     })
   );
 }
