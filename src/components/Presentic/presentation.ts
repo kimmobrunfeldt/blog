@@ -24,6 +24,7 @@ const SVG_DOCUMENT_CSS = `.presentation-slides-group > * {
 type PresentationOptions = {
   initialAnimateToSlide?: number;
   initialAnimateDuration?: number;
+  initialAnimationTriggerTop?: string;
 };
 
 export function initialize(
@@ -34,8 +35,15 @@ export function initialize(
   const {
     initialAnimateToSlide,
     initialAnimateDuration,
+    initialAnimationTriggerTop,
     ...viewportOptsIn
   } = optsIn;
+
+  const opts = {
+    initialAnimationTriggerTop: initialAnimationTriggerTop || "30%",
+    initialAnimateToSlide,
+    initialAnimateDuration,
+  };
 
   const presentationRootGroup = svgUtil.cloneSvgAndAddRootGroup(svgElement);
   presentationRootGroup.setAttribute("class", "presentation-root-group");
@@ -92,9 +100,9 @@ export function initialize(
   );
 
   function initialAnimation() {
-    if (!isUndefined(initialAnimateToSlide)) {
-      animateToSlide(initialAnimateToSlide, {
-        duration: initialAnimateDuration,
+    if (!isUndefined(opts.initialAnimateToSlide)) {
+      animateToSlide(opts.initialAnimateToSlide, {
+        duration: opts.initialAnimateDuration,
       });
     }
   }
@@ -103,6 +111,7 @@ export function initialize(
 
   let observer: IntersectionObserver | undefined = undefined;
   if (!isUndefined(initialAnimateToSlide)) {
+    const fromBottom = 100 - parseFloat(opts.initialAnimationTriggerTop);
     observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting === true) {
@@ -111,7 +120,7 @@ export function initialize(
       },
       {
         root: document.body,
-        rootMargin: "0px 0px -60% 0px",
+        rootMargin: `0px 0px -${fromBottom}% 0px`,
         threshold: 0,
       }
     );

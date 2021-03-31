@@ -15,6 +15,7 @@ export type PresenticProps = {
   title?: JSX.IntrinsicElements["img"]["title"];
   initialAnimateToSlide?: number;
   initialAnimateDuration?: number;
+  initialAnimationTriggerTop?: string;
   duration?: number;
   maxWidth?: React.CSSProperties["maxWidth"];
 };
@@ -25,6 +26,7 @@ export function Presentic({
   title,
   initialAnimateToSlide,
   initialAnimateDuration = 1600,
+  initialAnimationTriggerTop = "30%",
   duration = 800,
   width = "100%",
   maxWidth,
@@ -40,6 +42,7 @@ export function Presentic({
       const p = initialize(document, svgEl, {
         initialAnimateToSlide,
         initialAnimateDuration,
+        initialAnimationTriggerTop,
         duration,
       });
 
