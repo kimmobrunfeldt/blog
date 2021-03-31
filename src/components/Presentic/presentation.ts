@@ -70,9 +70,11 @@ export function initialize(
     };
   });
 
-  presentation.forEach((slide) => {
+  presentation.forEach((slide, slideIndex) => {
     slide.fadeInOut.forEach((element) => {
-      element.setAttribute("opacity", "0");
+      if (slideIndex !== 0) {
+        element.setAttribute("opacity", "0");
+      }
     });
 
     svgUtil.addClass(slide.element, "hidden");
@@ -134,10 +136,16 @@ export function initialize(
     const nextStep = presentation[nextStepIndex];
 
     const opts = {
-      fadeOutElements: currentStep.fadeInOut,
       fadeInElements: nextStep.fadeInOut,
       ...animationOptions,
     };
+
+    if (state.step !== nextStepIndex) {
+      // Initially when starting at 0, we don't want to fade in and out
+      // the same slide
+      opts.fadeOutElements = currentStep.fadeInOut;
+    }
+
     state.viewport.animateTo(nextStep.viewportPosition, opts);
 
     if (DEBUG) {
