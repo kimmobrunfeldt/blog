@@ -9,6 +9,7 @@
     "void-style": ["error", { "style": "selfclosing" }],
     "no-trailing-whitespace": "off",
     "attribute-boolean-style": "off",
-    "no-autoplay": "off"
+    "no-autoplay": "off",
+    "element-permitted-content": "off"
   }
 }
