@@ -16,7 +16,7 @@ const SVG_DOCUMENT_CSS = `.presentation-slides-group > * {
   transition: all 0.3s ease;
 }
 
-.hidden {
+.presentic-presentation-hidden {
   opacity: 0;
 }
 `;
@@ -77,7 +77,7 @@ export function initialize(
       }
     });
 
-    svgUtil.addClass(slide.element, "hidden");
+    svgUtil.addClass(slide.element, "presentic-presentation-hidden");
   });
 
   const rotations = presentation.map((i) => i.viewportPosition.rotation);
@@ -149,7 +149,10 @@ export function initialize(
     state.viewport.animateTo(nextStep.viewportPosition, opts);
 
     if (DEBUG) {
-      currentStep.element.setAttribute("class", "hidden");
+      currentStep.element.setAttribute(
+        "class",
+        "presentic-presentation-hidden"
+      );
       nextStep.element.setAttribute("class", "");
     }
 

@@ -11,12 +11,20 @@ async function getUrl(url: string): Promise<string> {
 
 export type SVGProps = {
   src: string;
+  alt?: JSX.IntrinsicElements["img"]["alt"];
+  title: JSX.IntrinsicElements["img"]["title"];
   maxWidth: React.CSSProperties["maxWidth"];
   errorElement?: React.ReactNode;
 };
 
 export const SVG = React.forwardRef<HTMLDivElement, SVGProps>((props, ref) => {
-  const { src, maxWidth, errorElement = "Error fetching SVG" } = props;
+  const {
+    src,
+    alt,
+    title,
+    maxWidth,
+    errorElement = "Error fetching SVG",
+  } = props;
   const [svg, setSvg] = React.useState<string>();
   const [error, setError] = React.useState<Error | null>(null);
 
@@ -31,21 +39,26 @@ export const SVG = React.forwardRef<HTMLDivElement, SVGProps>((props, ref) => {
     })();
   }, [src]);
 
+  const commonProps = {
+    style: { maxWidth },
+    className: "mx-auto",
+  };
+
   if (error) {
-    return <>{errorElement}</>;
+    return <div {...commonProps}>{errorElement}</div>;
   }
 
   if (!svg) {
-    return <></>;
+    return (
+      <div {...commonProps}>
+        <noscript>Animation requires JavaScript</noscript>
+        <img alt={alt} title={title} src={src} />
+      </div>
+    );
   }
 
   return (
-    <div
-      className="mx-auto"
-      style={{ maxWidth }}
-      ref={ref}
-      dangerouslySetInnerHTML={{ __html: svg }}
-    />
+    <div {...commonProps} ref={ref} dangerouslySetInnerHTML={{ __html: svg }} />
   );
 });
 

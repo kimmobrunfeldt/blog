@@ -25,10 +25,6 @@ export class GlobalErrorBoundary extends React.Component<Props, State> {
     console.log("React app crashed! Showing static content");
     console.log("Error info:", errorInfo);
     console.error(error);
-
-    document.body.innerHTML += `
-
-    `;
   }
 
   render() {
