@@ -1,4 +1,4 @@
-html.dark img, html.dark video {
+html.dark img, html.dark svg, html.dark video {
   opacity: 0.8;
 }
 

@@ -1,6 +1,6 @@
 import React from "react";
 import { addMediaListener, removeMediaListener } from "src/util/site";
-import { removeKey, useLocalStorage } from "src/util/storage";
+import { useLocalStorage } from "src/util/storage";
 
 type Context = {
   theme: "light" | "dark";

@@ -1,5 +1,6 @@
 import isString from "lodash/isString";
 import isFunction from "lodash/isFunction";
+import forEach from "lodash/forEach";
 import get from "lodash/get";
 import Tweenable from "shifty";
 import * as svgUtil from "./svgUtil";
@@ -10,12 +11,13 @@ export type View = {
   width: number;
   height: number;
   rotation?: number;
+  fadeAOpacity?: number;
+  fadeBOpacity?: number;
 };
 
 type ViewportOptionsWithDefaults = {
   duration: number;
   easing: string;
-  rootGroupClassName: string;
 };
 
 type ViewportOptionsWithoutDefaults = {
@@ -26,6 +28,8 @@ type ViewportOptionsWithoutDefaults = {
 export type ViewportAnimateOptions = {
   duration?: number;
   easing?: string;
+  fadeInElements?: SVGElement[];
+  fadeOutElements?: SVGElement[];
 };
 
 export type ViewportOptions = Partial<ViewportOptionsWithDefaults> &
@@ -37,16 +41,15 @@ export type ViewportOptions = Partial<ViewportOptionsWithDefaults> &
 export function viewport(
   svgDocument: HTMLDocument,
   svgElement: SVGSVGElement,
-  optsIn: ViewportOptions = {}
+  rootGroup: SVGElement,
+  optsIn = {}
 ) {
   const opts: ViewportOptionsWithDefaults & ViewportOptionsWithoutDefaults = {
     duration: 800,
     easing: "easeInOutCubic",
-    rootGroupClassName: "presentation-root-group",
     ...optsIn,
   };
 
-  const rootGroup = svgUtil.injectRootGroup(svgElement);
   const { svgClassNameOnMousedown } = opts;
 
   function onPointerDown() {
@@ -82,8 +85,6 @@ export function viewport(
     svgElement.appendChild(styleElement);
   }
 
-  rootGroup.setAttribute("class", opts.rootGroupClassName);
-
   // Internal state all methods are sharing
   const initialViewBox = svgElement.viewBox.baseVal;
   const state = {
@@ -94,7 +95,9 @@ export function viewport(
       width: initialViewBox.width,
       height: initialViewBox.height,
       rotation: 0,
-    } as View,
+      fadeAOpacity: 0,
+      fadeBOpacity: 1,
+    } as Required<View>,
   };
 
   // Example:
@@ -108,8 +111,13 @@ export function viewport(
   // })
   // Rotation is relative to center of the viewport, in degrees
   function animateTo(viewIn: View, callOpts: ViewportAnimateOptions = {}) {
-    const view = {
+    const fadeInIsA =
+      state.tweenValues.fadeAOpacity < state.tweenValues.fadeBOpacity;
+
+    const view: Required<View> = {
       rotation: 0,
+      fadeAOpacity: fadeInIsA ? 1 : 0,
+      fadeBOpacity: fadeInIsA ? 0 : 1,
       ...viewIn,
     };
 
@@ -122,13 +130,18 @@ export function viewport(
       state.tweenable.stop();
     }
 
+    // This "A" and "B" naming is chosen because if user stops an animation
+    // midway, the naming would not make sense. Opacity A might be fading in
+    // when user reverts the animation, making opacity A to be fading out
+    const fadeInOpacityKey = fadeInIsA ? "fadeAOpacity" : "fadeBOpacity";
+    const fadeOutOpacityKey = fadeInIsA ? "fadeBOpacity" : "fadeAOpacity";
     state.tweenable = new Tweenable();
     state.tweenable.tween({
-      from: state.tweenValues,
+      from: { ...state.tweenValues },
       to: { ...view },
       duration: animateOptions.duration,
       easing: animateOptions.easing,
-      step: (values: View) => {
+      step: (values: Required<View>) => {
         const viewBox = [values.x, values.y, values.width, values.height];
         svgElement.setAttribute("viewBox", viewBox.join(" "));
 
@@ -142,6 +155,13 @@ export function viewport(
         rootGroup.setAttribute(
           "transform",
           "rotate(" + rotate.join(", ") + ")"
+        );
+
+        forEach(animateOptions.fadeInElements, (el) =>
+          el.setAttribute("opacity", String(values[fadeInOpacityKey]))
+        );
+        forEach(animateOptions.fadeOutElements, (el) =>
+          el.setAttribute("opacity", String(values[fadeOutOpacityKey]))
         );
 
         // Save tween state on each frame

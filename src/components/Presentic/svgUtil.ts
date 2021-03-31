@@ -3,7 +3,7 @@ import * as mathUtil from "./mathUtil";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 
-export function injectRootGroup(svgElement: SVGSVGElement) {
+export function cloneSvgAndAddRootGroup(svgElement: SVGSVGElement) {
   const g = document.createElementNS(SVG_NS, "g");
   const children = Array.from(svgElement.children);
   children.forEach((child) => {

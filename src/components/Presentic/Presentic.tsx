@@ -1,6 +1,6 @@
 import React from "react";
 import isUndefined from "lodash/isUndefined";
-import { SVG } from "./SVG";
+import { ImmutableSVG } from "./SVG";
 import { initialize } from "./presentation";
 import { linkStyles } from "../Link";
 import { Icon } from "@iconify/react";
@@ -14,6 +14,7 @@ export type PresenticProps = {
   initialAnimateToSlide?: number;
   initialAnimateDuration?: number;
   duration?: number;
+  maxWidth?: React.CSSProperties["maxWidth"];
 };
 
 export function Presentic({
@@ -22,6 +23,7 @@ export function Presentic({
   initialAnimateDuration = 1600,
   duration = 800,
   width = "100%",
+  maxWidth,
   height,
 }: PresenticProps) {
   const [presentation, setPresentation] = React.useState<
@@ -104,7 +106,7 @@ export function Presentic({
         </li>
       </ul>
 
-      <SVG ref={svgRef} src={src} />
+      <ImmutableSVG maxWidth={maxWidth} ref={svgRef} src={src} />
     </div>
   );
 }

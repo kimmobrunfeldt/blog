@@ -16,10 +16,6 @@ const SVG_DOCUMENT_CSS = `.presentation-slides-group > * {
   transition: all 0.3s ease;
 }
 
-.fade-in-out {
-  transition: opacity 0.3s ease;
-}
-
 .hidden {
   opacity: 0;
 }
@@ -33,13 +29,17 @@ type PresentationOptions = {
 export function initialize(
   document: HTMLDocument,
   svgElement: SVGSVGElement,
-  optsIn: ViewportOptions & PresentationOptions = {}
+  optsIn: Partial<ViewportOptions> & PresentationOptions = {}
 ) {
   const {
     initialAnimateToSlide,
     initialAnimateDuration,
     ...viewportOptsIn
   } = optsIn;
+
+  const presentationRootGroup = svgUtil.cloneSvgAndAddRootGroup(svgElement);
+  presentationRootGroup.setAttribute("class", "presentation-root-group");
+
   const viewportOpts: ViewportOptions = {
     injectCss: SVG_DOCUMENT_CSS,
     ...viewportOptsIn,
@@ -49,7 +49,6 @@ export function initialize(
   if (!slidesContainer) {
     throw new Error("Invalid presentation, no element with id 'slides' found!");
   }
-
   slidesContainer.setAttribute("class", "presentation-slides-group");
   // Convert children to regular array and reverse it
   const slideContainers = reverse(
@@ -73,13 +72,11 @@ export function initialize(
 
   presentation.forEach((slide) => {
     slide.fadeInOut.forEach((element) => {
-      svgUtil.addClass(element, "fade-in-out hidden");
+      element.setAttribute("opacity", "0");
     });
 
     svgUtil.addClass(slide.element, "hidden");
   });
-
-  console.log(presentation);
 
   const rotations = presentation.map((i) => i.viewportPosition.rotation);
   forEach(
@@ -120,7 +117,12 @@ export function initialize(
 
   const state = {
     step: 0,
-    viewport: svgViewport(document, svgElement, viewportOpts),
+    viewport: svgViewport(
+      document,
+      svgElement,
+      presentationRootGroup,
+      viewportOpts
+    ),
   };
 
   function animateToSlide(
@@ -131,14 +133,12 @@ export function initialize(
     const nextStepIndex = getStepIndex(stepIndex);
     const nextStep = presentation[nextStepIndex];
 
-    currentStep.fadeInOut.forEach((element) => {
-      svgUtil.addClass(element, "hidden");
-    });
-    nextStep.fadeInOut.forEach((element) => {
-      svgUtil.removeClass(element, "hidden");
-    });
-
-    state.viewport.animateTo(nextStep.viewportPosition, animationOptions);
+    const opts = {
+      fadeOutElements: currentStep.fadeInOut,
+      fadeInElements: nextStep.fadeInOut,
+      ...animationOptions,
+    };
+    state.viewport.animateTo(nextStep.viewportPosition, opts);
 
     if (DEBUG) {
       currentStep.element.setAttribute("class", "hidden");

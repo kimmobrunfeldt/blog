@@ -1,6 +1,6 @@
 const plugins = [
   require("postcss-import"),
-  require("tailwindcss"),
+  require("@tailwindcss/jit"),
   require("postcss-nested"),
   require("autoprefixer"),
 ];

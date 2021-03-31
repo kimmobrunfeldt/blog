@@ -105,10 +105,10 @@
 <g id="fade-in-out">
 <rect id="Rectangle 22" x="337" y="1789" width="1478" height="609" stroke="#BE8D6A" stroke-width="14"/>
 </g>
-<rect id="viewport1" x="267" y="1734" width="1620" height="712" stroke="#EB3636" stroke-width="10"/>
+<rect id="viewport" x="884" y="1811" width="334" height="558" stroke="#EB3636" stroke-width="0"/>
 </g>
 <g id="slide1">
-<rect id="viewport2" x="5" y="5" width="2076" height="3222" stroke="#EB3636" stroke-width="10"/>
+<rect id="viewport_2" x="5" y="5" width="2076" height="3222" stroke="#EB3636" stroke-width="0"/>
 <g id="fade-in-out_2">
 <g id="InfoRectangle_2">
 <rect id="Rectangle 21_2" x="329.71" y="1781.61" width="1492.33" height="623.283" fill="#BE8D6A"/>
