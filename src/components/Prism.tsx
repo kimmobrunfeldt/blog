@@ -33,13 +33,22 @@ export function Prism({ children, className = "" }: PrismProps) {
     >
       {({ style, tokens, getLineProps, getTokenProps }) => (
         <code className={`language-${language}`} style={style}>
-          {tokens.map((line, i) => (
-            <div key={i} {...getLineProps({ line, key: i })}>
-              {line.map((token, key) => (
-                <span key={key} {...getTokenProps({ token, key })} />
-              ))}
-            </div>
-          ))}
+          {tokens.map((line, i) => {
+            const isLastLine = i === tokens.length - 1;
+            const isEmptyLine = line.length === 1 && line[0].empty;
+            if (isLastLine && isEmptyLine) {
+              // Remove last empty line
+              return null;
+            }
+
+            return (
+              <div key={i} {...getLineProps({ line, key: i })}>
+                {line.map((token, key) => (
+                  <span key={key} {...getTokenProps({ token, key })} />
+                ))}
+              </div>
+            );
+          })}
         </code>
       )}
     </Highlight>
