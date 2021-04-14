@@ -4,7 +4,7 @@ const twTheme = twConfig.theme;
 
 export const theme = {
   baseColor: twTheme.colors.gray[8],
-  blockBackground: twTheme.colors.gray[0],
+  blockBackground: twTheme.colors.gray[1],
   commentColor: twTheme.colors.gray[4],
   diffAddAccent: twTheme.colors.success[4],
   diffAddBackground: twTheme.colors.success[1],
@@ -23,4 +23,11 @@ export const theme = {
   selectedColor: twTheme.colors.rust[5],
   selectorColor: twTheme.colors.rust[5],
   variableColor: twTheme.colors.info[4],
+};
+
+export const darkTheme = {
+  baseColor: twTheme.colors.gray[2],
+  blockBackground: twTheme.colors.gray[7],
+  inlineCodeBackground: twTheme.colors.gray[7],
+  punctuationColor: twTheme.colors.gray[3],
 };

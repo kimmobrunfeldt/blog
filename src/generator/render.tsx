@@ -16,7 +16,10 @@ import { getProjectPath, renderTemplate } from "src/generator/util/index";
 import { PostLayout } from "src/components/PostLayout";
 import { pages as PAGES } from "src/pages/_exports";
 import * as COMPONENTS from "src/components";
-import { theme as prismTheme } from "src/generator/prismTheme";
+import {
+  theme as prismTheme,
+  darkTheme as prismDarkTheme,
+} from "src/generator/prismTheme";
 import {
   SiteData,
   PostMetadata,
@@ -26,6 +29,7 @@ import {
 } from "src/types/siteData";
 import { resolveLinks } from "src/generator/util/remark-resolve-links";
 import { Root } from "src/components/Root";
+import { trimCodeBlocks } from "./util/trim-code-blocks";
 
 type PageComponent = typeof PAGES[0];
 type File = {
@@ -384,8 +388,17 @@ async function main() {
       content: JSON.stringify({ pages: minimalPages }, null, 2),
     },
     {
-      path: "prism-theme.css",
-      content: renderTemplate(TEMPLATES.prismTheme, prismTheme),
+      path: "prism-theme.pcss",
+      content: `
+        ${renderTemplate(TEMPLATES.prismTheme, prismTheme)}
+
+        .dark {
+          ${renderTemplate(TEMPLATES.prismTheme, {
+            ...prismTheme,
+            ...prismDarkTheme,
+          })}
+        }
+      `,
     },
   ]);
 
