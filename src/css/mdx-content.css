@@ -20,7 +20,7 @@
 
 /* Block of code */
 .mdx pre > code {
-  @apply py-2 px-3 mb-paragraph block overflow-auto rounded-md text-xs;
+  @apply py-3 px-3 mb-paragraph block overflow-auto rounded-md text-xs;
 }
 
 /* Inline code */
