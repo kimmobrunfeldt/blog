@@ -75,7 +75,7 @@ function Index(props: Props): JSX.Element {
         <div className="col-span-12 sm:col-start-2 sm:col-span-10 xl:col-start-3 xl:col-span-6">
           <ContentWrapper className="pt-7">
             <div className="space-y-8">
-              {takeLatestPosts(props.siteData, 2).map((post) => (
+              {takeLatestPosts(props.siteData, 3).map((post) => (
                 <PostSummary key={post.slug} post={post} />
               ))}
             </div>
