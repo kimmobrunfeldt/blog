@@ -60,9 +60,9 @@ export const components = {
   em: (props: any) => <em className="italic" {...props} />,
   del: (props: any) => <del className="line-through" {...props} />,
   li: (props: any) => <li className={`pl-2`} {...props} />,
-  ul: (props: any) => <ul className={`pl-12 list-disc space-y-1`} {...props} />,
+  ul: (props: any) => <ul className={`pl-8 list-disc space-y-1`} {...props} />,
   ol: (props: any) => (
-    <ol className={`pl-12 list-decimal space-y-1`} {...props} />
+    <ol className={`pl-8 list-decimal space-y-1`} {...props} />
   ),
   a: (props: any) => <Link {...props} />,
   code: (props: any) => <Prism {...props} />,

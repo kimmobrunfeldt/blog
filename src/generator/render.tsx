@@ -29,7 +29,6 @@ import {
 } from "src/types/siteData";
 import { resolveLinks } from "src/generator/util/remark-resolve-links";
 import { Root } from "src/components/Root";
-import { trimCodeBlocks } from "./util/trim-code-blocks";
 
 type PageComponent = typeof PAGES[0];
 type File = {

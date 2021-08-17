@@ -1,0 +1,76 @@
+---
+title: "Writing, or coding"
+slug: "1-writing-or-coding"
+createdAt: "2021-02-27"
+coverImage: '/content-assets/1/cover.png'
+description: >
+  Do I want to write, or do I want to code?
+tags:
+  - meta
+  - blog
+  - software development
+  - content creation
+---
+
+I was setting up this blog in the beginning of 2021 and excitedly told a few developer friends about the plan. The discussion naturally revolved around blogging platforms and tech choices, until one of them asked:
+
+> Do you want to write, or do you want to code a blog?
+
+It's a great question. I wasn't sure about it, so I setup a rule for myself: write three complete posts before publishing the blog. It was a good rule, because it took almost a year to reach three blog posts. Turns out I wanted to code more than write — but only a little more. _What took so long?_
+
+There are a ton of blogging solutions out there. Medium, dev.to, WordPress, Blogger, Jekyll, Github Gists, and more. Yet this site isn't using any of them. *But why? Why not just pick one and start writing?*
+
+For years, I've gone back and forth with different blogging platforms. [Medium](https://medium.com/@kimmobrunfeldt/introduction-to-sauce-labs-3ad082fc7dd5) for a few testing related posts, [Blogger](http://scouringmacbook.blogspot.com/2012/10/setting-everything.html) for macOS configuration posts, [WordPress](https://alvarcarto.com/) for a business website, [Github repo](https://github.com/kimmobrunfeldt/howto-everything) with `.md` files, and many open-source solutions like Jekyll, Ghost, Hugo, and Hexo.
+
+_Let's talk about the hosted platforms first._
+
+<Video style={{ borderRadius: '3px' }} width="100%" preload="auto" autoPlay muted controls="controls" caption="What nobody wants">
+  <source src="/content-assets/1/1-notifications.mp4" type="video/mp4"/>
+</Video>
+
+The goal of this blog is to share my thoughts and ideally help other people. To achieve that, there's no need to track users, ask if they want to receive notifications via service workers, ask their location, their name, or anything like that. There's just the content in a minimal digital frame.
+
+Talking about content — it should be accessible, searchable, open, and permanent. Not many hosted services share these ideologies. That's completely understandable, because they have a business model to sustain.
+
+_What about open source solutions?_
+
+Self-hosted open source blogging tools looked very polished and tempting, but I had a feeling that hacking existing solutions wasn't interesting enough. The content I want to share is tightly related to code and my vision is to make the posts [interactive](https://www.joshwcomeau.com/animation/a-friendly-introduction-to-spring-physics/), [visual](http://www.r2d3.us/visual-intro-to-machine-learning-part-1/), and [understandable](https://jgthms.com/web-design-in-4-minutes/). I'm thinking:
+
+> If I start a blog, the platform shouldn't come in the way of expressing ideas.
+
+In addition to the subjective arguments and feelings, I gathered a list of other hard requirements and goals:
+
+* Custom domain
+* Permanent URLs for posts (20+ years)
+* Technically flexible for possible needs in the future: *code highlighting*, *SVG animations*, *interactive charts*, and *any custom components* that help understanding concepts
+* Content should be readable without JavaScript
+
+I wanted to write, but not _only_ write. There needed to be some coding too, to see what kind of page I can put together. DIY it was. It felt like the most interesting and fun approach. Since the posts would have dynamic components and visualisations, I chose React and [MDX](https://mdxjs.com/). They were familiar tools.
+
+If you've agreed with my decisions up until this point, that's great! However, the process of reinventing the wheel isn't over.
+
+Lately, I've been obsessed with web performance. It's starting to get normal for a website to download 15 MB of uncompressed files to display simple information. I wanted to make this site [as minimal in size as possible](/perf/) while considering the vision of interactive and dynamic content.
+
+<ChatDiscussion>
+  <ChatMessage from="them">
+    Alright, I kind of get it. Will you be using Gatsby or React Static then?
+  </ChatMessage>
+  <ChatMessage from="me">
+    Well...
+  </ChatMessage>
+</ChatDiscussion>
+
+After a lot of initial hesitation between do-it-yourself or `npm i gatsby`, I decided to `git init` and started coding a Gatsby-like static site generator. It sounded like a huge time sink but I wanted to know how minimal it can get. The benefits of a custom static site generator compared to Gatsby would be most probably microscopical, but why not? Reinventing a thing is always a good learning experience. It would also provide answers to a few questions I've been wondering.
+
+> What benefits do Gatsby or React Static have?
+> Could the page bundle be even smaller?
+>
+> How hard can it be to just renderToString and hydrate?
+
+Well it can be hard that's for sure, but I'm really happy with the result. The following posts will contain more details about the actual solution.
+
+After the blog base was coded, I realised that the content wasn't just the last 10% — it was the last 95%. The realisation killed my writing motivation for a while. But when days go by, more and more thoughts are bubbling up. Now I finally have the domain, tech stack, repository, and existing `.mdx` files craving to get some juicy content in them.
+
+<hr/>
+
+*To get an email whenever a new post is published, you can subscribe with this [Google Form](https://docs.google.com/forms/d/e/1FAIpQLSeqxCof8DcwK_DYCNyNmJfDj-bWG8tuxyEiAiuTQLdL6h4bpg/viewform?usp=sf_link). There's also an RSS feed at [kimmo.blog/rss.xml](https://kimmo.blog/rss.xml).*
