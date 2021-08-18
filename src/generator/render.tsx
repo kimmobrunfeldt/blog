@@ -284,6 +284,8 @@ async function getPostData(
     },
   });
   const charCount = plain.replace(/\s+/, "").length;
+  const wordCount = plain.trim().split(/\s+/).length;
+  const readTimeMin = Math.max(Math.round(wordCount / 150), 1);
 
   const validate = new Ajv({ strict: false }).compile(PostMetadataSchema);
 
@@ -296,6 +298,8 @@ async function getPostData(
     description: data.description,
     path: postPath,
     charCount,
+    wordCount,
+    readTimeMin,
     html: renderedMdxSource.renderedOutput,
   };
 
@@ -316,10 +320,10 @@ export async function getSiteData(input: SiteInput): Promise<SiteData> {
   const sortedPostPages: PostMetadata[] = _.orderBy(
     postPages,
     ["createdAt"],
-    ["desc"]
+    ["asc"]
   ).map((page, index) => ({
     ...page,
-    orderNumber: postPages.length - index,
+    orderNumber: index + 1,
   }));
   const allPages: AnyPage[] = _.flatten<AnyPage>([
     sortedPostPages.map((pageData) => ({

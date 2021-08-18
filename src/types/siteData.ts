@@ -9,6 +9,8 @@ export const PostMetadataSchema = Type.Object({
   tags: Type.Array(Type.String()),
   description: Type.String(),
   charCount: Type.Number(),
+  wordCount: Type.Number(),
+  readTimeMin: Type.Number(),
 });
 export type PostMetadata = Static<typeof PostMetadataSchema> & {
   // Generated dynamically
