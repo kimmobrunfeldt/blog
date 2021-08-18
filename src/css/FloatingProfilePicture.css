@@ -3,6 +3,7 @@
   height: 470px;
   margin-left: -225px;
   left: 50%;
+  transition: opacity 0.5s ease;
 }
 
 @screen sm {
@@ -63,11 +64,10 @@
   border-radius: 20px;
   transform: rotateX(62deg) rotateZ(-30deg);
   overflow: hidden;
-  transition: transform 0.6s ease;
 }
 
 .floating-profile-picture-hover-trigger:hover .floating-map-container {
-  transform: rotateX(62deg) rotateZ(-30deg) translateZ(3px);
+  /* transform: rotateX(62deg) rotateZ(-30deg) translateZ(3px); */
 }
 
 .map-location-line {
@@ -94,9 +94,11 @@
   border-radius: 99px;
   content: "";
   transform: rotateX(62deg) rotateZ(-30deg) translate(1px, 2px);
-  transition: background-color 0.6s ease, opacity 0.6s ease, transform 0.6s ease;
+  /* transition: background-color 0.6s ease, opacity 0.6s ease, transform 0.6s ease; */
   z-index: 5;
 }
+
+/* Disabled because transitions caused jarring page load
 
 .floating-profile-picture-hover-trigger:hover .map-location-dot {
   opacity: 0.4;
@@ -113,6 +115,7 @@
   transform: translateY(0px);
   opacity: 0.5;
 }
+*/
 
 .floating-map-container-layer-1 {
   @apply absolute block;
@@ -121,9 +124,12 @@
   background: #f1e3d9;
   transform: rotateX(62deg) rotateZ(-30deg) translate3d(0px, 0px, -15px);
 }
+
+/*
 .floating-profile-picture-hover-trigger:hover .floating-map-container-layer-1 {
   transform: rotateX(62deg) rotateZ(-30deg) translate3d(0px, 0px, -8px);
 }
+*/
 
 .floating-map-container img {
   max-width: initial; /* this needs to be overridden from tailwind defaults */
@@ -136,6 +142,7 @@
   transform-origin: center;
 }
 
+/*
 .floating-map-container img,
 .floating-profile-picture-hover-trigger:hover .floating-map-container img {
   transition: transform 0.6s ease;
@@ -144,6 +151,7 @@
 .floating-profile-picture-hover-trigger:hover .floating-map-container img {
   transform: translate(-50%, -50%) scale(1);
 }
+*/
 
 
 html.dark {
