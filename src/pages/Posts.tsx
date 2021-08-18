@@ -12,7 +12,7 @@ type Props = {
 };
 
 function Posts(props: Props): JSX.Element {
-  const postPages = props.siteData.pages.filter(isPostPage);
+  const postPages = props.siteData.pages.filter(isPostPage).reverse();
   return (
     <div className={`grid grid-rows-layout min-h-full ${twGlobals.gap}`}>
       <NavBar siteData={props.siteData} pageData={props.pageData} />

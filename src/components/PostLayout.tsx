@@ -67,9 +67,14 @@ export function PostLayout(props: Props): JSX.Element {
             <div className="text-gray-6 dark:text-gray-4 font-bold text">
               {formatPostDate(props.data.createdAt)}
             </div>
-            <div className="text-gray-5">
-              {kFormatter(props.data.charCount)} chars
-            </div>
+            <ul className="text-gray-5">
+              <li>{kFormatter(props.data.charCount)} chars</li>
+              <li>{props.data.wordCount} words</li>
+              <li>
+                {props.data.readTimeMin}{" "}
+                {props.data.readTimeMin > 1 ? "mins" : "min"}
+              </li>
+            </ul>
             <div className="text-gray-5 mt-4 italic text-xs">
               {props.data.tags.join(", ")}
             </div>

@@ -26,7 +26,7 @@ function takeLatestPosts(siteData: SiteData, n: number): PostMetadata[] {
   return take(
     siteData.pages.filter(isPostPage).map((p) => p.data),
     n
-  );
+  ).reverse();
 }
 
 function Index(props: Props): JSX.Element {
