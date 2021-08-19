@@ -65,7 +65,7 @@ export function PostLayout(props: Props): JSX.Element {
   const allPosts = props.siteData.pages
     .filter(isPostPage)
     .map((page) => page.data);
-  const { next } = findRelated(props.data, allPosts);
+  const { previous, next } = findRelated(props.data, allPosts);
 
   return (
     <div className={`grid grid-rows-layout min-h-full w-full ${twGlobals.gap}`}>
@@ -115,14 +115,17 @@ export function PostLayout(props: Props): JSX.Element {
           <div
             className={cls(`
               max-w-md
-              mt-24
+              mt-16
               row-start-3 col-span-12 col-start-1
               sm:col-start-2 sm:col-span-10
               lg:row-start-2 lg:col-start-4 lg:col-span-7
               xl:row-start-2 xl:col-start-5 xl:col-span-6
             `)}
           >
-            {next && <PostSummaryLink label="Next" post={next} />}
+            <div className="space-y-6">
+              {next && <PostSummaryLink label="Next" post={next} />}
+              {previous && <PostSummaryLink label="Previous" post={previous} />}
+            </div>
           </div>
         </main>
       </ContentWrapper>
