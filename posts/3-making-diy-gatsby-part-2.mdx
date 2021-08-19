@@ -12,9 +12,6 @@ tags:
   - rollup
 ---
 
-* _[Part 1: Overview of SSR](../2-making-diy-gatsby-part-1/)_
-* ⭢ _Part 2: Module bundling_
-
 Let's talk again about `hydrate-page-template.tsx`. We need to convert TypeScript source files into JS code that browsers understand. TypeScript compiler does the job in simple cases, but we want a full blown module bundler. _Why?_ Because module bundler is able to handle other tasks required to build a fast production site: minification, bundle splitting, `process.env` replacements, etc.
 
 I looked into [Webpack](https://webpack.js.org/), [Snowpack](https://www.snowpack.dev/), [Parcel](https://parceljs.org/), [Rollup](https://rollupjs.org/), and [Babel](https://babeljs.io/). They all have a slightly different abstraction levels and philosophies, but _Rollup_ was my choice for the task. Its configuration format is simple and the core is very minimal. _Rollup_ allows presice low level control on the bundling process.
