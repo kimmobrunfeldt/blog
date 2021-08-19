@@ -1,16 +1,14 @@
 import React from "react";
 import findIndex from "lodash/findIndex";
-import { Icon } from "@iconify/react";
-import arrowLeftOutline from "@iconify/icons-teenyicons/left-small-outline";
-import { PostMetadata, SiteData } from "src/types/siteData";
+import { isPostPage, PostMetadata, SiteData } from "src/types/siteData";
 import { Footer } from "src/components/Footer";
 import { ContentWrapper } from "src/components/ContentWrapper";
 import { H } from "src/components/H";
-import { Link } from "src/components/Link";
 import { NavBar } from "src/components/NavBar";
 import { kFormatter, formatPostDate } from "src/util/site";
 import { cls } from "src/util/tailwind";
 import * as twGlobals from "src/twGlobals";
+import { PostSummaryLink } from "src/components/PostSummaryLink";
 
 type PropsWithChildren = {
   children: React.ReactNode;
@@ -29,16 +27,30 @@ type Props = PropsWithChildren | PropsWithHtml;
 function findRelated(
   current: PostMetadata,
   allPosts: PostMetadata[]
-): PostMetadata {
+): {
+  next?: PostMetadata;
+  previous?: PostMetadata;
+} {
   const index = findIndex(allPosts, (post) => post.path === current.path);
   const lastIndex = allPosts.length - 1;
-  const secondLastIndex = lastIndex - 1;
-  if (index >= secondLastIndex) {
-    const relatedIndex = Math.max(index - 1, 0);
-    return allPosts[relatedIndex];
+  if (index >= lastIndex) {
+    return {
+      next: undefined,
+      previous: allPosts[index - 1],
+    };
   }
 
-  return allPosts[index + 1];
+  if (index === 0) {
+    return {
+      next: allPosts[index + 1],
+      previous: undefined,
+    };
+  }
+
+  return {
+    next: allPosts[index + 1],
+    previous: allPosts[index - 1],
+  };
 }
 
 export function PostLayout(props: Props): JSX.Element {
@@ -49,6 +61,11 @@ export function PostLayout(props: Props): JSX.Element {
     lg:row-start-1 lg:col-start-4 lg:col-span-7
     xl:row-start-1 xl:col-start-5 xl:col-span-6
   `);
+
+  const allPosts = props.siteData.pages
+    .filter(isPostPage)
+    .map((page) => page.data);
+  const { next } = findRelated(props.data, allPosts);
 
   return (
     <div className={`grid grid-rows-layout min-h-full w-full ${twGlobals.gap}`}>
@@ -68,11 +85,13 @@ export function PostLayout(props: Props): JSX.Element {
               {formatPostDate(props.data.createdAt)}
             </div>
             <ul className="text-gray-5">
-              <li>{kFormatter(props.data.charCount)} chars</li>
-              <li>{props.data.wordCount} words</li>
               <li>
                 {props.data.readTimeMin}{" "}
                 {props.data.readTimeMin > 1 ? "mins" : "min"}
+              </li>
+              <li>
+                {props.data.wordCount} words, {kFormatter(props.data.charCount)}{" "}
+                chars
               </li>
             </ul>
             <div className="text-gray-5 mt-4 italic text-xs">
@@ -95,16 +114,15 @@ export function PostLayout(props: Props): JSX.Element {
 
           <div
             className={cls(`
-              row-start-3 col-start-1 col-span-12
+              max-w-md
+              mt-24
+              row-start-3 col-span-12 col-start-1
               sm:col-start-2 sm:col-span-10
-              lg:row-start-2 lg:col-start-4 lg:col-span-5
-              xl:row-start-2 xl:col-start-5 xl:col-span-4
+              lg:row-start-2 lg:col-start-4 lg:col-span-7
+              xl:row-start-2 xl:col-start-5 xl:col-span-6
             `)}
           >
-            <Link className="inline-block pt-5" href="/posts">
-              <Icon className="inline-block" icon={arrowLeftOutline} /> Back to
-              all posts
-            </Link>
+            {next && <PostSummaryLink label="Next" post={next} />}
           </div>
         </main>
       </ContentWrapper>

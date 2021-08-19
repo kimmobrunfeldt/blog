@@ -6,7 +6,7 @@ import { Link } from "src/components/Link";
 import { H } from "src/components/H";
 import { Chip } from "src/components/Chip";
 import { PostMetadata } from "src/types/siteData";
-import { kFormatter, formatPostDate } from "src/util/site";
+import { formatPostDate } from "src/util/site";
 import { cls } from "src/util/tailwind";
 
 export type PostSummaryProps = {
@@ -65,10 +65,10 @@ export function PostSummary({ post }: PostSummaryProps) {
 
           <div
             className={cls(`
-              text-xs text-gray-5 mb-5 children:min-w-0
-              flex flex-col space-y-2
-              sm:space-y-0 sm:flex-row sm:items-center sm:space-x-2
-            `)}
+                text-xs text-gray-5 mb-5 children:min-w-0
+                flex flex-col space-y-2
+                sm:space-y-0 sm:flex-row sm:items-center sm:space-x-2
+              `)}
           >
             <div className="space-x-2 sm:flex sm:flex-row children:min-w-0">
               <time dateTime={post.createdAt} className="whitespace-nowrap">
@@ -76,7 +76,7 @@ export function PostSummary({ post }: PostSummaryProps) {
               </time>
               <span aria-hidden>&middot;</span>
               <span className="whitespace-nowrap">
-                {kFormatter(post.charCount)} chars
+                {post.readTimeMin} {post.readTimeMin > 1 ? "mins" : "min"}
               </span>
             </div>
             <span aria-hidden className="hidden sm:inline-block">
