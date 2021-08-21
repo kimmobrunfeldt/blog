@@ -4,7 +4,7 @@ slug: "1-writing-or-coding"
 createdAt: "2021-02-27"
 coverImage: '/content-assets/1/cover.png'
 description: >
-  Do I want to write content, or do I want to code?
+  Do I want to write content, or do I want to code a blog?
 tags:
   - meta
   - blog
@@ -19,11 +19,9 @@ I was setting up this blog in the beginning of 2021 and excitedly told a few dev
   </ChatMessage>
 </ChatDiscussion>
 
-I wasn't sure about it, so I setup a rule for myself: write three complete posts before publishing the blog. It was a good decision, because it took almost a year to reach three blog posts. _So, what took so long?_
+It's a great question. I wasn't sure about it, so I setup a rule for myself: write three complete posts before publishing the blog. It was a good decision, because it took almost a year to reach three blog posts. _So, what took so long?_
 
-Turns out I wanted to code more — but only a little more. Implementing the site from scratch felt like a necessary fuel for my writing inspiration. I'll try to explain.
-
-There are a ton of blogging solutions out there. Medium, dev.to, WordPress, Blogger, Jekyll, Github Gists, and more. This site isn't using any of them. *But why? Why not just pick one and start writing?*
+Turns out I wanted to code a blog site — but also write content. This blog is the definition of over-engineering, considering the goal was to write. But it's not that simple. Even though I had a measurable goal, a side project shouldn't feel like work either. For me, implementing the site from scratch felt like a necessary fuel for my writing inspiration. I'll try to explain.
 
 For years, I've gone back and forth with different blogging platforms. [Medium](https://medium.com/@kimmobrunfeldt/introduction-to-sauce-labs-3ad082fc7dd5) for a few testing related posts, [Blogger](http://scouringmacbook.blogspot.com/2012/10/setting-everything.html) for macOS configuration posts, [WordPress](https://alvarcarto.com/) for a business website, [Github repo](https://github.com/kimmobrunfeldt/howto-everything) with `.md` files, and many open-source solutions like Jekyll, Ghost, Hugo, and Hexo.
 
@@ -33,7 +31,7 @@ _Let's talk about the hosted platforms first._
   <source src="/content-assets/1/1-notifications.mp4" type="video/mp4"/>
 </Video>
 
-The goal of this blog is to share my thoughts and ideally help other people. To achieve that, there's no need to track users, ask if they want to receive notifications via service workers, ask their location, their name, or anything like that. There's just the content in a minimal digital frame.
+The goal of this blog is to share my thoughts and ideally help other people. To achieve that, there's no need to track users, ask if they want to receive notifications via service workers, ask their location, or anything like that. There's just the content in a minimal digital frame.
 
 Talking about content — it should be accessible, searchable, open, and permanent. Not many hosted services share these ideologies. That's completely understandable, because they have a business model to sustain.
 
@@ -43,14 +41,14 @@ Self-hosted open source blogging tools looked very polished and tempting, but I 
 
 > If I start a blog, the platform shouldn't come in the way of expressing ideas.
 
-In addition to the subjective arguments and feelings, I gathered a list of other hard requirements and goals:
+In addition to the subjective arguments and feelings, I gathered a list of other requirements:
 
 * Custom domain
-* Permanent URLs for posts (20+ years)
-* Technically flexible for possible needs in the future: *code highlighting*, *SVG animations*, *interactive charts*, and *any custom components* that help understanding concepts
+* Permanent URLs for posts (10+ years)
+* Technically flexible for possible crazy ideas in the future: *code highlighting*, *SVG animations*, *interactive charts*, and *any custom components* that help understanding concepts
 * Content should be readable without JavaScript
 
-I wanted to write, but not _only_ write. There needed to be some coding too, to see what kind of page I can put together. So DIY it was. It felt like the most interesting and fun approach. Since the posts would have dynamic components and visualisations, I chose React and [MDX](https://mdxjs.com/). They were familiar tools.
+I wanted to write, but also see what kind of page I can put together. So DIY it was. It felt like the most interesting and fun approach. Since the posts would have dynamic components and visualisations, I chose React and [MDX](https://mdxjs.com/). They were familiar tools.
 
 If you've agreed with my decisions until this point, that's nice! However, reinventing the wheel is only about to start.
 
@@ -76,7 +74,3 @@ After a lot of initial hesitation between do-it-yourself or `npm i gatsby`, I de
 Well it can be hard that's for sure, but I'm really happy with the journey. The following posts will contain more details about the actual solution.
 
 After the blog base was coded, I realised that the content wasn't just the last 10% — it was the last 95%. The realisation killed my writing motivation for a while. But when days go by, more and more thoughts are bubbling up. Now I finally have the domain, tech stack, repository, and existing `.mdx` files craving to get some juicy content in them.
-
-<hr/>
-
-*To get an email whenever a new post is published, you can subscribe with this [Google Form](https://docs.google.com/forms/d/e/1FAIpQLSeqxCof8DcwK_DYCNyNmJfDj-bWG8tuxyEiAiuTQLdL6h4bpg/viewform?usp=sf_link). There's also an RSS feed at [kimmo.blog/rss.xml](https://kimmo.blog/rss.xml).*
