@@ -1,6 +1,8 @@
 import React from "react";
+import { ParallaxProvider, useController } from "react-scroll-parallax";
 import { addMediaListener, removeMediaListener } from "src/util/site";
 import { useLocalStorage } from "src/util/storage";
+import _ from "lodash";
 
 type Context = {
   theme: "light" | "dark";
@@ -63,9 +65,43 @@ export const App = ({ children }: Props) => {
     };
   }, []);
 
+  const scrollContainer = globalThis.window
+    ? document.querySelector("#react-root")
+    : undefined;
+
   return (
-    <AppContext.Provider value={{ theme, setTheme: setLocalStorageTheme }}>
-      {children}
-    </AppContext.Provider>
+    <ParallaxProvider scrollContainer={scrollContainer}>
+      <ParallaxCacheUpdater />
+      <AppContext.Provider value={{ theme, setTheme: setLocalStorageTheme }}>
+        {children}
+      </AppContext.Provider>
+    </ParallaxProvider>
   );
+};
+
+const ParallaxCacheUpdater = () => {
+  if (!globalThis.window) {
+    return null;
+  }
+
+  const { parallaxController } = useController();
+
+  React.useLayoutEffect(() => {
+    const handler = _.debounce(() => {
+      window.requestAnimationFrame(() => {
+        parallaxController.update();
+      });
+    }, 30);
+    window.addEventListener("load", handler);
+
+    const resizeObserver = new ResizeObserver(handler);
+    resizeObserver.observe(document.body);
+
+    return () => {
+      window.removeEventListener("load", handler);
+      resizeObserver.unobserve(document.body);
+    };
+  }, [parallaxController]);
+
+  return null;
 };
