@@ -3,6 +3,7 @@ import fs from "fs";
 import { promisify } from "util";
 import React from "react";
 import remark from "remark";
+import remarkAbbr from "remark-abbr";
 import stripMarkdown from "strip-markdown";
 import ReactDOMServer from "react-dom/server";
 import glob from "glob";
@@ -192,7 +193,7 @@ async function getFilesForOneMdxPage(
       ...mdxComponents,
     },
     mdxOptions: {
-      remarkPlugins: [],
+      remarkPlugins: [[remarkAbbr, {}]],
     },
   });
   const relativePathToRoot = "../../";
@@ -282,7 +283,10 @@ async function getPostData(
       ...COMPONENTS,
     },
     mdxOptions: {
-      remarkPlugins: [[resolveLinks, { currentPath: postPath }]],
+      remarkPlugins: [
+        [remarkAbbr, {}],
+        [resolveLinks, { currentPath: postPath }],
+      ],
     },
   });
   const charCount = plain.replace(/\s+/, "").length;

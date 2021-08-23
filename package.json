@@ -56,6 +56,7 @@
     "@types/node": "^14.14.27",
     "@types/react": "^17.0.2",
     "@types/react-dom": "^17.0.1",
+    "@types/remark-abbr": "^1.4.1",
     "@types/rss": "^0.0.28",
     "@typescript-eslint/eslint-plugin": "^4.15.0",
     "@typescript-eslint/parser": "^4.15.0",
@@ -120,6 +121,7 @@
     "react-hot-toast": "^2.1.0",
     "react-inlinesvg": "^2.2.2",
     "react-intersection-observer": "^8.32.0",
+    "remark-abbr": "^1.4.1",
     "shifty": "^1.5.4"
   }
 }
