@@ -1,5 +1,7 @@
+import cn from "classnames";
 import React from "react";
 import { useInView } from "react-intersection-observer";
+import { AppContext } from "src/components/App";
 
 export type EnvelopeLetterProps = {
   activeLetter: number;
@@ -18,6 +20,14 @@ export const EnvelopeLetter = ({
     triggerOnce: true,
   });
 
+  const context = React.useContext(AppContext);
+  const [stateTheme, setStateTheme] = React.useState("light");
+  const [hidden, setHidden] = React.useState(true);
+  React.useEffect(() => {
+    setHidden(false);
+    setStateTheme(context.theme);
+  }, [context.theme]);
+
   return (
     <div
       ref={ref}
@@ -27,23 +37,28 @@ export const EnvelopeLetter = ({
     >
       <div className="relative w-full max-w-xs text-sm sm:max-w-[490px] lg:text-base lg:max-w-[560px] mx-auto">
         <img
-          className="absolute w-full left-0 top-[-48%]"
+          className={cn(
+            "absolute w-full left-0 top-[-48%] keep-opacity",
+            `transition-opacity duration-500 ${
+              hidden ? "opacity-0" : "opacity-100"
+            }`
+          )}
           alt=""
-          src="/envelope-back.svg"
+          src={`/envelope-back-${stateTheme}.svg`}
         />
         {React.Children.map(children, (child, index) => {
           return (
             <div
               className={`${
                 index === activeLetter ? "letter-active" : ""
-              } absolute letter-container h-[130%] sm:h-full bg-white`}
+              } absolute letter-container h-[130%] sm:h-full dark:bg-gray-9 bg-white`}
               style={{
                 left: "5px",
                 width: "calc(100% - 10px)",
               }}
             >
               <div
-                className="absolute bg-white rounded-sm"
+                className="absolute bg-white dark:bg-gray-9 rounded-sm"
                 style={{
                   top: "16px",
                   right: "20px",
@@ -58,10 +73,15 @@ export const EnvelopeLetter = ({
         })}
 
         <img
-          className="relative w-full pointer-events-none"
+          className={cn(
+            "relative w-full pointer-events-none keep-opacity",
+            `transition-opacity duration-500 ${
+              hidden ? "opacity-0" : "opacity-100"
+            }`
+          )}
           style={{ top: 0, left: 0 }}
           alt=""
-          src="/envelope-front.svg"
+          src={`/envelope-front-${stateTheme}.svg`}
         />
       </div>
     </div>

@@ -51,7 +51,8 @@ export const Subscribe = ({ onSubscribe }: SubscribeProps) => {
           className={cn(
             inputCls,
             "py-1 px-2 sm:py-2 sm:px-3 appearance-none border border-gray-4",
-            "focus:border-rust-5 rounded w-full text-gray-5 focus:outline-none"
+            "focus:border-rust-5 rounded w-full text-gray-5 dark:text-gray-3 focus:outline-none",
+            "dark:bg-gray-8"
           )}
           id="email"
           type="email"

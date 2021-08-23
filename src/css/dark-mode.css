@@ -1,4 +1,4 @@
-html.dark img, html.dark svg, html.dark video {
+html.dark img:not(.keep-opacity), html.dark svg:not(.keep-opacity), html.dark video:not(.keep-opacity) {
   opacity: 0.8;
 }
 
