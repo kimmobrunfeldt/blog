@@ -16,6 +16,7 @@ import { PostSummary } from "src/components/PostSummary";
 import { ButtonLink } from "src/components/ButtonLink";
 import { ContentWrapper } from "src/components/ContentWrapper";
 import * as twGlobals from "src/twGlobals";
+import { SubscribeEnvelope } from "src/components/SubscribeEnvelope";
 
 type Props = {
   siteData: SiteData;
@@ -85,6 +86,10 @@ function Index(props: Props): JSX.Element {
           </ContentWrapper>
         </div>
       </main>
+
+      <ContentWrapper>
+        <SubscribeEnvelope />
+      </ContentWrapper>
 
       <Footer />
     </div>

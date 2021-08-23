@@ -55,7 +55,7 @@
 
     <div class="h-full w-full overflow-x-hidden" id="react-root">{{{ htmlContent }}}</div>
 
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=Intl%2CrequestIdleCallback"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=Intl%2CrequestIdleCallback%2CURLSearchParams%2CURL%2CPromise"></script>
     <script type="module" src="{{{ hydrateScriptPath }}}"></script>
   </body>
 </html>

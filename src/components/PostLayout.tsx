@@ -9,6 +9,7 @@ import { kFormatter, formatPostDate } from "src/util/site";
 import { cls } from "src/util/tailwind";
 import * as twGlobals from "src/twGlobals";
 import { PostSummaryLink } from "src/components/PostSummaryLink";
+import { SubscribeEnvelope } from "./SubscribeEnvelope";
 
 type PropsWithChildren = {
   children: React.ReactNode;
@@ -128,6 +129,8 @@ export function PostLayout(props: Props): JSX.Element {
             </div>
           </div>
         </main>
+
+        <SubscribeEnvelope />
       </ContentWrapper>
       <Footer />
     </div>

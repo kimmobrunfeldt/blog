@@ -206,11 +206,13 @@ async function getFilesForOneMdxPage(
 
   const pageHydrateName = `${postName}-post-hydrate`;
   const htmlContent = ReactDOMServer.renderToString(
-    <PostLayout
-      siteData={siteData}
-      data={postData}
-      html={renderedMdxSource.renderedOutput}
-    />
+    <Root>
+      <PostLayout
+        siteData={siteData}
+        data={postData}
+        html={renderedMdxSource.renderedOutput}
+      />
+    </Root>
   );
   const html = renderTemplate(TEMPLATES.pageHtml, {
     title: getTitle(postData.title),

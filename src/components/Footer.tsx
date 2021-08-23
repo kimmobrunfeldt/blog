@@ -13,7 +13,7 @@ export function Footer({ className = "", ...otherProps }: FooterProps) {
   return (
     <footer
       {...otherProps}
-      className={`py-10 mt-20 font-bold text-sm ${className}`}
+      className={`py-8 mb-20 font-bold text-sm ${className}`}
     >
       <div className="-ml-4 flex justify-center items-center space-x-4">
         <a
@@ -32,43 +32,36 @@ export function Footer({ className = "", ...otherProps }: FooterProps) {
           <Icon icon={codeIcon} />
         </span>
 
-        <Link
+        <ul
           style={{ top: "1px" }}
-          className="relative text-xs underline-effect underline-effect-w-half"
-          underline={false}
-          color="rust"
-          href="https://docs.google.com/forms/d/e/1FAIpQLSeqxCof8DcwK_DYCNyNmJfDj-bWG8tuxyEiAiuTQLdL6h4bpg/viewform?usp=sf_link"
+          className="relative flex flex-row justify-center items-center space-x-1"
         >
-          Subscribe
-        </Link>
+          <li>
+            <Link
+              color="rust"
+              underline={false}
+              className="underline-effect underline-effect-w-half"
+              title="Github"
+              aria-label="Github profile"
+              href="https://github.com/kimmobrunfeldt"
+            >
+              <Icon className="box-content p-2" icon={githubOutline} />
+            </Link>
+          </li>
+          <li>
+            <Link
+              color="rust"
+              underline={false}
+              className="underline-effect underline-effect-w-half"
+              title="Twitter"
+              aria-label="Twitter profile"
+              href="https://twitter.com/kimmobrunfeldt"
+            >
+              <Icon className="box-content p-2" icon={twitterOutline} />
+            </Link>
+          </li>
+        </ul>
       </div>
-
-      <ul className="mt-4 flex flex-row justify-center items-center space-x-1">
-        <li>
-          <Link
-            color="rust"
-            underline={false}
-            className="underline-effect underline-effect-w-half"
-            title="Github"
-            aria-label="Github profile"
-            href="https://github.com/kimmobrunfeldt"
-          >
-            <Icon className="box-content p-2" icon={githubOutline} />
-          </Link>
-        </li>
-        <li>
-          <Link
-            color="rust"
-            underline={false}
-            className="underline-effect underline-effect-w-half"
-            title="Twitter"
-            aria-label="Twitter profile"
-            href="https://twitter.com/kimmobrunfeldt"
-          >
-            <Icon className="box-content p-2" icon={twitterOutline} />
-          </Link>
-        </li>
-      </ul>
     </footer>
   );
 }

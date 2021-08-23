@@ -1,6 +1,7 @@
 import React from "react";
 import { addMediaListener, removeMediaListener } from "src/util/site";
 import { useLocalStorage } from "src/util/storage";
+import { Toaster } from "react-hot-toast";
 
 type Context = {
   theme: "light" | "dark";
@@ -65,6 +66,7 @@ export const App = ({ children }: Props) => {
 
   return (
     <AppContext.Provider value={{ theme, setTheme: setLocalStorageTheme }}>
+      <Toaster />
       {children}
     </AppContext.Provider>
   );

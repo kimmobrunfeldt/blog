@@ -1,0 +1,31 @@
+@keyframes toast-enter {
+  0% {
+    transform: translate3d(0, -15px, 0) scale(.6);
+    opacity: 0.5;
+  }
+
+  100% {
+    transform: translate3d(0, 0px, 0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes toast-leave {
+  0% {
+    transform: translate3d(0, 0px, 0) scale(1);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translate3d(0, -15px, -10px) scale(0.5);
+    opacity: 0;
+  }
+}
+
+.toast-enter {
+  animation: toast-enter 0.25s cubic-bezier(.21, 1.02, .73, 1) forwards;
+}
+
+.toast-leave {
+  animation: toast-leave 0.4s cubic-bezier(.06, .71, .55, 1) forwards;
+}
