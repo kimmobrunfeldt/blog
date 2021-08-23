@@ -127,12 +127,15 @@ async function subscribe(fields: Record<FormFieldName, string>) {
   const keys = Object.keys(fields) as FormFieldName[];
   keys.forEach((key) => u.searchParams.set(key, fields[key]));
 
-  await new Promise((resolve) => {
-    setTimeout(resolve, 1000);
-  });
-  return {
-    result: "success",
-  };
+  if (process.env.NODE_ENV !== "production") {
+    await new Promise((resolve) => {
+      setTimeout(resolve, 1000);
+    });
+    toast.info("Showing a fake thank you");
+    return {
+      result: "success",
+    };
+  }
 
   const data = await fetchJsonp(u.toString(), {
     jsonpCallback: "c",
