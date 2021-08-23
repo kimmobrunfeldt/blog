@@ -33,6 +33,9 @@ const plugins = [
   json(),
   typescript({
     tsconfig: "tsconfig.json",
+    sourceMap: process.env.NODE_ENV !== "production",
+    inlineSources: process.env.NODE_ENV !== "production",
+    inlineSourceMap: process.env.NODE_ENV !== "production",
   }),
 ];
 
@@ -50,6 +53,7 @@ export default {
     dir: "output",
     format: "esm",
     chunkFileNames: "[name].js",
+    sourcemap: "inline",
   },
   manualChunks(id) {
     if (id.includes("node_modules/")) {
