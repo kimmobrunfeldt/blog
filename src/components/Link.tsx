@@ -4,7 +4,7 @@ import { overrideTw } from "src/util/site";
 
 type LinkAdditionalProps = {
   underline?: boolean;
-  color?: "default" | "amber" | "rust";
+  color?: "default" | "amber" | "rust" | "none";
 };
 export type LinkCommonProps = JSX.IntrinsicElements["a"] & {
   children?: React.ReactNode;
@@ -19,6 +19,7 @@ export const linkStyles = {
     "text-amber-6 hover:text-amber-5 active:text-amber-7 dark:text-amber-5 dark:active:text-amber-4",
   rust:
     "text-rust-6 hover:text-rust-5 active:text-rust-7 dark:text-rust-6 dark:active:text-rust-5",
+  none: "underline",
 };
 
 export function Link({

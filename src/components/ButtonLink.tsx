@@ -17,6 +17,8 @@ export const buttonStyles = {
     py-2 px-4
     border border-rust-5
     rounded
+    focus:outline-none
+    active:outline-none
     dark:text-rust-6 dark:active:text-rust-6
     dark:border-rust-6
   `,

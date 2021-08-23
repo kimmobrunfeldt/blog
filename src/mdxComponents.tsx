@@ -64,7 +64,7 @@ export const components = {
   ol: (props: any) => (
     <ol className={`pl-8 list-decimal space-y-1`} {...props} />
   ),
-  a: (props: any) => <Link {...props} />,
+  a: (props: any) => <Link {...props} color="none" />,
   code: (props: any) => <Prism {...props} />,
   img: (props: any) => <img {...props} />,
   hr: (props: any) => (
