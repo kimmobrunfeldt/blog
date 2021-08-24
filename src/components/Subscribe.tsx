@@ -41,7 +41,16 @@ export const Subscribe = ({ onSubscribe }: SubscribeProps) => {
     ? "pr-[130px] sm:pr-[164px]"
     : "pr-[98px] sm:pr-[130px]";
   return (
-    <form onSubmit={(e) => onSubmit(e, { EMAIL: email })}>
+    <form
+      onSubmit={(e) => onSubmit(e, { EMAIL: email })}
+      // Attributes below for non-JS interaction
+      action="https://blog.us1.list-manage.com/subscribe/post?u=af54e3644e951c32ad39be6de&amp;id=10b8bb6236"
+      method="post"
+      id="mc-embedded-subscribe-form"
+      name="mc-embedded-subscribe-form"
+      className="validate"
+      target="_blank"
+    >
       <H className="text-2xl mt-0 mb-1 sm:text-3xl">Like the content?</H>
       <p className="max-w-xl font-sans mb-2 sm:mb-paragraph">
         Let me know by subscribing to new posts.
@@ -56,6 +65,7 @@ export const Subscribe = ({ onSubscribe }: SubscribeProps) => {
           )}
           id="email"
           type="email"
+          name="EMAIL"
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}

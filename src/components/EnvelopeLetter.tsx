@@ -22,9 +22,7 @@ export const EnvelopeLetter = ({
 
   const context = React.useContext(AppContext);
   const [stateTheme, setStateTheme] = React.useState("light");
-  const [hidden, setHidden] = React.useState(true);
   React.useEffect(() => {
-    setHidden(false);
     setStateTheme(context.theme);
   }, [context.theme]);
 
@@ -37,12 +35,7 @@ export const EnvelopeLetter = ({
     >
       <div className="relative w-full max-w-xs text-sm sm:max-w-[490px] lg:text-base lg:max-w-[560px] mx-auto">
         <img
-          className={cn(
-            "absolute w-full left-0 top-[-48%] keep-opacity",
-            `transition-opacity duration-500 ${
-              hidden ? "opacity-0" : "opacity-100"
-            }`
-          )}
+          className={cn("absolute w-full left-0 top-[-48%] keep-opacity")}
           alt=""
           src={`/envelope-back-${stateTheme}.svg`}
         />
@@ -73,12 +66,7 @@ export const EnvelopeLetter = ({
         })}
 
         <img
-          className={cn(
-            "relative w-full pointer-events-none keep-opacity",
-            `transition-opacity duration-500 ${
-              hidden ? "opacity-0" : "opacity-100"
-            }`
-          )}
+          className={cn("relative w-full pointer-events-none keep-opacity")}
           style={{ top: 0, left: 0 }}
           alt=""
           src={`/envelope-front-${stateTheme}.svg`}

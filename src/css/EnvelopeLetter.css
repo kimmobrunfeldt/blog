@@ -5,7 +5,7 @@
   transform: translateY(100%);
 }
 
-.envelope-letter.envelope-letter-in-view .letter-active {
+.no-js .envelope-letter .letter-container, .envelope-letter.envelope-letter-in-view .letter-active {
   transform: translateY(-70%);
 }
 

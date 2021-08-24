@@ -87,6 +87,11 @@ Production build with approximate times:
 
 
 
+## Testing features
+
+* Light / dark mode
+* Initial page load vs state update
+* JS disabled
 
 # License
 
