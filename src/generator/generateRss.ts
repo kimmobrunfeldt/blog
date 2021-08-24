@@ -34,6 +34,10 @@ async function main() {
   });
 
   posts.forEach((post) => {
+    const coverImageUrl = post.coverImage.startsWith("http")
+      ? post.coverImage
+      : `https://kimmo.blog${post.coverImage}`;
+
     feed.item({
       title: post.title,
       description: post.description,
@@ -42,15 +46,21 @@ async function main() {
       categories: post.tags,
       date: post.createdAt,
       enclosure: {
-        url: post.coverImage.startsWith("http")
-          ? post.coverImage
-          : `https://kimmo.blog${post.coverImage}`,
+        url: coverImageUrl,
         type: "image/jpeg",
       },
       custom_elements: [
         {
           "content:encoded": {
             _cdata: post.html,
+          },
+        },
+        {
+          "content:media": {
+            _attr: {
+              url: coverImageUrl,
+              type: "image/jpeg",
+            },
           },
         },
       ],
