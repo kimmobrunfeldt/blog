@@ -123,7 +123,10 @@ async function getFilesForOneReactPage(
     description: pageData.description,
     keywords: pageData.tags.join(", "),
     htmlContent,
-    hydrateScriptPath: "./hydrate.js",
+    hydrateScriptPath:
+      // Set hydrate path as specific when dealing with 404 page.
+      // This is necessary since 404 page might be returned from any path
+      pageData.path !== "/404/" ? "./hydrate.js" : "/404/hydrate.js",
     relativePathToRoot,
     ogTitle: pageData.title,
     ogUrl: `https://kimmo.blog${pageData.path}`,
