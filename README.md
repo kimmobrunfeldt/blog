@@ -93,6 +93,15 @@ Production build with approximate times:
 * Initial page load vs state update
 * JS disabled
 
+
+## Tips
+
+### Presentic
+
+See https://presentic.co for introduction.
+
+When exporting presentics from Figma, use "Include id" option. After the export, set `#viewport` rectangles to have `stroke-width="0"` from the SVG output. Presentic needs them for slides.
+
 # License
 
 The code is MIT licensed. MIT license **does not apply** to any other content such as images and text content for the blog.
