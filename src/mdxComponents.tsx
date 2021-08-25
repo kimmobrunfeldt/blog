@@ -4,6 +4,7 @@ import { levelToClass } from "src/components/H";
 import { P } from "src/components/P";
 import { Link } from "src/components/Link";
 import { Prism } from "src/components/Prism";
+import { Abbr } from "src/components/Abbr";
 
 // Note: more complex css is done at mdx-content.css
 export const components = {
@@ -87,4 +88,5 @@ export const components = {
   tr: (props: any) => <tr {...props} />,
   thead: (props: any) => <thead {...props} />,
   tbody: (props: any) => <tbody {...props} />,
+  abbr: (props: any) => <Abbr {...props} />,
 };
