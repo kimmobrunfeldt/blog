@@ -48,8 +48,7 @@ export const App = ({ children }: Props) => {
     setThemeClass(theme);
   }, [theme]);
 
-  // Change theme immediately if user switches their OS preference and
-  // the theme hasn't been overridden in local storage
+  // Change theme immediately if user switches their OS preference
   React.useEffect(() => {
     const darkQuery = window.matchMedia("(prefers-color-scheme: dark)");
     const cb = (event: MediaQueryListEvent) => {
