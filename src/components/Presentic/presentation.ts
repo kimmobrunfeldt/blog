@@ -8,7 +8,7 @@ import {
   ViewportAnimateOptions,
   ViewportOptions,
 } from "./svgViewport";
-import { isUndefined } from "lodash";
+import isUndefined from "lodash/isUndefined";
 
 const DEBUG = false;
 const SVG_DOCUMENT_CSS = `.presentation-slides-group > * {
