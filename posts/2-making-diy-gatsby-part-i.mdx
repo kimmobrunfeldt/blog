@@ -4,18 +4,21 @@ slug: "2-making-diy-gatsby-part-i"
 createdAt: "2021-09-04"
 coverImage: "/content-assets/2/cover.png"
 description: >
-  Over-engineering can be a great learning experience. If it feels fun,
-  just go for it! Casual projects can break the rules.
+  The first post of a series where we look into how the do-it-yourself static site generation works for kimmo.blog.
 tags:
-  - over-engineering
+  - static site generator
   - react
   - server-side rendering
   - gatsby
 ---
 
-The title is a bit ambitious. [Gatsby](https://www.gatsbyjs.com/) is a general purpose tool that has everything you need: *customisable data sources accessed via GraphQL*, *optimised build pipeline*, *functionality via plugins*, and so on. We on the other hand will make a build system that doesn't even have a live reload. The topic will be covered in a few separate blog posts.
+*This is the first part of a series of posts.*
 
-Disclaimers out of the way, let's jump straight into building. The goal isn't to build a better Gatsby but to understand the complexity and possibly make the bundle footprint smaller. The high level idea is pretty straightforward: convert a bunch of source files and content to a static site in `output/` directory.
+We have to cover the disclaimers first. [Gatsby](https://www.gatsbyjs.com/) is a production-ready tool that has everything you need: *customisable data sources accessed via GraphQL*, *optimised build pipeline*, *functionality via plugins*, and so on. The build system that we'll go through on the other hand is experimental and doesn't even have frontend routing.
+
+That out of the way, let's jump straight into building. The post covers SSR basics, but even the more seasoned developers should find some interesting details.
+
+The goal isn't to build a better Gatsby but to understand how it works and possibly make the bundle footprint even smaller. The high level idea is pretty straightforward: convert a bunch of source files and content to a static site in `output/` directory.
 
 <Presentic alt="Build pipeline overview presentation" duration={1200} src="/content-assets/2/build-pipeline-overview.svg" />
 
@@ -86,3 +89,4 @@ That's the rough idea. There's a ton of details that still need to be solved tho
 
 
 *[SEO]: Search Engine Optimization
+*[SSR]: Server-side rendering
