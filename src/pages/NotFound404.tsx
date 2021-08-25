@@ -7,7 +7,6 @@ import { Footer } from "src/components/Footer";
 import { Link } from "src/components/Link";
 import { ContentWrapper } from "src/components/ContentWrapper";
 import * as twGlobals from "src/twGlobals";
-import { SubscribeEnvelope } from "src/components/SubscribeEnvelope";
 
 type Props = {
   siteData: SiteData;

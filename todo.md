@@ -1,4 +1,3 @@
-* make visuals transition in to not flicker at page load
 * dark mode
 * Diff code
 * bash commands
@@ -7,4 +6,3 @@
 * Add gzipping server for perf report
 
 * images downloaded twice?
-* lodash fully loaded
