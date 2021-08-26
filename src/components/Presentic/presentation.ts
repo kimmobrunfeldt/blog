@@ -25,6 +25,7 @@ type PresentationOptions = {
   initialAnimateToSlide?: number;
   initialAnimateDuration?: number;
   initialAnimationTriggerTop?: string;
+  onSlideChange?: (index: number) => void;
 };
 
 export function initialize(
@@ -36,6 +37,7 @@ export function initialize(
     initialAnimateToSlide,
     initialAnimateDuration,
     initialAnimationTriggerTop,
+    onSlideChange,
     ...viewportOptsIn
   } = optsIn;
 
@@ -43,6 +45,7 @@ export function initialize(
     initialAnimationTriggerTop: initialAnimationTriggerTop || "30%",
     initialAnimateToSlide,
     initialAnimateDuration,
+    onSlideChange: onSlideChange ?? (() => undefined),
   };
 
   const presentationRootGroup = svgUtil.cloneSvgAndAddRootGroup(svgElement);
@@ -144,7 +147,7 @@ export function initialize(
     const nextStepIndex = getStepIndex(stepIndex);
     const nextStep = presentation[nextStepIndex];
 
-    const opts = {
+    const _opts = {
       fadeInElements: nextStep.fadeInOut,
       ...animationOptions,
     };
@@ -152,10 +155,10 @@ export function initialize(
     if (state.step !== nextStepIndex) {
       // Initially when starting at 0, we don't want to fade in and out
       // the same slide
-      opts.fadeOutElements = currentStep.fadeInOut;
+      _opts.fadeOutElements = currentStep.fadeInOut;
     }
 
-    state.viewport.animateTo(nextStep.viewportPosition, opts);
+    state.viewport.animateTo(nextStep.viewportPosition, _opts);
 
     if (DEBUG) {
       currentStep.element.setAttribute(
@@ -166,6 +169,7 @@ export function initialize(
     }
 
     state.step = nextStepIndex;
+    opts.onSlideChange(nextStepIndex);
   }
 
   function next() {
@@ -174,6 +178,14 @@ export function initialize(
 
   function previous() {
     animateToSlide(state.step - 1);
+  }
+
+  function index() {
+    return state.step;
+  }
+
+  function length() {
+    return presentation.length;
   }
 
   function getStepIndex(index: number) {
@@ -215,5 +227,8 @@ export function initialize(
     previous,
     animateToSlide,
     destroy,
+    index,
+    length,
+    onSlideChange,
   };
 }

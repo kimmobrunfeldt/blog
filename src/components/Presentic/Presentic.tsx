@@ -6,6 +6,8 @@ import { linkStyles } from "../Link";
 import { Icon } from "@iconify/react";
 import leftIcon from "@iconify/icons-teenyicons/left-circle-outline";
 import rightIcon from "@iconify/icons-teenyicons/right-circle-outline";
+import cn from "classnames";
+import Tippy from "@tippyjs/react";
 
 export type PresenticProps = {
   src: string;
@@ -35,6 +37,8 @@ export function Presentic({
   const [presentation, setPresentation] = React.useState<
     ReturnType<typeof initialize> | undefined
   >(undefined);
+
+  const [slideIndex, setSlideIndex] = React.useState(0);
   const svgRef = React.useCallback((divEl: HTMLDivElement) => {
     if (divEl !== null) {
       const svgEl = divEl.children[0] as SVGSVGElement;
@@ -44,6 +48,7 @@ export function Presentic({
         initialAnimateDuration,
         initialAnimationTriggerTop,
         duration,
+        onSlideChange: (index) => setSlideIndex(index),
       });
 
       const original = {
@@ -81,48 +86,69 @@ export function Presentic({
     };
   }, []);
 
+  function canClickNext() {
+    return (
+      !isUndefined(presentation) && slideIndex <= presentation.length() - 2
+    );
+  }
+
   function next() {
-    if (!isUndefined(presentation)) {
-      presentation.next();
+    if (canClickNext()) {
+      presentation!.next();
     }
+  }
+
+  function canClickPrevious() {
+    return !isUndefined(presentation) && slideIndex >= 1;
   }
 
   function previous() {
-    if (!isUndefined(presentation)) {
-      presentation.previous();
+    if (canClickPrevious()) {
+      presentation!.previous();
     }
   }
 
+  const disabledCls = "cursor-not-allowed text-gray-3 dark:text-gray-7";
   return (
     <div className="mt-12 mb-16 select-none">
       <ul className="flex flex-row justify-end mb-2">
         <li>
-          <button
-            type="button"
-            style={{ top: "1px" }}
-            className={`${linkStyles.rust} block`}
-            title={"Previous"}
-            aria-label={"Previous animation state"}
-            onClick={previous}
-          >
-            <span style={{ fontSize: "1.3em" }}>
-              <Icon className="box-content p-2" icon={leftIcon} />
-            </span>
-          </button>
+          <Tippy content="Previous slide">
+            <button
+              type="button"
+              className={cn(
+                canClickPrevious() ? linkStyles.rust : disabledCls,
+                "block top-[1px]"
+              )}
+              title={"Previous"}
+              aria-label={"Previous animation state"}
+              onClick={previous}
+              disabled={!canClickPrevious()}
+            >
+              <span style={{ fontSize: "1.3em" }}>
+                <Icon className="box-content p-2" icon={leftIcon} />
+              </span>
+            </button>
+          </Tippy>
         </li>
         <li>
-          <button
-            type="button"
-            style={{ top: "1px" }}
-            className={`${linkStyles.rust} block`}
-            title={"Next"}
-            aria-label={"Next animation state"}
-            onClick={next}
-          >
-            <span style={{ fontSize: "1.3em" }}>
-              <Icon className="box-content p-2" icon={rightIcon} />
-            </span>
-          </button>
+          <Tippy content="Next slide">
+            <button
+              type="button"
+              className={cn(
+                canClickNext() ? linkStyles.rust : disabledCls,
+                "block top-[1px]"
+              )}
+              title={"Next"}
+              aria-label={"Next animation state"}
+              onClick={next}
+              disabled={!canClickNext()}
+            >
+              <span style={{ fontSize: "1.3em" }}>
+                <Icon className="box-content p-2" icon={rightIcon} />
+              </span>
+            </button>
+          </Tippy>
         </li>
       </ul>
 
