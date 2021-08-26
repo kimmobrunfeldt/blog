@@ -84,7 +84,7 @@ async function main() {
       title: post.title,
       description: post.description,
       url: absolutePostUrl,
-      guid: post.path,
+      guid: absolutePostUrl,
       categories: post.tags,
       date: post.createdAt,
       enclosure: {
