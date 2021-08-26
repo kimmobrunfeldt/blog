@@ -4,7 +4,7 @@ slug: "2-making-diy-gatsby-part-i"
 createdAt: "2021-09-04"
 coverImage: "/content-assets/2/cover.png"
 description: >
-  The first post of a series where we look into how the do-it-yourself static site generation works for kimmo.blog.
+  The first post of a series where we look into how the do-it-yourself static site generation works for this blog.
 tags:
   - static site generator
   - react
@@ -26,7 +26,7 @@ We ["simply"](https://www.knowledgeowl.com/home/dont-say-simply-jim-fisher) need
 
 <Image maxWidth={550} alt="Figure of GET request" src="/content-assets/2/get-request.svg" />
 
-When a user loads `/posts/` path in their browser, the server responds with contents of `output/posts/index.html` file. We want the actual page content to already be in the HTML already at that stage. It will make the content load faster, more SEO friendly, and accessible even when JS has been disabled.
+When a user loads `/posts/` path in their browser, the server responds with contents of `output/posts/index.html` file. We want the page content to already be in the HTML at that stage. It will make the content load faster, more SEO friendly, and accessible even when JS has been disabled.
 
 That covers the read-only content, but for richer interaction we need to generate a JS bundle that kicks off the dynamism. The traditional way would be to render HTML directly from e.g. Markdown, and JS would refer to the existing DOM elements via query selectors:
 
