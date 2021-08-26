@@ -3,7 +3,9 @@ import fs from "fs";
 import { promisify } from "util";
 import React from "react";
 import remark from "remark";
+import { Node } from "unist";
 import remarkAbbr from "remark-abbr";
+import remarkMdx from "remark-mdx";
 import stripMarkdown from "strip-markdown";
 import ReactDOMServer from "react-dom/server";
 import glob from "glob";
@@ -14,6 +16,7 @@ import renderMdxToString from "next-mdx-remote/render-to-string";
 import { components as mdxComponents } from "src/mdxComponents";
 import { mapSeriesAsync } from "src/generator/util/promise";
 import { getProjectPath, renderTemplate } from "src/generator/util/index";
+import unistUtilFilter from "unist-util-filter";
 import { PostLayout } from "src/components/PostLayout";
 import { pages as PAGES } from "src/pages/_exports";
 import * as COMPONENTS from "src/components";
@@ -276,11 +279,29 @@ async function getFilesForMdxPages(
   return _.flatten(files);
 }
 
+function removeMdxNodes(): any {
+  const filterFunc = (node: any) => {
+    const typesToRemove = ["import", "export", "comment", "jsx"];
+    const isJsx = node.type.toLowerCase().includes("jsx");
+    const shouldKeep = !isJsx && !typesToRemove.includes(node.type);
+    return shouldKeep as any;
+  };
+
+  return (tree: any) => {
+    return unistUtilFilter(tree, filterFunc as any);
+  };
+}
+
 async function getPostData(
   mdxFilePath: string
 ): Promise<Omit<PostMetadata, "orderNumber">> {
   const { data, content } = await parseMdxFile(mdxFilePath);
-  const plain = remark().use(stripMarkdown).processSync(content).toString();
+  const plain = remark()
+    .use(remarkMdx as any)
+    .use(removeMdxNodes)
+    .use(stripMarkdown as any)
+    .processSync(content)
+    .toString();
 
   const postPath = `/posts/${data.slug}/`;
   const renderedMdxSource = await renderMdxToString(content, {

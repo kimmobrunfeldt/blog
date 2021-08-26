@@ -1,11 +1,11 @@
 // Usage zx tools/mdxToText.mjs posts/1-writing-or-coding.mdx
 
 import fs from "fs";
-import { remark } from "remark";
+import remark from "remark";
 import matter from "gray-matter";
 import strip from "strip-markdown";
 import mdx from "remark-mdx";
-import { filter } from "unist-util-filter";
+import filter from "unist-util-filter";
 
 async function parseMdxFile(filePath) {
   const mdxContent = await fs.promises.readFile(filePath, {
