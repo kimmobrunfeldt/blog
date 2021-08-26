@@ -2,13 +2,53 @@ import fs from "fs";
 import { promisify } from "util";
 import RSS from "rss";
 import glob from "glob";
+import { URL } from "url";
 import { isPostPage } from "src/types/siteData";
 import { getSiteData } from "src/generator/render";
 import { getProjectPath } from "src/generator/util";
+import cheerio from "cheerio";
 
 const globAsync = promisify(glob);
 
 const OUTPUT_PATH = getProjectPath("output/rss.xml");
+
+function resolveUrl(url: string, baseUrl: string): string {
+  let parsed: URL;
+  try {
+    parsed = new URL(url, baseUrl);
+  } catch (e) {
+    return url;
+  }
+
+  if (!["https:", "http:"].includes(parsed.protocol)) {
+    return url;
+  }
+
+  return parsed.toString();
+}
+
+function resolveAllLinks(html: string, baseUrl: string): string {
+  const $ = cheerio.load(html);
+  const elements = [
+    { tag: "img", attr: "src" },
+    { tag: "video", attr: "src" },
+    { tag: "source", attr: "src" },
+    { tag: "a", attr: "href" },
+  ];
+
+  elements.forEach((item) => {
+    $(item.tag).each((i, el) => {
+      const originalUrl = $(el).attr(item.attr);
+      if (!originalUrl) {
+        return;
+      }
+
+      $(el).attr(item.attr, resolveUrl(originalUrl, baseUrl));
+    });
+  });
+
+  return $.html();
+}
 
 async function main() {
   const mdxFileNames = await globAsync("*.mdx", {
@@ -38,10 +78,12 @@ async function main() {
       ? post.coverImage
       : `https://kimmo.blog${post.coverImage}`;
 
+    const absolutePostUrl = `https://kimmo.blog${post.path}`;
+
     feed.item({
       title: post.title,
       description: post.description,
-      url: `https://kimmo.blog${post.path}`,
+      url: absolutePostUrl,
       guid: post.path,
       categories: post.tags,
       date: post.createdAt,
@@ -52,7 +94,9 @@ async function main() {
       custom_elements: [
         {
           "content:encoded": {
-            _cdata: post.html,
+            // The markdown elements already have absolute urls,
+            // but the custom components might still use relative urls
+            _cdata: resolveAllLinks(post.html, absolutePostUrl),
           },
         },
         {
@@ -60,6 +104,8 @@ async function main() {
             _attr: {
               url: coverImageUrl,
               type: "image/jpeg",
+              medium: "image",
+              "xmlns:media": "http://search.yahoo.com/mrss/",
             },
           },
         },
