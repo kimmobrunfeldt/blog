@@ -118,6 +118,7 @@ async function getFilesForOneReactPage(
     </Root>
   );
   const relativePathToRoot = `${getRelativePathToRoot(fileDir)}/`;
+  const is404 = pageData.path === "/404/";
   const html = renderTemplate(TEMPLATES.pageHtml, {
     title: getTitle(pageData.title),
     description: pageData.description,
@@ -126,8 +127,9 @@ async function getFilesForOneReactPage(
     hydrateScriptPath:
       // Set hydrate path as specific when dealing with 404 page.
       // This is necessary since 404 page might be returned from any path
-      pageData.path !== "/404/" ? "./hydrate.js" : "/404/hydrate.js",
-    relativePathToRoot,
+      is404 ? "/404/hydrate.js" : "./hydrate.js",
+    // In case 404 page, point relative path to root
+    relativePathToRoot: is404 ? "/" : relativePathToRoot,
     ogTitle: pageData.title,
     ogUrl: `https://kimmo.blog${pageData.path}`,
     ogImage: "https://kimmo.blog/social-cover.png",
