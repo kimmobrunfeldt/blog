@@ -16,30 +16,30 @@ tags:
 
 We have to cover the disclaimers first. [Gatsby](https://www.gatsbyjs.com/) is a production-ready tool that has everything you need: *customisable data sources accessed via GraphQL*, *optimised build pipeline*, *functionality via plugins*, and so on. The build system that we'll go through on the other hand is experimental and doesn't even have frontend routing.
 
-That out of the way, let's jump straight into building. The post will cover SSR basics, but even the seasoned developers should find some new interesting details.
+That out of the way, let's jump into building the thing. The post will cover SSR basics, but even the seasoned developers should find some new interesting details.
 
-The goal isn't to build a better Gatsby but to understand how it works and possibly make the bundle footprint even smaller. The high level idea is pretty straightforward: convert a bunch of source files and content to a static site in `output/` directory.
+The goal isn't to build a better Gatsby but to understand how it works and possibly make the site's bundle footprint even smaller. The high-level idea is pretty straightforward: convert a bunch of source files and content to a static site in `output/` directory.
 
 <Presentic alt="Build pipeline overview presentation" duration={1200} src="/content-assets/2/build-pipeline-overview.svg" />
 
-We ["simply"](https://www.knowledgeowl.com/home/dont-say-simply-jim-fisher) need to implement the _Build pipeline_ box in the middle. One way to start figuring out a system is from the usage perspective. Let's imagine there's a file server that serves everything under `output/` directory.
+We ["simply"](https://www.knowledgeowl.com/home/dont-say-simply-jim-fisher) need to implement the _Build pipeline_ box in the middle. One way to start figuring out a system is from the user's perspective. Let's imagine there's a file server that serves everything under `output/` directory.
 
 <Image maxWidth={550} alt="Figure of GET request" src="/content-assets/2/get-request.svg" />
 
 When a user loads `/posts/` path in their browser, the server responds with contents of `output/posts/index.html` file. We want the page content to already be in the HTML at that stage. It will make the content load faster, more SEO friendly, and accessible even when JS has been disabled.
 
-That covers the read-only content, but for richer interaction we need to generate a JS bundle that kicks off the dynamism. The traditional way would be to render HTML directly from e.g. Markdown, and JS would refer to the existing DOM elements via query selectors:
+That covers the read-only content, but for richer interaction, we need to generate a JS bundle that kicks off the dynamism. The traditional way would be to render HTML directly from e.g. Markdown, and JS would refer to the existing DOM elements via query selectors:
 
 ```javascript
 const elements = document.querySelectorAll('.dynamic-element');
 startDynamicStuff(elements);
 ```
 
-That works, but it's not as convenient. It's missing some of the ergonomics I find pleasant in modern web development. Anyways, that's besides the point of this post. Let's get back to building the React based static site generation.
+That works, but it's not as convenient. It's missing some of the ergonomics I find pleasant in modern web development. Anyways, that's beside the topic of this post. Let's get back to building the React-based static site generation.
 
 <Image maxWidth={550} alt="Figure of another GET request" src="/content-assets/2/get-request-hydrate.svg" />
 
-Building on top of the example above, this time the returned HTML refers to a `hydrate.js` script that it'll execute in browser.
+Building on top of the example above, this time the returned HTML refers to a `hydrate.js` script that it'll execute in the browser.
 
 
 *TODO below here*
