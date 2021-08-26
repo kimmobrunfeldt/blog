@@ -16,7 +16,7 @@ export function Image({
 }: ImageProps) {
   return (
     <div className="my-12">
-      <img className="mx-auto" {...otherImageProps} style={{ maxWidth }}>
+      <img className="mx-auto w-full" {...otherImageProps} style={{ maxWidth }}>
         {children}
       </img>
 
