@@ -12,6 +12,63 @@ tags:
   - rollup
 ---
 
+
+This is how `output/posts/index.html` looks like:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Posts - kimmo.blog</title>
+  </head>
+  <body>
+    <div id="react-root">
+      <!-- Content that is rendered on site generation -->
+    </div>
+    <script type="module" src="./hydrate.js"></script>
+  </body>
+</html>
+```
+
+The actual page content is rendered inside the `<div>` using [ReactDOM.renderToString()](https://reactjs.org/docs/react-dom-server.html#rendertostring) at build phase. The `hydrate.js` is generated from the `hydrate-page-template.tsx` below.
+
+```tsx
+import React from "react";
+import ReactDOM from "react-dom";
+import siteData from "site-data.json";
+// Will be replaced with e.g. "src/components/pages/Posts"
+import PageComponent from "{{{ pageImportPath }}}";
+
+const reactRoot = "react-root";
+// Will be replaced with e.g. "/posts/"
+const pagePath = "{{{ pagePath }}}";
+const page = siteData.pages.find((page) => page.data.path === pagePath);
+
+window.addEventListener("load", () => {
+  ReactDOM.hydrate(
+    <PageComponent pageData={page.data} siteData={siteData} />,
+    document.getElementById(reactRoot)
+  );
+});
+```
+
+*We'll come back to the templating later.* When `hydrate.js` loads up, it'll pass the correct data for `<PageComponent>` which is `<Posts>` in this case. The browser ends up rendering the same [DOM](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Introduction) structure that the server already sent, but this time React is listening for user input and re-renders when needed.
+
+All pages have the same directory structure:
+
+* `output/`
+  * `index.html`
+  * `hydrate.js`
+  * `posts/`
+    * `index.html`
+    * `hydrate.js`
+  * `another-page/`
+    * `index.html`
+    * `hydrate.js`
+
+
+
+
 Let's talk again about `hydrate-page-template.tsx`. We need to convert TypeScript source files into JS code that browsers understand. TypeScript compiler does the job in simple cases, but we want a full blown module bundler. _Why?_ Because module bundler is able to handle other tasks required to build a fast production site: minification, bundle splitting, `process.env` replacements, etc.
 
 I looked into [Webpack](https://webpack.js.org/), [Snowpack](https://www.snowpack.dev/), [Parcel](https://parceljs.org/), [Rollup](https://rollupjs.org/), and [Babel](https://babeljs.io/). They all have a slightly different abstraction levels and philosophies, but _Rollup_ was my choice for the task. Its configuration format is simple and the core is very minimal. _Rollup_ allows presice low level control on the bundling process.

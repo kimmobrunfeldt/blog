@@ -5,6 +5,3 @@
 
 * images downloaded twice?
 * Long single line code blocks look weird
-
-
-* disable next / prev in presentics

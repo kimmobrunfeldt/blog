@@ -4,7 +4,7 @@ slug: "2-making-diy-gatsby-part-i"
 createdAt: "2021-09-04"
 coverImage: "/content-assets/2/cover.png"
 description: >
-  The first post of a series where we look into how the do-it-yourself static site generation works for this blog.
+  The first post of a series. We'll look into how server-side React rendering works in general.
 tags:
   - static site generator
   - react
@@ -12,97 +12,82 @@ tags:
   - gatsby
 ---
 
-*This is the first part of a series of posts.*
+*This is the 1st part of a series of posts. Part I will cover SSR and static site basics. If you are familiar with the topic, feel free to jump into [Part II](../3-making-diy-gatsby-part-ii/) directly.*
 
-We have to cover the disclaimers first. [Gatsby](https://www.gatsbyjs.com/) is a production-ready tool that has everything you need: *customisable data sources accessed via GraphQL*, *optimised build pipeline*, *functionality via plugins*, and so on. The build system that we'll go through on the other hand is experimental and doesn't even have frontend routing.
+We have to cover the disclaimers first. [Gatsby](https://www.gatsbyjs.com/) is a production-ready tool that has everything you need: customisable data sources accessed via GraphQL, optimised build pipeline, functionality via plugins, and huge community.
 
-That out of the way, let's jump into building the thing. The post will cover SSR basics, but even the seasoned developers should find some new interesting details.
+The build system that we'll go through on the other hand is experimental and doesn't even have frontend routing. Building a better Gatsby is not the point. Instead we want to understand how it works and possibly make the site's bundle footprint even smaller.
 
-The goal isn't to build a better Gatsby but to understand how it works and possibly make the site's bundle footprint even smaller. The high-level idea is pretty straightforward: convert a bunch of source files and content to a static site in `output/` directory.
+That out of the way, let's jump into building the thing.
+
+## Static site rendering
+
+The high-level idea is pretty straightforward: convert a bunch of source files and content to a static site in `output/` directory.
 
 <Presentic alt="Build pipeline overview presentation" duration={1200} src="/content-assets/2/build-pipeline-overview.svg" />
 
-We ["simply"](https://www.knowledgeowl.com/home/dont-say-simply-jim-fisher) need to implement the _Build pipeline_ box in the middle. One way to start figuring out a system is from the user's perspective. Let's imagine there's a file server that serves everything under `output/` directory.
+We "[simply](https://www.knowledgeowl.com/home/dont-say-simply-jim-fisher)" need to implement the _Build pipeline_ box in the middle.
+
+One way to start figuring out a system is from the user's perspective. Let's imagine there's a file server that serves everything under `output/` directory.
 
 <Image maxWidth={550} alt="Figure of GET request" src="/content-assets/2/get-request.svg" />
 
-When a user loads `/posts/` path in their browser, the server responds with contents of `output/posts/index.html` file. We want the page content to already be in the HTML at that stage. It will make the content load faster, more SEO friendly, and accessible even when JS has been disabled.
+When a user loads `/posts/` path in their browser, the server responds with contents of `output/posts/index.html` file. The contents have been created with Node.js using React:
 
-That covers the read-only content, but for richer interaction, we need to generate a JS bundle that kicks off the dynamism. The traditional way would be to render HTML directly from e.g. Markdown, and JS would refer to the existing DOM elements via query selectors:
-
-```javascript
-const elements = document.querySelectorAll('.dynamic-element');
-startDynamicStuff(elements);
+```tsx
+import ReactDOMServer from "react-dom/server";
+ReactDOMServer.renderToString(<AllPostsPage />);
 ```
 
-That works, but it's not as convenient. It's missing some of the ergonomics I find pleasant in modern web development. Anyways, that's beside the topic of this post. Let's get back to building the React-based static site generation.
+This type of React usage is often called server-side rendering – regardless of where the rendering technically took place. `renderToString()` might've been called on your local machine, Netlify's build servers, or per request on a Node.js server.
+
+> Why do we even need this step? React apps work just fine even if the backend sends an empty `<div id="react-root"></div>` container.
+
+That's true. Server-side rendering is not mandatory, but it has some benefits. It'll make the content load faster, more SEO friendly, and accessible even when JS has been disabled.
+
+That covers the read-only content, but for richer interaction, we need to generate a JS bundle that kicks off the dynamism browser-side. The traditional way would be to render HTML directly from e.g. Markdown, and JS would refer to the existing DOM elements via query selectors:
+
+```javascript
+const elements = document.querySelectorAll('.chart');
+initCharts(elements);
+```
+
+There are many benefits in the traditional model, no doubt about it. However, it's missing some of the ergonomics we get from React — for example component separation and state handling. Anyways, arguing about whether using React in this context makes sense is not the topic of this post.
 
 <Image maxWidth={550} alt="Figure of another GET request" src="/content-assets/2/get-request-hydrate.svg" />
 
-Building on top of the example above, this time the returned HTML refers to a `hydrate.js` script that it'll execute in the browser.
-
-
-*TODO below here*
-
-In single page apps, the server is usually configured to send the same `index.html` for any requested path. JavaScript would then read `window.location` and decide which page content to render based on the frontend routing. But we don't want that. We want a static site that can be hosted in S3 or any simple file hosting.
-
-Static sites on the other hand can have multiple possible entrypoints into the application. Each page needs to be able to independently bootstrap the JavaScript UI. This blog uses React, but the same principles apply to all frameworks.
-
-This is how `output/posts/index.html` looks like:
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <title>Posts - kimmo.blog</title>
-  </head>
-  <body>
-    <div id="react-root">
-      <!-- Content that is rendered on site generation -->
-    </div>
-    <script type="module" src="./hydrate.js"></script>
-  </body>
-</html>
-```
-
-The actual page content is rendered inside the `<div>` using [ReactDOM.renderToString()](https://reactjs.org/docs/react-dom-server.html#rendertostring) at build phase. The `hydrate.js` is generated from the `hydrate-page-template.tsx` below.
+Building on top of the previous example, this time the returned HTML refers to a `hydrate.js` script that the browser will execute. The script uses [ReactDOM.hydrate()](https://reactjs.org/docs/react-dom.html#hydrate) to continue where the server-side rendered React left off:
 
 ```tsx
 import React from "react";
 import ReactDOM from "react-dom";
-import siteData from "site-data.json";
-// Will be replaced with e.g. "src/components/pages/Posts"
-import PageComponent from "{{{ pageImportPath }}}";
-
-const reactRoot = "react-root";
-// Will be replaced with e.g. "/posts/"
-const pagePath = "{{{ pagePath }}}";
-const page = siteData.pages.find((page) => page.data.path === pagePath);
 
 window.addEventListener("load", () => {
   ReactDOM.hydrate(
-    <PageComponent pageData={page.data} siteData={siteData} />,
-    document.getElementById(reactRoot)
+    <AllPostsPage />,
+    document.getElementById('react-root')
   );
 });
 ```
 
-*We'll come back to the templating later.* When `hydrate.js` loads up, it'll pass the correct data for `<PageComponent>` which is `<Posts>` in this case. The browser ends up rendering the same [DOM](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Introduction) structure that the server already sent, but this time React is listening for user input and re-renders when needed.
+The DOM stays untouched *(`<h1>All posts</h1>`, etc)*, but React starts event listeners to allow user interaction on the page.
 
-All pages have the same directory structure:
+**That's how server-side rendering works.** Backend returns a frozen snapshot of the React component and frontend brings it back to life.
 
-* `output/`
-  * `index.html`
-  * `hydrate.js`
-  * `posts/`
-    * `index.html`
-    * `hydrate.js`
-  * `another-page/`
-    * `index.html`
-    * `hydrate.js`
+There are benefits, but definitely some downsides too. First of all, the rendering flow is very complex compared to a simple frontend React app. Another annoyance is that many component code paths are being run on Node.js too. [Many]((https://github.com/Splidejs/splide/issues/278)) [frontend](https://github.com/JedWatson/react-select/issues/608) [libraries](https://github.com/codex-team/editor.js/issues/1036) throw `ReferenceError: window is not defined` because they weren't designed to be run on a `window`less environment.
 
-That's the rough idea. There's a ton of details that still need to be solved though. In the [next part](../3-making-diy-gatsby-part-ii/) we'll look into module bundling and Rollup.
+## SPA vs static site
+
+In single page apps, the server is usually configured to send the same `index.html` for any requested path. JavaScript would then read `window.location` and decide which page content to render based on the frontend routing. But we don't want that. We want a static site that can be hosted in S3 or any simple file hosting.
+
+Static sites on the other hand can have multiple possible entrypoints into the application. Each page needs to be able to independently bootstrap the JavaScript UI. The posts cover how it's done in React, but the same principles apply to all frameworks.
 
 
+That's the rough idea. There's a ton of details that still need to be solved though. In the [Part II](../3-making-diy-gatsby-part-ii/) we'll look into module bundling and Rollup.
+
+
+
+*[DOM]: Document Object Model
 *[SEO]: Search Engine Optimization
-*[SSR]: Server-side rendering
+*[SSR]: Server-side Rendering
+*[SPA]: Single Page App
