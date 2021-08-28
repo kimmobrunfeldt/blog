@@ -15,35 +15,119 @@ tags:
 
 Now that we understand how SSR works, let's put it into practice. Part II focuses on how [Rollup](https://rollupjs.org/guide/en/), custom glue code, and templating are used to convert source files into pages that work in all browsers.
 
-## Why Rollup?
+<Image alt="Directory structures" src="/content-assets/3/dir-structure-simple.svg" />
 
-TypeScript compiler does the job in simple cases, but we want a full blown module bundler. _Why?_ Because module bundler is able to handle other tasks required to build a fast production site: minification, bundle splitting, `process.env` replacements, etc.
+## Rollup
 
-I looked into [Webpack](https://webpack.js.org/), [Snowpack](https://www.snowpack.dev/), [Parcel](https://parceljs.org/), [Rollup](https://rollupjs.org/), and [Babel](https://babeljs.io/). They all have a slightly different abstraction levels and philosophies, but _Rollup_ was my choice for the task. Its configuration format is simple and the core is very minimal. _Rollup_ allows precise low-level control over the bundling process.
+We need a way to convert `.tsx` source files into JS bundles. TypeScript compiler does the job in simple cases, but we want a full blown module bundler. _Why?_ Because module bundler is able to handle other tasks required to build a fast production site: tree shaking, bundle splitting, import aliases, `process.env` replacements, etc.
 
-More control usually equals more work. _Rollup_ is no exception. Most tasks that Webpack and other bundlers do by default, need a plugin setup in _Rollup_. The configuration forces you to think about the details.
+I looked into [Webpack](https://webpack.js.org/), [Snowpack](https://www.snowpack.dev/), [Parcel](https://parceljs.org/), [Rollup](https://rollupjs.org/), and [Babel](https://babeljs.io/). They all have a slightly different abstraction levels and philosophies, but Rollup was my choice for the task. Its configuration format is simple and the core is very minimal. Rollup allows precise low-level control over the bundling process.
 
-> If a dependency uses _Node.js_ core library such as `crypto`, do you want to polyfill it?
+More control usually equals more work. Rollup is no exception. Most tasks that Webpack and other bundlers do by default, need a plugin setup in Rollup. The configuration forces you to think about the details.
+
+> If a dependency uses Node.js core library such as `crypto`, do you want to polyfill it?
 
 It sounds tedious, but on the other hand it makes you very aware of what's happening under the hood. The payoff is increased understanding of the build process and most probably smaller bundle size.
 
-The bundler solves many complicated problems for us, but we still need to implement the glue logic that brings the site together. We need to iterate through all React pages, and generate their static HTML counterparts.
+This is how the simplified [rollup.config.js](https://github.com/kimmobrunfeldt/blog/blob/main/rollup.config.js) looks like:
 
-Gluing pieces together is often done with [Gulp](https://gulpjs.com/) or Webpack. I personally favor CLI tools and bash commands. For example the HTML validation is done with
+```ts
+export default {
+  // Use tmp dir as a workaround. Ideally the output dir
+  // would be modified in-place, but that didn't work with
+  // Rollup for some reason.
+  input: ["output-tmp-rollup/**/*.tsx", "output-tmp-rollup/**/*.ts"],
+  output: {
+    dir: "output",
+    format: "esm",  // Use ES6 modules
+  },
+  plugins: [
+    multiInput({
+      // Keeps the output directory structure same as input
+      relative: "output-tmp-rollup/",
+    }),
+    nodeResolve(),  // Allow importing under node_modules
+    commonjs(),     // Required for dependencies using commonjs
+    json(),         // Allow import data from './data.json'
+    typescript(),
+  ],
+};
+```
+
+## Task runner
+
+The bundler solves many complicated problems for us, but we also need a task runner to combine different tools together. [Grunt](https://gruntjs.com/) or [Gulp](https://gulpjs.com/) used to be the de-facto tools, but Webpack has taken over that territory too in many projects.
+
+For this project though, I'm going to stick with my favorite approach: CLI tools and bash commands. For example HTML validation can be done with:
 
 ```bash
 find ./output/ -name '*.html' html-validate {} +
 ```
 
-The sweet spot for bash or Make based build pipelines is in relatively simple setups. There's less API layers to learn, but the build time tends to be slower. The standardised plugin API makes it easier for *Gulp* and other tools to cache and optimise. Maybe it could be achieved with bash scripts, but I have yet to see a pipeline like that.
+The sweet spot for bash or Make-based build pipelines is in relatively simple setups. There's less API layers to learn, but the build time tends to be slower. The standardised plugin API makes it easier for Gulp and other tools to cache and optimise. Maybe it could be achieved with bash scripts, but I have yet to see a pipeline like that.
 
-At this point we've chosen Rollup for module bundling, and [npm run scripts](https://www.keithcirkel.co.uk/how-to-use-npm-as-a-build-tool/) based build pipeline. Next we need to implement the actual "Gatsby" part.
+This is how the simplified [package.json](https://github.com/kimmobrunfeldt/blog/blob/main/package.json) scripts look like:
 
-## Glue code
+```js
+{
+  // ... in package.json
+  "scripts": {
+    "build": "npm run render && npm run rollup",
+    "rollup": "rollup -c rollup.config.js",
+    "render": "ts-node src/generator/render.tsx"
+  }
+}
+```
 
-The code has been structured into pages:
+## Custom code & templates
 
-<Presentic alt="Directory structure during build" height="autoLock" duration={1200} src="/content-assets/3/dir-structure-build.svg" />
+We've chosen Rollup for module bundling, and [npm run scripts](https://www.keithcirkel.co.uk/how-to-use-npm-as-a-build-tool/) to combine tools together.
+
+Next, we'll need custom code that iterates through all React pages and generates their static HTML counterparts. Everything starts from [src/render.tsx](https://github.com/kimmobrunfeldt/blog/blob/main/src/generator/render.tsx). Let's go through what it does.
+
+*We'll skip many details, for example everything related to MDX. Going through them at once would be too much.*
+
+### 1. Entrypoints
+
+The entrypoints for React page components and their metadata is in [src/pages/_exports.ts](https://github.com/kimmobrunfeldt/blog/blob/main/src/pages/_exports.ts). Here's a simplified version of it:
+
+```tsx
+import { getData as getIndexData, default as Index } from "./Index";
+import { getData as getPostsData, default as Posts } from "./Posts";
+
+export const pages = [
+  {
+    // Async function in case a page needs to
+    // fetch external data.
+    getData: getIndexData,
+    Component: Index,
+    // Referred in pageHydrate.tsx:
+    // import PageComponent from "src/pages/{{{ fileName }}}";
+    fileName: "Index",
+  },
+  {
+    getData: getPostsData,
+    Component: Posts,
+    fileName: "Posts",
+  },
+];
+```
+
+The list contains all the site pages, and which path to serve them from.
+
+### 2. Iterate all pages
+
+For each page in the entrypoints do the following operations.
+
+Render the page HTML.
+
+```tsx
+const html = ReactDOMServer.renderToString(
+  <page.Component pageData={pageData} siteData={siteData} />
+);
+```
+
+Inject the page components's HTML and other data to [page.html.template](https://github.com/kimmobrunfeldt/blog/blob/main/src/templates/page.html.template). The template looks like this:
 
 ```html
 <html>
@@ -55,13 +139,13 @@ The code has been structured into pages:
     <link defer rel="stylesheet" href="{{{ relativePathToRoot }}}styles.css"/>
   </head>
   <body>
-    <div class="h-full w-full overflow-x-hidden" id="react-root">{{{ htmlContent }}}</div>
+    <div id="react-root">{{{ htmlContent }}}</div>
     <script type="module" src="{{{ hydrateScriptPath }}}"></script>
   </body>
 </html>
 ```
 
-The actual page content is rendered inside the `<div>` using [ReactDOM.renderToString()](https://reactjs.org/docs/react-dom-server.html#rendertostring) at build phase. The `hydrate.js` is generated from the `hydrate-page-template.tsx` below.
+Render the page-specific `hydrate.js` bundle by using [pageHydrate.tsx.template](https://github.com/kimmobrunfeldt/blog/blob/main/src/templates/pageHydrate.tsx.template). The template looks like this:
 
 ```tsx
 import React from "react";
@@ -70,7 +154,6 @@ import siteData from "site-data.json";
 // Will be replaced with e.g. "src/components/pages/Posts"
 import PageComponent from "{{{ pageImportPath }}}";
 
-const reactRoot = "react-root";
 // Will be replaced with e.g. "/posts/"
 const pagePath = "{{{ pagePath }}}";
 const page = siteData.pages.find((page) => page.data.path === pagePath);
@@ -78,13 +161,38 @@ const page = siteData.pages.find((page) => page.data.path === pagePath);
 window.addEventListener("load", () => {
   ReactDOM.hydrate(
     <PageComponent pageData={page.data} siteData={siteData} />,
-    document.getElementById(reactRoot)
+    document.getElementById("react-root")
   );
 });
 ```
 
-*We'll come back to the templating later.* When `hydrate.js` loads up, it'll pass the correct data for `<PageComponent>` which is `<Posts>` in this case. The browser ends up rendering the same [DOM](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Introduction) structure that the server already sent, but this time React is listening for user input and re-renders when needed.
+### 3. Save metadata to site-data.json
 
+As seen in `pageHydrate.tsx.template`, `site-data.json` is passed to each page component in the hydrate process. Site-wide data is saved in a single cacheable JSON file, that is shared by all pages in the site.
+
+```tsx
+import fs from 'fs';
+import { pages } from "src/pages/_exports";
+
+const siteData = await mapAsync(pages, (page) => page.getData());
+await fs.promises.writeFile(JSON.stringify(siteData), 'site-data.json', {
+  encoding: 'utf-8'
+});
+```
+
+That's how `src/render.tsx` works.
+
+## Everything combined
+
+Putting everything together:
+
+1. Render all templates with `src/render.tsx`
+2. Run Rollup to transpile `tmp/**/*.tsx` files into `output/**/*.tsx`
+3. All other build steps (copy static files, PostCSS, etc)
+
+<Image alt="Directory structures" src="/content-assets/3/dir-structure-build.svg" />
+
+The build flow is simple in theory, but there are a huge amount of details that end up making the process complicated.
 
 
 *[SSR]: Server-side Rendering

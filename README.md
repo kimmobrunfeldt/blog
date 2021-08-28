@@ -21,7 +21,7 @@ https://kimmo.blog
 
 ### Build pipeline
 
-The aim was a simple build pipeline that is a bunch of CLI commands. The end result is quite simple considering the task, but lack of hot reloading makes the iteration somewhat slow (5-10s after each file change).
+The aim was a build pipeline that is a bunch of CLI commands. Lack of hot reloading makes the iteration somewhat slow (5-10s after each file change).
 
 Production build with approximate times:
 
