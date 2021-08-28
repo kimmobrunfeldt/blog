@@ -1,6 +1,6 @@
 ---
-title: "Making a do-it-yourself Gatsby – Part I"
-slug: "2-making-diy-gatsby-part-i"
+title: "Do-it-yourself Gatsby – Part I: SSR"
+slug: "2-diy-gatsby-part-i"
 createdAt: "2021-09-04"
 coverImage: "/content-assets/2/cover.png"
 description: >
@@ -12,9 +12,9 @@ tags:
   - gatsby
 ---
 
-*This is the 1st part of a series of posts. Part I will cover SSR and static site basics. If you are familiar with the topic, feel free to jump into [Part II](../3-making-diy-gatsby-part-ii/) directly.*
+*Part I covers SSR and static site basics. If you are familiar with the topic, feel free to jump into [Part II](../3-diy-gatsby-part-ii/).*
 
-We have to cover the disclaimers first. [Gatsby](https://www.gatsbyjs.com/) is a production-ready tool that has everything you need: customisable data sources accessed via GraphQL, optimised build pipeline, functionality via plugins, and huge community.
+[Gatsby](https://www.gatsbyjs.com/) is a production-ready tool that has everything you need: customisable data sources accessed via GraphQL, optimised build pipeline, functionality via plugins, and huge community.
 
 The build system that we'll go through on the other hand is experimental and doesn't even have frontend routing. Building a better Gatsby is not the point. Instead we want to understand how it works and possibly make the site's bundle footprint even smaller.
 
@@ -36,6 +36,8 @@ When a user loads `/posts/` path in their browser, the server responds with cont
 
 ```tsx
 import ReactDOMServer from "react-dom/server";
+import { AllPostsPage } from "pages/AllPosts";
+
 ReactDOMServer.renderToString(<AllPostsPage />);
 ```
 
@@ -56,11 +58,12 @@ There are many benefits in the traditional model, no doubt about it. However, it
 
 <Image maxWidth={550} alt="Figure of another GET request" src="/content-assets/2/get-request-hydrate.svg" />
 
-Building on top of the previous example, this time the returned HTML refers to a `hydrate.js` script that the browser will execute. The script uses [ReactDOM.hydrate()](https://reactjs.org/docs/react-dom.html#hydrate) to continue where the server-side rendered React left off:
+Building on top of the previous example, let's add a JS bundle called `hydrate.js` script that the browser will execute. It uses [ReactDOM.hydrate()](https://reactjs.org/docs/react-dom.html#hydrate) to continue where the server-side rendered React left off:
 
 ```tsx
 import React from "react";
 import ReactDOM from "react-dom";
+import { AllPostsPage } from "pages/AllPosts";
 
 window.addEventListener("load", () => {
   ReactDOM.hydrate(
@@ -83,7 +86,7 @@ In single page apps, the server is usually configured to send the same `index.ht
 Static sites on the other hand can have multiple possible entrypoints into the application. Each page needs to be able to independently bootstrap the JavaScript UI. The posts cover how it's done in React, but the same principles apply to all frameworks.
 
 
-That's the rough idea. There's a ton of details that still need to be solved though. In the [Part II](../3-making-diy-gatsby-part-ii/) we'll look into module bundling and Rollup.
+That's the rough idea. There's a ton of details that still need to be solved though. In the [Part II](../3-diy-gatsby-part-ii/) we'll look into module bundling and Rollup.
 
 
 

@@ -93,6 +93,15 @@ Production build with approximate times:
 * Initial page load vs state update
 * JS disabled
 
+### Editing an existing post
+
+* Date?
+* Title changed?
+
+    * Update slug
+    * Add Netlify redirect. ID number is meant to be permanent, while the slug
+    * Update cover image
+    * Test with `squint http://localhost:8080 https://kimmo.blog`
 
 ## Tips
 
