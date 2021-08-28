@@ -6,26 +6,57 @@ coverImage: "/content-assets/3/cover.png"
 description: >
   A look into how module bundling works in the build system.
 tags:
-  - react
-  - server-side rendering
-  - gatsby
+  - module bundling
   - rollup
+  - react
+  - gatsby
+  - npm scripts
 ---
 
+Now that we understand how SSR works, let's put it into practice. Part II focuses on how [Rollup](https://rollupjs.org/guide/en/), custom glue code, and templating are used to convert source files into pages that work in all browsers.
 
-This is how `output/posts/index.html` looks like:
+## Why Rollup?
+
+TypeScript compiler does the job in simple cases, but we want a full blown module bundler. _Why?_ Because module bundler is able to handle other tasks required to build a fast production site: minification, bundle splitting, `process.env` replacements, etc.
+
+I looked into [Webpack](https://webpack.js.org/), [Snowpack](https://www.snowpack.dev/), [Parcel](https://parceljs.org/), [Rollup](https://rollupjs.org/), and [Babel](https://babeljs.io/). They all have a slightly different abstraction levels and philosophies, but _Rollup_ was my choice for the task. Its configuration format is simple and the core is very minimal. _Rollup_ allows precise low-level control over the bundling process.
+
+More control usually equals more work. _Rollup_ is no exception. Most tasks that Webpack and other bundlers do by default, need a plugin setup in _Rollup_. The configuration forces you to think about the details.
+
+> If a dependency uses _Node.js_ core library such as `crypto`, do you want to polyfill it?
+
+It sounds tedious, but on the other hand it makes you very aware of what's happening under the hood. The payoff is increased understanding of the build process and most probably smaller bundle size.
+
+The bundler solves many complicated problems for us, but we still need to implement the glue logic that brings the site together. We need to iterate through all React pages, and generate their static HTML counterparts.
+
+Gluing pieces together is often done with [Gulp](https://gulpjs.com/) or Webpack. I personally favor CLI tools and bash commands. For example the HTML validation is done with
+
+```bash
+find ./output/ -name '*.html' html-validate {} +
+```
+
+The sweet spot for bash or Make based build pipelines is in relatively simple setups. There's less API layers to learn, but the build time tends to be slower. The standardised plugin API makes it easier for *Gulp* and other tools to cache and optimise. Maybe it could be achieved with bash scripts, but I have yet to see a pipeline like that.
+
+At this point we've chosen Rollup for module bundling, and [npm run scripts](https://www.keithcirkel.co.uk/how-to-use-npm-as-a-build-tool/) based build pipeline. Next we need to implement the actual "Gatsby" part.
+
+## Glue code
+
+The code has been structured into pages:
+
+<Presentic alt="Directory structure during build" height="autoLock" duration={1200} src="/content-assets/3/dir-structure-build.svg" />
 
 ```html
-<!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
-    <title>Posts - kimmo.blog</title>
+    <title>{{{ title }}}</title>
+    <meta name="description" content="{{{ description }}}"/>
+    <meta name="keywords" content="{{{ keywords }}}"/>
+
+    <link defer rel="stylesheet" href="{{{ relativePathToRoot }}}styles.css"/>
   </head>
   <body>
-    <div id="react-root">
-      <!-- Content that is rendered on site generation -->
-    </div>
-    <script type="module" src="./hydrate.js"></script>
+    <div class="h-full w-full overflow-x-hidden" id="react-root">{{{ htmlContent }}}</div>
+    <script type="module" src="{{{ hydrateScriptPath }}}"></script>
   </body>
 </html>
 ```
@@ -54,35 +85,6 @@ window.addEventListener("load", () => {
 
 *We'll come back to the templating later.* When `hydrate.js` loads up, it'll pass the correct data for `<PageComponent>` which is `<Posts>` in this case. The browser ends up rendering the same [DOM](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Introduction) structure that the server already sent, but this time React is listening for user input and re-renders when needed.
 
-All pages have the same directory structure:
-
-* `output/`
-  * `index.html`
-  * `hydrate.js`
-  * `posts/`
-    * `index.html`
-    * `hydrate.js`
-  * `another-page/`
-    * `index.html`
-    * `hydrate.js`
 
 
-
-
-Let's talk again about `hydrate-page-template.tsx`. We need to convert TypeScript source files into JS code that browsers understand. TypeScript compiler does the job in simple cases, but we want a full blown module bundler. _Why?_ Because module bundler is able to handle other tasks required to build a fast production site: minification, bundle splitting, `process.env` replacements, etc.
-
-I looked into [Webpack](https://webpack.js.org/), [Snowpack](https://www.snowpack.dev/), [Parcel](https://parceljs.org/), [Rollup](https://rollupjs.org/), and [Babel](https://babeljs.io/). They all have a slightly different abstraction levels and philosophies, but _Rollup_ was my choice for the task. Its configuration format is simple and the core is very minimal. _Rollup_ allows presice low level control on the bundling process.
-
-More control usually equals more work. _Rollup_ is no exception. Most tasks that Webpack and other bundlers do by default, need a plugin setup in _Rollup_. The configuration forces you to think about the details.
-
-*If a dependency uses _Node.js_ core library such as `crypto`, do you want to polyfill it?*
-
-It sounds tedious, but on the other hand it makes you very aware of what's happening under the hood. The payoff is increased understanding of the build process and most probably smaller bundle size.
-
-The bundler solves many complicated problems for us, but we still need to implement the glue logic that brings the site together. We need to iterate through all React pages and MDX posts, and generate their static HTML counterparts.
-
-Gluing pieces together can often done with [Gulp](https://gulpjs.com/) or Webpack. I personally favor CLI tools and bash commands. For example the HTML validation is done with `find ./output/ -name '*.html' html-validate {} +`.
-
-The sweet spot for bash or Make based build pipelines is in relatively simple setups. There's less API layers to learn, but the build time tends to be slower. The standardised plugin API makes it easier for *Gulp* and other tools to cache and optimise. Maybe it could be achieved with bash scripts as well, but I have yet to see a pipeline like that.
-
-At this point we've chosen Rollup for module bundling, and [npm run scripts](https://www.keithcirkel.co.uk/how-to-use-npm-as-a-build-tool/) based build pipeline. Next we need to implement the actual "Gatsby" part.
+*[SSR]: Server-side Rendering

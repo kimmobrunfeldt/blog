@@ -14,9 +14,9 @@ tags:
 
 *Part I covers SSR and static site basics. If you are familiar with the topic, feel free to jump into [Part II](../3-diy-gatsby-part-ii/).*
 
-[Gatsby](https://www.gatsbyjs.com/) is a production-ready tool that has everything you need: customisable data sources accessed via GraphQL, optimised build pipeline, functionality via plugins, and huge community.
+[Gatsby](https://www.gatsbyjs.com/) is a production-ready tool that has everything you need: customisable data sources accessed via GraphQL, optimised build pipeline, functionality via plugins, and a huge community.
 
-The build system that we'll go through on the other hand is experimental and doesn't even have frontend routing. Building a better Gatsby is not the point. Instead we want to understand how it works and possibly make the site's bundle footprint even smaller.
+The build system that we'll go through on the other hand is experimental and doesn't even have frontend routing. Building a better Gatsby is not the point. Instead, we want to understand how it works and possibly make the site's bundle footprint even smaller.
 
 That out of the way, let's jump into building the thing.
 
@@ -36,7 +36,7 @@ When a user loads `/posts/` path in their browser, the server responds with cont
 
 ```tsx
 import ReactDOMServer from "react-dom/server";
-import { AllPostsPage } from "pages/AllPosts";
+import { AllPostsPage } from "./pages/AllPosts";
 
 ReactDOMServer.renderToString(<AllPostsPage />);
 ```
@@ -54,16 +54,16 @@ const elements = document.querySelectorAll('.chart');
 initCharts(elements);
 ```
 
-There are many benefits in the traditional model, no doubt about it. However, it's missing some of the ergonomics we get from React — for example component separation and state handling. Anyways, arguing about whether using React in this context makes sense is not the topic of this post.
+There are many benefits to the traditional model, no doubt about it. However, it's missing some of the ergonomics we get from React — for example, component separation and state handling. Anyways, arguing about whether using React in this context makes sense is not the topic of this post.
 
 <Image maxWidth={550} alt="Figure of another GET request" src="/content-assets/2/get-request-hydrate.svg" />
 
-Building on top of the previous example, let's add a JS bundle called `hydrate.js` script that the browser will execute. It uses [ReactDOM.hydrate()](https://reactjs.org/docs/react-dom.html#hydrate) to continue where the server-side rendered React left off:
+Building on top of the previous example, let's add a JS bundle called `hydrate.js` to the page. It uses [ReactDOM.hydrate()](https://reactjs.org/docs/react-dom.html#hydrate) to continue where the server-side rendered React left off:
 
 ```tsx
 import React from "react";
 import ReactDOM from "react-dom";
-import { AllPostsPage } from "pages/AllPosts";
+import { AllPostsPage } from "./pages/AllPosts";
 
 window.addEventListener("load", () => {
   ReactDOM.hydrate(
@@ -77,16 +77,15 @@ The DOM stays untouched *(`<h1>All posts</h1>`, etc)*, but React starts event li
 
 **That's how server-side rendering works.** Backend returns a frozen snapshot of the React component and frontend brings it back to life.
 
-There are benefits, but definitely some downsides too. First of all, the rendering flow is very complex compared to a simple frontend React app. Another annoyance is that many component code paths are being run on Node.js too. [Many](https://github.com/Splidejs/splide/issues/278)) [frontend](https://github.com/JedWatson/react-select/issues/608) [libraries](https://github.com/codex-team/editor.js/issues/1036) throw `ReferenceError: window is not defined` because they weren't designed to be run on a `window`less environment.
+There are benefits, but definitely some downsides too. First of all, the rendering flow is very complex compared to a simple frontend React app. Another annoyance is that most component code paths will be run on Node.js too. [Many](https://github.com/Splidejs/splide/issues/278) [frontend](https://github.com/JedWatson/react-select/issues/608) [libraries](https://github.com/codex-team/editor.js/issues/1036) throw `ReferenceError: window is not defined` because they weren't designed to be run in a `window`less environment.
 
 ## SPA vs static site
 
 In single page apps, the server is usually configured to send the same `index.html` for any requested path. JavaScript would then read `window.location` and decide which page content to render based on the frontend routing. But we don't want that. We want a static site that can be hosted in S3 or any simple file hosting.
 
-Static sites on the other hand can have multiple possible entrypoints into the application. Each page needs to be able to independently bootstrap the JavaScript UI. The posts cover how it's done in React, but the same principles apply to all frameworks.
+Static sites on the other hand can have multiple possible entrypoints into the application. Each page needs to be able to independently bootstrap the JavaScript UI.
 
-
-That's the rough idea. There's a ton of details that still need to be solved though. In the [Part II](../3-diy-gatsby-part-ii/) we'll look into module bundling and Rollup.
+That's the rough idea. There's a ton of details that still need to be solved though. In [Part II](../3-diy-gatsby-part-ii/) we'll look into module bundling and Rollup.
 
 
 
