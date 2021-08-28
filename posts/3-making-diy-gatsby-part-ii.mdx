@@ -74,7 +74,8 @@ This is how the simplified [package.json](https://github.com/kimmobrunfeldt/blog
   "scripts": {
     "build": "npm run render && npm run rollup",
     "rollup": "rollup -c rollup.config.js",
-    "render": "ts-node src/generator/render.tsx"
+    "render": "ts-node src/generator/render.tsx",
+    // ... many more, such as PostCSS, linter, etc
   }
 }
 ```
@@ -182,13 +183,13 @@ await fs.promises.writeFile(JSON.stringify(siteData), 'site-data.json', {
 
 That's how `src/render.tsx` works.
 
-## Everything combined
+## Putting everything together
 
-Putting everything together:
+With these building blocks, `npm run build` will:
 
 1. Render all templates with `src/render.tsx`
 2. Run Rollup to transpile `tmp/**/*.tsx` files into `output/**/*.tsx`
-3. All other build steps (copy static files, PostCSS, etc)
+3. Execute other build steps (copy static files, PostCSS, etc)
 
 <Image alt="Directory structures" src="/content-assets/3/dir-structure-build.svg" />
 
