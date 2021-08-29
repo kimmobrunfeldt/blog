@@ -29,6 +29,7 @@ const OrderNum = ({ orderNumber, className, ...otherProps }: OrderNumProps) => (
 );
 
 export function PostSummary({ post }: PostSummaryProps) {
+  const readTimeMin = Math.max(Math.round(post.readTimeMin), 1);
   return (
     <div className="w-full max-w-xl">
       <a
@@ -76,7 +77,7 @@ export function PostSummary({ post }: PostSummaryProps) {
               </time>
               <span aria-hidden>&middot;</span>
               <span className="whitespace-nowrap">
-                {post.readTimeMin} {post.readTimeMin > 1 ? "mins" : "min"}
+                {readTimeMin} {readTimeMin > 1 ? "mins" : "min"}
               </span>
             </div>
             <span aria-hidden className="hidden sm:inline-block">

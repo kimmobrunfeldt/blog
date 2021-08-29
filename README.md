@@ -95,7 +95,7 @@ Production build with approximate times:
 
 ### Editing an existing post
 
-* Grammar check: `zx tools/mdxToText.mjs posts/2-making-diy-gatsby-part-i.mdx | pbcopy` and copy to Google Docs.
+* Grammar check: `npm run mdxToText -- posts/2-making-diy-gatsby-part-i.mdx | pbcopy` and copy to Google Docs.
 * Date?
 * Title changed?
 

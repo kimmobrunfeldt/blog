@@ -2,11 +2,7 @@ import path from "path";
 import fs from "fs";
 import { promisify } from "util";
 import React from "react";
-import remark from "remark";
-import { Node } from "unist";
 import remarkAbbr from "remark-abbr";
-import remarkMdx from "remark-mdx";
-import stripMarkdown from "strip-markdown";
 import ReactDOMServer from "react-dom/server";
 import glob from "glob";
 import matter, { GrayMatterFile } from "gray-matter";
@@ -16,7 +12,6 @@ import renderMdxToString from "next-mdx-remote/render-to-string";
 import { components as mdxComponents } from "src/mdxComponents";
 import { mapSeriesAsync } from "src/generator/util/promise";
 import { getProjectPath, renderTemplate } from "src/generator/util/index";
-import unistUtilFilter from "unist-util-filter";
 import { PostLayout } from "src/components/PostLayout";
 import { pages as PAGES } from "src/pages/_exports";
 import * as COMPONENTS from "src/components";
@@ -33,6 +28,7 @@ import {
 } from "src/types/siteData";
 import { resolveLinks } from "src/generator/util/remark-resolve-links";
 import { Root } from "src/components/Root";
+import { getMarkdownTextStatistics } from "./util/markdown";
 
 type PageComponent = typeof PAGES[0];
 type File = {
@@ -279,30 +275,11 @@ async function getFilesForMdxPages(
   return _.flatten(files);
 }
 
-function removeMdxNodes(): any {
-  const filterFunc = (node: any) => {
-    const typesToRemove = ["import", "export", "comment", "jsx"];
-    const isJsx = node.type.toLowerCase().includes("jsx");
-    const shouldKeep = !isJsx && !typesToRemove.includes(node.type);
-    return shouldKeep as any;
-  };
-
-  return (tree: any) => {
-    return unistUtilFilter(tree, filterFunc as any);
-  };
-}
-
 async function getPostData(
   mdxFilePath: string
 ): Promise<Omit<PostMetadata, "orderNumber">> {
   const { data, content } = await parseMdxFile(mdxFilePath);
-  const plain = remark()
-    .use(remarkMdx as any)
-    .use(removeMdxNodes)
-    .use(stripMarkdown as any)
-    .processSync(content)
-    .toString();
-
+  const stats = await getMarkdownTextStatistics(content);
   const postPath = `/posts/${data.slug}/`;
   const renderedMdxSource = await renderMdxToString(content, {
     components: {
@@ -315,9 +292,6 @@ async function getPostData(
       ],
     },
   });
-  const charCount = plain.replace(/\s+/, "").length;
-  const wordCount = plain.trim().split(/\s+/).length;
-  const readTimeMin = Math.max(Math.round(wordCount / 150), 1);
 
   const validate = new Ajv({ strict: false }).compile(PostMetadataSchema);
 
@@ -329,9 +303,9 @@ async function getPostData(
     tags: data.tags,
     description: data.description,
     path: postPath,
-    charCount,
-    wordCount,
-    readTimeMin,
+    charCount: stats.charCount,
+    wordCount: stats.wordCount,
+    readTimeMin: stats.readTimeMin,
     html: renderedMdxSource.renderedOutput,
   };
 
