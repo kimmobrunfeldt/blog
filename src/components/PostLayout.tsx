@@ -67,6 +67,7 @@ export function PostLayout(props: Props): JSX.Element {
     .filter(isPostPage)
     .map((page) => page.data);
   const { previous, next } = findRelated(props.data, allPosts);
+  const readTimeMin = Math.max(Math.round(props.data.readTimeMin), 1);
 
   return (
     <div className={`grid grid-rows-layout min-h-full w-full ${twGlobals.gap}`}>
@@ -87,8 +88,7 @@ export function PostLayout(props: Props): JSX.Element {
             </div>
             <ul className="text-gray-5">
               <li>
-                {props.data.readTimeMin}{" "}
-                {props.data.readTimeMin > 1 ? "mins" : "min"}
+                {readTimeMin} {readTimeMin > 1 ? "mins" : "min"}
               </li>
               <li>
                 {props.data.wordCount} words, {kFormatter(props.data.charCount)}{" "}
