@@ -6,6 +6,7 @@ import { linkStyles } from "../Link";
 import { Icon } from "@iconify/react";
 import leftIcon from "@iconify/icons-teenyicons/left-circle-outline";
 import rightIcon from "@iconify/icons-teenyicons/right-circle-outline";
+import clockwiseIcon from "@iconify/icons-teenyicons/clockwise-outline";
 import cn from "classnames";
 import Tippy from "@tippyjs/react";
 
@@ -93,8 +94,10 @@ export function Presentic({
   }
 
   function next() {
-    if (canClickNext()) {
-      presentation!.next();
+    if (presentation) {
+      // Calling next will loop over the slides back to start, if the last
+      // slide was reached
+      presentation.next();
     }
   }
 
@@ -132,20 +135,29 @@ export function Presentic({
           </Tippy>
         </li>
         <li>
-          <Tippy content="Next slide">
+          <Tippy content={canClickNext() ? "Next slide" : "Back to start"}>
             <button
               type="button"
-              className={cn(
-                canClickNext() ? linkStyles.rust : disabledCls,
-                "block top-[1px]"
-              )}
-              title={"Next"}
-              aria-label={"Next animation state"}
+              className={cn(linkStyles.rust, "block top-[1px]")}
+              title={canClickNext() ? "Next" : "Back to start"}
+              aria-label={canClickNext() ? "Next slide" : "Back to start"}
               onClick={next}
-              disabled={!canClickNext()}
             >
               <span style={{ fontSize: "1.3em" }}>
-                <Icon className="box-content p-2" icon={rightIcon} />
+                {/* Keep both in DOM at first to load the icon */}
+                <Icon
+                  className={cn("box-content p-2", {
+                    hidden: canClickNext(),
+                  })}
+                  icon={clockwiseIcon}
+                />
+
+                <Icon
+                  className={cn("box-content p-2", {
+                    hidden: !canClickNext(),
+                  })}
+                  icon={rightIcon}
+                />
               </span>
             </button>
           </Tippy>
