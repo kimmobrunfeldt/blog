@@ -1,10 +1,11 @@
 ---
-title: "Do-it-yourself Gatsby – Part II: Module bundling"
+title: "Do-it-yourself Gatsby – Part II: Module bundling"
 slug: "3-diy-gatsby-part-ii"
 createdAt: "2021-09-14"
 coverImage: "/content-assets/3/cover.png"
 description: >
-  A look into how module bundling works in the build system.
+  The second post of a series where we'll look into how this blog was made.
+  Part II focuses on Rollup, task runners, and page generation.
 tags:
   - module bundling
   - rollup
@@ -13,7 +14,7 @@ tags:
   - npm scripts
 ---
 
-*This is the Part II of a series where we'll look into how kimmo.blog works. Part II focuses on how [Rollup](https://rollupjs.org/guide/en/), custom glue code, and templating are used to convert source files into pages that work in all browsers.*
+*This is the Part&nbsp;II of a series where we'll look into how kimmo.blog works. Part&nbsp;II focuses on how [Rollup](https://rollupjs.org/guide/en/), custom glue code, and templating are used to convert source files into pages that work in all browsers.*
 
 *Motivation has been covered in [Writing, or coding](../1-writing-or-coding/).*
 
@@ -86,7 +87,7 @@ This is the stripped-down version of [package.json](https://github.com/kimmobrun
 
 ## Custom code & templates
 
-We've chosen Rollup for module bundling, and [npm run scripts](https://www.keithcirkel.co.uk/how-to-use-npm-as-a-build-tool/) to combine tools together. Next, we'll need custom code that iterates through all React pages and generates their static HTML counterparts. Many details such as rendering MDX pages will be omitted to stick with the topic of Part II.
+We've chosen Rollup for module bundling, and [npm run scripts](https://www.keithcirkel.co.uk/how-to-use-npm-as-a-build-tool/) to combine tools together. Next, we'll need custom code that iterates through all React pages and generates their static HTML counterparts. Many details such as rendering MDX pages will be omitted to stick with the topic of Part&nbsp;II.
 
 Everything starts from [src/generator/render.tsx](https://github.com/kimmobrunfeldt/blog/blob/main/src/generator/render.tsx). Rendering has many steps, but these are the relevant ones:
 
@@ -127,7 +128,7 @@ The list contains all React pages, and which path to serve them from. React page
 
 ### 2. Iterate all pages
 
-For each page in the entrypoints do the following operations.
+For each page in the entrypoints, do the following operations:
 
 **Call `renderToString()`** to render the React page component as HTML.
 
@@ -149,13 +150,13 @@ const html = ReactDOMServer.renderToString(
     <link defer rel="stylesheet" href="{{{ relativePathToRoot }}}styles.css"/>
   </head>
   <body>
-    <div id="react-root">{{{ htmlContent }}}</div>
+    <div id="react-root">{{{ html }}}</div>
     <script type="module" src="{{{ hydrateScriptPath }}}"></script>
   </body>
 </html>
 ```
 
-**Render the page-specific `hydrate.tsx`** using [pageHydrate.tsx.template](https://github.com/kimmobrunfeldt/blog/blob/main/src/templates/pageHydrate.tsx.template).
+**Render the page-specific `hydrate.tsx`** using [pageHydrate.tsx.template](https://github.com/kimmobrunfeldt/blog/blob/main/src/templates/pageHydrate.tsx.template). The templates are Mustache-like templates, but with brackets to avoid conflicts with `objectProp={{ key: "val" }}` React props.
 
 ```tsx
 import React from "react";
@@ -183,18 +184,18 @@ The hydration script will be first saved as a TypeScript file to `output-tmp-rol
 As seen in `pageHydrate.tsx.template`, site-wide data is imported from `site-data.json`. The JSON data is saved in a single file, that can be cached and shared by all pages in the site.
 
 ```tsx
-import fs from 'fs';
+import fs from "fs";
 import { pages } from "src/pages/_exports";
 
 const siteData = await mapAsync(pages, (page) => page.getData());
-await fs.promises.writeFile(JSON.stringify(siteData), 'site-data.json', {
-  encoding: 'utf-8'
+await fs.promises.writeFile(JSON.stringify(siteData), "site-data.json", {
+  encoding: "utf-8"
 });
 ```
 
 ## Putting everything together
 
-With these building blocks, we are able to convert React pages into static HTML counter parts. To recap, `npm run build` will:
+With these building blocks, we are able to convert React pages into static HTML counterparts. To recap, `npm run build` will:
 
 1. Render all pages with `src/generator/render.tsx`
 2. Run Rollup to transpile `output-tmp-rollup/**/*.tsx` files into `output/**/*.js`
@@ -202,6 +203,6 @@ With these building blocks, we are able to convert React pages into static HTML 
 
 <Image alt="Directory structures" src="/content-assets/3/dir-structure-build.svg" />
 
-The build flow is simple in theory, but there are a huge amount of details that end up making the process complicated. If this wasn't complicated enough for you, Part III will cover how MDX pages are rendered.
+The build flow is simple in theory, but there are a huge amount of details that end up making the process complicated.
 
 *[SSR]: Server-side Rendering

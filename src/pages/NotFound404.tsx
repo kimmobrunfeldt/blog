@@ -56,7 +56,7 @@ export async function getData(): Promise<PageMetadata> {
       "software development",
     ],
     description:
-      "Blog about web-focused software development with a hint of design, business, and tiny perfect details. Welcome.",
+      "Blog about web-focused software development with a hint of business, design, and tiny perfect details. Welcome.",
   };
 }
 

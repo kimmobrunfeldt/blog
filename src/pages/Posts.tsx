@@ -19,7 +19,7 @@ function Posts(props: Props): JSX.Element {
       <main className={`grid grid-cols-12 ${twGlobals.gap}`}>
         <div className="col-span-12 sm:col-start-2 sm:col-span-10 md:col-start-2 md:col-span-9 xl:col-start-3 xl:col-span-8">
           <ContentWrapper>
-            <ol reversed className="space-y-20">
+            <ol reversed className="space-y-8">
               {postPages.map((page) => {
                 return (
                   <li className="mb-paragraph" key={page.data.path}>
@@ -50,7 +50,7 @@ export async function getData(): Promise<PageMetadata> {
       "web development",
     ],
     description:
-      "All the latest posts. This blog is about web-focused software development with a hint of design, business, and tiny perfect details.",
+      "All the latest posts. This blog is about web-focused software development with a hint of business, design, and tiny perfect details.",
   };
 }
 

@@ -43,7 +43,7 @@ function Index(props: Props): JSX.Element {
 
             <P>
               This blog is about web-focused software development with a hint of
-              design, business, and tiny perfect details.
+              business, design, and tiny perfect details.
             </P>
             <P>
               I’m Kimmo and I’ve been in the industry for nearly ten years:
@@ -110,7 +110,7 @@ export async function getData(): Promise<PageMetadata> {
       "software development",
     ],
     description:
-      "Blog about web-focused software development with a hint of design, business, and tiny perfect details. Welcome.",
+      "Blog about web-focused software development with a hint of business, design, and tiny perfect details. Welcome.",
   };
 }
 

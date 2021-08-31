@@ -1,10 +1,10 @@
 ---
-title: "Do-it-yourself Gatsby – Part I: SSR"
+title: "Do-it-yourself Gatsby – Part I: SSR"
 slug: "2-diy-gatsby-part-i"
 createdAt: "2021-09-04"
 coverImage: "/content-assets/2/cover.png"
 description: >
-  The first post of a series where we'll look into how this blog was made. Part I covers how static site rendering works in general.
+  The first post of a series where we'll look into how this blog was made. Part I covers how static site rendering works in general.
 tags:
   - static site generator
   - react
@@ -12,7 +12,7 @@ tags:
   - gatsby
 ---
 
-*This is the Part I of a series where we'll look into how kimmo.blog works. Part I covers SSR and static site basics. If you are familiar with the topic, feel free to jump into [Part II: Module bundling](../3-diy-gatsby-part-ii/).*
+*This is the Part&nbsp;I of a series where we'll look into how kimmo.blog works. Part&nbsp;I covers SSR and static site basics. If you are familiar with the topic, feel free to jump into [Part II: Module bundling](../3-diy-gatsby-part-ii/).*
 
 *Motivation has been covered in [Writing, or coding](../1-writing-or-coding/).*
 
@@ -86,15 +86,13 @@ There are benefits, but definitely some downsides too. First of all, the renderi
 
 ## SPA vs static site
 
-In single page apps, the server is usually configured to send the same `index.html` with an empty `<div id="react-root" />` container for any request path. JavaScript would then read `window.location` and decide which page content to render based on the frontend routing. But we don't want that. We want a static site that can be hosted in S3 or any simple file hosting.
+In single page apps, the server is usually configured to send the same `index.html` with an empty `<div id="react-root" />` container for any request path. JavaScript would then read `window.location` and decide which page content to render based on the frontend routing. But we don't want that, because it will inevitably be at least a little bit slower than the server-side rendered content at page load.
 
-The simple hosting comes a price though: each page needs to be able to independently bootstrap the JavaScript UI. In other words static sites can have multiple possible entrypoints into the application.
+In static sites though, each page needs to be able to independently bootstrap the JavaScript UI. In other words static sites can have multiple entrypoints into the application.
 
-I wouldn't say there's a clear winner, just different approaches with varying pros and cons.
+I wouldn't say there's a clear winner, just different approaches with varying pros and cons. Also, I'm going to conveniently just skip the fact that the custom build system doesn't support frontend routing. That will make navigation after initial page load slightly slower than in SPAs. It was a shortcut that I took to make the setup less complex. Hats off to Gatsby for actually pulling it off reliably.
 
-That's static site rendering basics. There's a ton of details that still need to be solved though. In [Part II](../3-diy-gatsby-part-ii/), we'll look into code specifics and module bundling with Rollup.
-
-
+That's static site rendering basics. There's a ton of details that still need to be solved though. In [Part&nbsp;II](../3-diy-gatsby-part-ii/), we'll look into code specifics and module bundling with Rollup.
 
 *[DOM]: Document Object Model
 *[SEO]: Search Engine Optimization

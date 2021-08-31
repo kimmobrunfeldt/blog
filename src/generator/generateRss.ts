@@ -64,7 +64,7 @@ async function main() {
   const feed = new RSS({
     title: "kimmo.blog",
     description:
-      "Blog about web-focused software development with a hint of design, business, and tiny perfect details.",
+      "Blog about web-focused software development with a hint of business, design, and tiny perfect details.",
     feed_url: "https://kimmo.blog/rss.xml",
     site_url: "https://kimmo.blog",
     image_url: "https://kimmo.blog/icon-square.png",
