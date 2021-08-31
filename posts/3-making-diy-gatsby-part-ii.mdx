@@ -156,7 +156,7 @@ const html = ReactDOMServer.renderToString(
 </html>
 ```
 
-**Render the page-specific `hydrate.tsx`** using [pageHydrate.tsx.template](https://github.com/kimmobrunfeldt/blog/blob/main/src/templates/pageHydrate.tsx.template). The templates are Mustache-like templates, but with brackets to avoid conflicts with `objectProp={{ key: "val" }}` React props.
+**Render the page-specific `hydrate.tsx`** using [pageHydrate.tsx.template](https://github.com/kimmobrunfeldt/blog/blob/main/src/templates/pageHydrate.tsx.template). The templates are Mustache-like templates, but with triple braces to avoid conflicts with `objectProp={{ key: "val" }}` React props.
 
 ```tsx
 import React from "react";
@@ -167,6 +167,8 @@ import PageComponent from "{{{ pageImportPath }}}";
 
 // Will be replaced with e.g. "/posts/"
 const pagePath = "{{{ pagePath }}}";
+// Not the best data structure..
+// good thing I don't have 10k blog posts
 const page = siteData.pages.find((page) => page.data.path === pagePath);
 
 window.addEventListener("load", () => {
@@ -181,7 +183,7 @@ The hydration script will be first saved as a TypeScript file to `output-tmp-rol
 
 ### 3. Save metadata to site-data.json
 
-As seen in `pageHydrate.tsx.template`, site-wide data is imported from `site-data.json`. The JSON data is saved in a single file, that can be cached and shared by all pages in the site.
+As seen in `pageHydrate.tsx.template`, site-wide data is imported from `site-data.json`. The data is used to for example render a list of all posts. The JSON data is saved in a single file, that can be cached and shared by all pages in the site.
 
 ```tsx
 import fs from "fs";
