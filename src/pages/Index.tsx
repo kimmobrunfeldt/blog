@@ -25,9 +25,12 @@ type Props = {
 
 function takeLatestPosts(siteData: SiteData, n: number): PostMetadata[] {
   return take(
-    siteData.pages.filter(isPostPage).map((p) => p.data),
+    siteData.pages
+      .filter(isPostPage)
+      .map((p) => p.data)
+      .reverse(),
     n
-  ).reverse();
+  );
 }
 
 function Index(props: Props): JSX.Element {
