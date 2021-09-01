@@ -1,14 +1,10 @@
-// This template hydrates the MDX for the page
-// The hydration process is different from React's hydration
-// and they can both be done inside the same page
-
 import React from "react";
-import hydrate from "next-mdx-remote/hydrate";
+import { MDXRemote } from "src/components/MDXRemote";
 import { PostLayout } from "src/components/PostLayout";
 import { SiteData, PostMetadata } from "src/types/siteData";
 import * as components from "src/components";
+import { info, success, warning, error } from "src/components/Toast";
 import { components as mdxComponents } from "src/mdxComponents";
-import renderedOutput from "{{{ renderedOutputPath }}}";
 import compiledSource from "{{{ compiledSourcePath }}}";
 
 type PostProps = {
@@ -17,16 +13,20 @@ type PostProps = {
 };
 
 function Post(props: PostProps): JSX.Element {
-  const content = hydrate(
-    { renderedOutput, compiledSource },
-    {
-      components: {
-        ...components,
-        ...mdxComponents,
-      },
-    }
+  const mdxRemoteProps = {
+    compiledSource,
+    scope: { info, success, warning, error },
+    components: {
+      ...components,
+      ...mdxComponents,
+    },
+  };
+
+  return (
+    <PostLayout siteData={props.siteData} data={props.pageData}>
+      <MDXRemote {...mdxRemoteProps} />
+    </PostLayout>
   );
-  return <PostLayout siteData={props.siteData} data={props.pageData}>{content}</PostLayout>;
 }
 
 export default Post;

@@ -11,19 +11,11 @@ import * as twGlobals from "src/twGlobals";
 import { PostSummaryLink } from "src/components/PostSummaryLink";
 import { SubscribeEnvelope } from "./SubscribeEnvelope";
 
-type PropsWithChildren = {
+type Props = {
   children: React.ReactNode;
   data: PostMetadata;
   siteData: SiteData;
 };
-
-type PropsWithHtml = {
-  html: string;
-  data: PostMetadata;
-  siteData: SiteData;
-};
-
-type Props = PropsWithChildren | PropsWithHtml;
 
 function findRelated(
   current: PostMetadata,
@@ -100,18 +92,10 @@ export function PostLayout(props: Props): JSX.Element {
             </div>
           </div>
 
-          {"children" in props ? (
-            <article className={mdxContainerCls}>
-              <H>{props.data.title}</H>
-              {props.children}
-            </article>
-          ) : (
-            <article className={mdxContainerCls}>
-              <H>{props.data.title}</H>
-              {/* Frontend hydrate adds an additional div inside article, we must match it */}
-              <div dangerouslySetInnerHTML={{ __html: props.html }} />
-            </article>
-          )}
+          <article className={mdxContainerCls}>
+            <H>{props.data.title}</H>
+            {props.children}
+          </article>
 
           <div
             className={cls(`

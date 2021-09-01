@@ -8,13 +8,11 @@ import glob from "glob";
 import matter, { GrayMatterFile } from "gray-matter";
 import _ from "lodash";
 import Ajv from "ajv";
-import renderMdxToString from "next-mdx-remote/render-to-string";
-import { components as mdxComponents } from "src/mdxComponents";
+import { serialize } from "next-mdx-remote/serialize";
 import { mapSeriesAsync } from "src/generator/util/promise";
 import { getProjectPath, renderTemplate } from "src/generator/util/index";
 import { PostLayout } from "src/components/PostLayout";
 import { pages as PAGES } from "src/pages/_exports";
-import * as COMPONENTS from "src/components";
 import {
   theme as prismTheme,
   darkTheme as prismDarkTheme,
@@ -29,6 +27,7 @@ import {
 import { resolveLinks } from "src/generator/util/remark-resolve-links";
 import { Root } from "src/components/Root";
 import { getMarkdownTextStatistics } from "./util/markdown";
+import { MDXRemote } from "src/components/MDXRemote";
 
 type PageComponent = typeof PAGES[0];
 type File = {
@@ -191,11 +190,7 @@ async function getFilesForOneMdxPage(
     .find((page) => page.data.path === partialPostData.path)!.data.orderNumber;
   const postData = { ...partialPostData, orderNumber };
 
-  const renderedMdxSource = await renderMdxToString(matterMdx.content, {
-    components: {
-      ...COMPONENTS,
-      ...mdxComponents,
-    },
+  const renderedMdxSource = await serialize(matterMdx.content, {
     mdxOptions: {
       remarkPlugins: [[remarkAbbr, {}]],
     },
@@ -203,7 +198,6 @@ async function getFilesForOneMdxPage(
   const relativePathToRoot = "../../";
   const postName = path.basename(mdxFileName, ".mdx").toLowerCase();
   const postPageTsxContent = renderTemplate(TEMPLATES.post, {
-    renderedOutputPath: `./renderedOutput.txt`,
     compiledSourcePath: `./compiledSource.txt`,
     relativePathToRoot,
     slug: postData.slug,
@@ -212,11 +206,9 @@ async function getFilesForOneMdxPage(
   const pageHydrateName = `${postName}-post-hydrate`;
   const htmlContent = ReactDOMServer.renderToString(
     <Root>
-      <PostLayout
-        siteData={siteData}
-        data={postData}
-        html={renderedMdxSource.renderedOutput}
-      />
+      <PostLayout siteData={siteData} data={postData}>
+        <MDXRemote compiledSource={renderedMdxSource.compiledSource} />
+      </PostLayout>
     </Root>
   );
   const html = renderTemplate(TEMPLATES.pageHtml, {
@@ -242,10 +234,6 @@ async function getFilesForOneMdxPage(
   });
 
   return [
-    {
-      path: `posts/${matterMdx.data.slug}/renderedOutput.txt`,
-      content: renderedMdxSource.renderedOutput,
-    },
     {
       path: `posts/${matterMdx.data.slug}/compiledSource.txt`,
       content: renderedMdxSource.compiledSource,
@@ -281,10 +269,8 @@ async function getPostData(
   const { data, content } = await parseMdxFile(mdxFilePath);
   const stats = await getMarkdownTextStatistics(content);
   const postPath = `/posts/${data.slug}/`;
-  const renderedMdxSource = await renderMdxToString(content, {
-    components: {
-      ...COMPONENTS,
-    },
+
+  const renderedMdxSource = await serialize(content, {
     mdxOptions: {
       remarkPlugins: [
         [remarkAbbr, {}],
@@ -292,6 +278,10 @@ async function getPostData(
       ],
     },
   });
+
+  const htmlContent = ReactDOMServer.renderToString(
+    <MDXRemote compiledSource={renderedMdxSource.compiledSource} />
+  );
 
   const validate = new Ajv({ strict: false }).compile(PostMetadataSchema);
 
@@ -306,7 +296,7 @@ async function getPostData(
     charCount: stats.charCount,
     wordCount: stats.wordCount,
     readTimeMin: stats.readTimeMin,
-    html: renderedMdxSource.renderedOutput,
+    html: htmlContent,
   };
 
   const isValid = validate(postData);
