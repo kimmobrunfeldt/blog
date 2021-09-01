@@ -14,7 +14,7 @@ tags:
   - npm scripts
 ---
 
-*This is the Part&nbsp;II of a series where we'll look into how kimmo.blog works. Part&nbsp;II focuses on how [Rollup](https://rollupjs.org/guide/en/), custom glue code, and templating are used to convert source files into pages that work in all browsers.*
+*This is the Part&nbsp;II of a series where we'll look into how kimmo.blog works. Part&nbsp;II focuses on how [Rollup](https://rollupjs.org/guide/en/), custom glue code, and templates are used to convert source files into pages that work in all browsers.*
 
 *Motivation has been covered in [Writing, or coding](../1-writing-or-coding/).*
 
@@ -22,15 +22,15 @@ tags:
 
 <Image alt="Directory structures" src="/content-assets/3/dir-structure-simple.svg" />
 
-We need a way to convert `.tsx` source files into JS bundles. TypeScript compiler does the job in simple cases, but we want a full blown module bundler. _Why?_ Because module bundler is able to handle also other tasks required to build a fast production site: tree shaking, bundle splitting, import aliases, `process.env` replacements, etc.
+We need a way to convert `.tsx` source files into JS bundles. TypeScript compiler does the job in simple cases, but we want a full-blown module bundler. _Why?_ Because module bundler is able to handle also other tasks required to build a fast production site: tree shaking, bundle splitting, import aliases, `process.env` replacements, etc.
 
-I looked into [Webpack](https://webpack.js.org/), [Snowpack](https://www.snowpack.dev/), [Parcel](https://parceljs.org/), [Rollup](https://rollupjs.org/), and [Babel](https://babeljs.io/). They all have a slightly different abstraction levels and philosophies, but Rollup was my choice for the task. Its configuration format is simple and the core is very minimal. Rollup allows precise low-level control over the bundling process.
+I looked into [Webpack](https://webpack.js.org/), [Snowpack](https://www.snowpack.dev/), [Parcel](https://parceljs.org/), [Rollup](https://rollupjs.org/), and [Babel](https://babeljs.io/). They all have slightly different abstraction levels and philosophies, but Rollup was my choice for the task. Its configuration format is simple and the core is very minimal. Rollup allows precise low-level control over the bundling process.
 
-More control usually equals more work. Rollup is no exception. Most tasks that Webpack and other bundlers do by default, need a plugin setup in Rollup. The explicit configuration and minimal core forces you to think about details though.
+More control usually equals more work. Rollup is no exception. Most tasks that Webpack and other bundlers do by default, need a plugin in Rollup. The explicit configuration and minimal core force you to think about details though.
 
 > If a dependency uses Node.js core library such as `crypto`, do you want to polyfill it?
 
-It sounds tedious, but on the other hand it makes you very aware of what's happening under the hood. The payoff is increased understanding of the build process and most probably smaller bundle size.
+It sounds tedious, but on the other hand it makes you very aware of what's happening under the hood. The payoff is increased understanding of the build process and most probably a smaller bundle size.
 
 This is how the simplified [rollup.config.js](https://github.com/kimmobrunfeldt/blog/blob/main/rollup.config.js) for this blog looks like:
 
@@ -69,7 +69,7 @@ find ./output/ -name '*.html' html-validate {} +
 
 The ultimate feature of the approach is that build commands can be copy-pasted to your terminal and easily debugged in steps. The commands tend to get very long, but I don't see that as a huge issue in reality. Long commands can be refactored into separate script files if needed and they focus on doing a single thing well. Bash commands usually operate with regular files, so that's the abstraction you'll mostly need to deal with.
 
-It might get tricky if PowerShell or cmd.exe support is required, but there are tools that make it possible. I created [concurrently](https://github.com/open-cli-tools/concurrently) and [chokidar-cli](https://github.com/open-cli-tools/chokidar-cli) to help the cross-platform setup. There's also other great tools such as [npm-run-all](https://www.npmjs.com/package/npm-run-all), [dotenv](https://www.npmjs.com/package/dotenv), and [onchange](https://github.com/Qard/onchange).
+It might get tricky if PowerShell or cmd.exe support is required, but there are tools that make it possible. I created [concurrently](https://github.com/open-cli-tools/concurrently) and [chokidar-cli](https://github.com/open-cli-tools/chokidar-cli) to help with the cross-platform setup. There are also other great tools such as [npm-run-all](https://www.npmjs.com/package/npm-run-all), [dotenv](https://www.npmjs.com/package/dotenv), and [onchange](https://github.com/Qard/onchange).
 
 This is the stripped-down version of [package.json](https://github.com/kimmobrunfeldt/blog/blob/main/package.json) scripts:
 
