@@ -2,9 +2,6 @@ import React from "react";
 import { MDXRemote } from "src/components/MDXRemote";
 import { PostLayout } from "src/components/PostLayout";
 import { SiteData, PostMetadata } from "src/types/siteData";
-import * as components from "src/components";
-import { info, success, warning, error } from "src/components/Toast";
-import { components as mdxComponents } from "src/mdxComponents";
 import compiledSource from "{{{ compiledSourcePath }}}";
 
 type PostProps = {
@@ -13,18 +10,9 @@ type PostProps = {
 };
 
 function Post(props: PostProps): JSX.Element {
-  const mdxRemoteProps = {
-    compiledSource,
-    scope: { info, success, warning, error },
-    components: {
-      ...components,
-      ...mdxComponents,
-    },
-  };
-
   return (
     <PostLayout siteData={props.siteData} data={props.pageData}>
-      <MDXRemote {...mdxRemoteProps} />
+      <MDXRemote compiledSource={compiledSource} />
     </PostLayout>
   );
 }
