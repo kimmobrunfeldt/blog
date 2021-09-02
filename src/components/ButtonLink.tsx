@@ -36,7 +36,7 @@ export function ButtonLink({
     <a
       {...otherProps}
       className={overrideTw(
-        cn("cursor-pointer underline-effect-button", buttonStyle),
+        cn("inline-block cursor-pointer underline-effect-button", buttonStyle),
         className
       )}
     >
