@@ -20,11 +20,11 @@ tags:
 
 ## What is MDX
 
-[MDX](https://mdxjs.com/) is an amazing markup format. It allows familiar authoring experience with markdown syntax, but with the capability of adding custom React components along the text.
+[MDX](https://mdxjs.com/) is an amazing markup format. It allows familiar authoring experience with markdown syntax, but with the capability of adding custom React components along with the text.
 
 For example this source
 
-```mdx
+```markdown
 **Here's** an _example_ of a [toast](https://ux.stackexchange.com/questions/11998/what-is-a-toast-notification):
 
 <ButtonLink onClick={() => info('This is amazing!')}>Spawn a toast</ButtonLink>
@@ -34,7 +34,13 @@ would render:
 
 **Here's** an _example_ of a [toast](https://ux.stackexchange.com/questions/11998/what-is-a-toast-notification):
 
-<ButtonLink onClick={() => info('This is amazing!')}>Spawn a toast</ButtonLink>
+<div className="mb-paragraph">
+  <ButtonLink onClick={() => info('This is amazing!')}>Spawn a toast</ButtonLink>
+</div>
+
+All this could be achieved with just React components, but it's just not as smooth of a writing experience. Paragraphs would need to be wrapped in `<p>` elements, links would become cumbersome to type, and blah.
+
+Writing blog posts as React components would make the build steps cushy, but we are already on the over-engineering train so let's continue.
 
 ## How MDX works
 
@@ -44,7 +50,7 @@ While MDX is an incredible authoring experience, it comes at the price of comple
 
 > "⚠️ warning: this is not the preferred way to use MDX since it introduces a substantial amount of overhead and dramatically increases bundle sizes. It must not be used with user input that isn’t sandboxed."
 
-To speed things up in browser, next-mdx-remote compiles the MDX to minified JavaScript server-side. In the blog context, server-side means in [src/generator/render.tsx](https://github.com/kimmobrunfeldt/blog/blob/3f15ad33ed431486136b612a32a1b1339596b28b/src/generator/render.tsx#L193). The [serialize](https://github.com/hashicorp/next-mdx-remote/blob/3.0.4/src/serialize.ts#L57) method does this using [@mdx-js/mdx](https://github.com/mdx-js/mdx/blob/v2.0.0-next.9/docs/getting-started/index.mdx#do-it-yourself) and [esbuild](https://github.com/evanw/esbuild) under the hood. The compiled code is a React component that represents the MDX content.
+To speed things up in the browser, next-mdx-remote compiles the MDX to minified JavaScript server-side. In the blog context, server-side means in [src/generator/render.tsx](https://github.com/kimmobrunfeldt/blog/blob/3f15ad33ed431486136b612a32a1b1339596b28b/src/generator/render.tsx#L193). The [serialize](https://github.com/hashicorp/next-mdx-remote/blob/3.0.4/src/serialize.ts#L57) method does this using [@mdx-js/mdx](https://github.com/mdx-js/mdx/blob/v2.0.0-next.9/docs/getting-started/index.mdx#do-it-yourself) and [esbuild](https://github.com/evanw/esbuild) under the hood. The compiled code is a React component that represents the MDX content.
 
 This is how the previous example would be serialized:
 
@@ -129,7 +135,7 @@ export default function PageComponent(props) {
 }
 ```
 
-The purpose of the rendered file is to represent a the React component for a blog post page. The template will be rendered to a verbosely named file: `output/posts/<slug>/<slug>-post.tsx`.
+The purpose of the rendered file is to represent the React component for a blog post page. The template will be rendered to a verbosely named file: `output/posts/<slug>/<slug>-post.tsx`.
 
 It's easier to debug the build process when unique names are used instead of tens of "post.tsx" files.
 
@@ -174,4 +180,4 @@ This functionality used to be just a simple text replacement directly into code,
 
 <Presentic alt="MDX rendering" duration={1200} src="/content-assets/4/dir-structure-build-mdx.svg" />
 
-Each `.mdx` blog post file ends up creating quite some files in the output directory. First TypeScript files and `compileSource.txt` are rendered, then Rollup transpiles the the source code into JS bundles, and finally static assets are copied.
+Each `.mdx` blog post file ends up creating quite some files in the output directory. First TypeScript files and `compileSource.txt` are rendered, then Rollup transpiles the source code into JS bundles, and finally static assets are copied.
