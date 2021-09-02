@@ -1,0 +1,177 @@
+---
+title: "Do-it-yourself Gatsby – Part III: MDX"
+slug: "4-diy-gatsby-part-iii"
+createdAt: "2021-09-03"
+coverImage: "/content-assets/4/cover.png"
+preview: true
+description: >
+  The third post of a series where we'll look into how this blog was made. Part III covers how MDX rendering works.
+tags:
+  - static site generator
+  - react
+  - server-side rendering
+  - mdx
+  - gatsby
+---
+
+*This is the Part&nbsp;III of a series where we'll look into how kimmo.blog works. Part&nbsp;III covers how MDX rendering works.*
+
+*Motivation has been covered in [Writing, or coding](../1-writing-or-coding/).*
+
+## What is MDX
+
+[MDX](https://mdxjs.com/) is an amazing markup format. It allows familiar authoring experience with markdown syntax, but with the capability of adding custom React components along the text.
+
+For example this source
+
+```mdx
+**Here's** an _example_ of a [toast](https://ux.stackexchange.com/questions/11998/what-is-a-toast-notification):
+
+<ButtonLink onClick={() => info('This is amazing!')}>Spawn a toast</ButtonLink>
+```
+
+would render:
+
+**Here's** an _example_ of a [toast](https://ux.stackexchange.com/questions/11998/what-is-a-toast-notification):
+
+<ButtonLink onClick={() => info('This is amazing!')}>Spawn a toast</ButtonLink>
+
+## How MDX works
+
+This blog uses [next-mdx-remote](https://github.com/hashicorp/next-mdx-remote/) library to deal with MDX rendering. It's been designed for Next.js, but it also works well for our use case.
+
+While MDX is an incredible authoring experience, it comes at the price of complexity when done right. By right, I mean with good performance. MDX text can be sent as a raw string to the browser and let it do the heavy lifting with [@mdx-js/runtime](https://mdxjs.com/advanced/runtime#mdx-jsruntime), but that's not recommended:
+
+> "⚠️ warning: this is not the preferred way to use MDX since it introduces a substantial amount of overhead and dramatically increases bundle sizes. It must not be used with user input that isn’t sandboxed."
+
+To speed things up in browser, next-mdx-remote compiles the MDX to minified JavaScript server-side. In the blog context, server-side means in [src/generator/render.tsx](https://github.com/kimmobrunfeldt/blog/blob/3f15ad33ed431486136b612a32a1b1339596b28b/src/generator/render.tsx#L193). The [serialize](https://github.com/hashicorp/next-mdx-remote/blob/3.0.4/src/serialize.ts#L57) method does this using [@mdx-js/mdx](https://github.com/mdx-js/mdx/blob/v2.0.0-next.9/docs/getting-started/index.mdx#do-it-yourself) and [esbuild](https://github.com/evanw/esbuild) under the hood. The compiled code is a React component that represents the MDX content.
+
+This is how the previous example would be serialized:
+
+```tsx
+import { serialize } from "next-mdx-remote/serialize";
+
+const content = `
+**Here's** an _example_ of a [toast](https://ux.stackexchange.com/questions/11998/what-is-a-toast-notification):
+
+<ButtonLink onClick={() => info('This is amazing!')}>Spawn a toast</ButtonLink>
+`;
+
+const { compiledSource } = await serialize(content);
+```
+
+The `compiledSource` is a string that contains the compiled JavaScript. Here's the code unminified and simplified:
+
+```js
+function MDXContent(n) {
+  var e = n,
+    {
+      components: o
+    } = e,
+    t = m(e, ["components"]);
+  return mdx(MDXLayout, c(a(a({}, layoutProps), t), {
+    components: o,
+    mdxType: "MDXLayout"
+  }), mdx("p", null, mdx("strong", {
+    parentName: "p"
+  }, "Here's"), " an ", mdx("em", {
+    parentName: "p"
+  }, "example"), " of a ", mdx("a", a({
+    parentName: "p"
+  }, {
+    href: "https://ux.stackexchange.com/questions/11998/what-is-a-toast-notification"
+  }), "a toast"), ":"), mdx(ButtonLink, {
+    onClick: () => info("This is amazing!"),
+    mdxType: "ButtonLink"
+  }, "Spawn a toast"))
+}
+```
+
+In the browser, [next-mdx-remote evals](https://github.com/hashicorp/next-mdx-remote/blob/3.0.4/src/index.tsx#L97) the code with [Reflect.construct()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/construct), and renders the MDXContent:
+
+
+```tsx
+<MDX.MDXProvider components={components}>
+  <MDXContent />
+</MDX.MDXProvider>
+```
+
+## How the blog renders posts
+
+The high-level flow of rendering `.mdx` pages is similar to React pages, but has more steps:
+
+* Find all `.mdx` blog posts
+* For each blog post:
+    * Parse metadata from [front matter](https://github.com/jonschlinkert/gray-matter)
+    * Render [PostPage.tsx.template](https://github.com/kimmobrunfeldt/blog/blob/main/src/templates/PostPage.tsx.template)
+    * Render [pageHydrate.tsx.template](https://github.com/kimmobrunfeldt/blog/blob/main/src/templates/pageHydrate.tsx.template)
+    * Render [page.html.template](https://github.com/kimmobrunfeldt/blog/blob/main/src/templates/page.html.template) with the HTML generated from MDX and other metadata
+    * Save a `compiledSource.txt` file which contains the MDX content compiled to minified JavaScript.
+
+We'll soon understand why `.txt` extension is used. Let's go through the templates one by one.
+
+### PostPage.tsx.template
+
+The [template](https://github.com/kimmobrunfeldt/blog/blob/main/src/templates/PostPage.tsx.template) looks like this:
+
+```tsx
+import { PostLayout } from "src/components/PostLayout";
+import { MDXRemote } from "src/components/MDXRemote";
+// Will be replaced with "./compiledSource.txt"
+import compiledSource from "{{{ compiledSourcePath }}}";
+
+export default function PageComponent(props) {
+  return (
+    <PostLayout siteData={props.siteData} data={props.pageData}>
+      <MDXRemote compiledSource={compiledSource} />
+    </PostLayout>
+  );
+}
+```
+
+The purpose of the rendered file is to represent a the React component for a blog post page. The template will be rendered to a verbosely named file: `output/posts/<slug>/<slug>-post.tsx`.
+
+It's easier to debug the build process when unique names are used instead of tens of "post.tsx" files.
+
+### pageHydrate.tsx.template
+
+The same template that we used to render React pages in [Part II](../3-diy-gatsby-part-ii/). In React pages, the import refers to a page component in the source code.
+
+```tsx
+import PageComponent from "src/pages/NotFound404";
+```
+
+With MDX pages on the other hand, the `PageComponent` is imported from the dynamically rendered post page file:
+
+```tsx
+import PageComponent from "./1-writing-or-coding-post";
+```
+
+The template is saved to `output/posts/<slug>/<slug>-post-hydrate.tsx`.
+
+### page.html.template
+
+Again, the same template as for React pages. The MDX content will be rendered as HTML in `<body>`. Blog post title, description, and tags from the front matter are rendered into `<head>`:
+
+```html
+<title>Writing, or coding - kimmo.blog</title>
+<meta name="description" content="Do I want to write content, or do I want to code a blog?" />
+<meta name="keywords" content="meta,blog,content creation" />
+```
+
+### compiledSource.txt
+
+As mentioned, this file contains the minified JavaScript that represents the MDX as a React component.
+
+*Why does it have a `.txt` extension then?*
+
+We need to be able to transfer the code exactly as-is to the browser, so that it can be passed as a string to [MDXRemote](https://github.com/hashicorp/next-mdx-remote#apis). A good way to do this is using a [rollup string plugin](https://github.com/TrySound/rollup-plugin-string). The plugin has been [configured](https://github.com/kimmobrunfeldt/blog/blob/3f15ad33ed431486136b612a32a1b1339596b28b/rollup.config.js#L28) so that a TypeScript code can import any `.txt` file, and the exact contents will be assigned to a variable.
+
+This functionality used to be just a simple text replacement directly into code, but that broke with special characters and line breaks.
+
+
+## To recap
+
+<Presentic alt="MDX rendering" duration={1200} src="/content-assets/4/dir-structure-build-mdx.svg" />
+
+Each `.mdx` blog post file ends up creating quite some files in the output directory. First TypeScript files and `compileSource.txt` are rendered, then Rollup transpiles the the source code into JS bundles, and finally static assets are copied.
