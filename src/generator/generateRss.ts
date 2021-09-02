@@ -59,7 +59,10 @@ async function main() {
     mdxFileNames,
   });
 
-  const posts = siteData.pages.filter(isPostPage).map((page) => page.data);
+  const posts = siteData.pages
+    .filter(isPostPage)
+    .filter((p) => !p.data.preview)
+    .map((page) => page.data);
 
   const feed = new RSS({
     title: "kimmo.blog",

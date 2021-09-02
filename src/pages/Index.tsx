@@ -27,6 +27,7 @@ function takeLatestPosts(siteData: SiteData, n: number): PostMetadata[] {
   return take(
     siteData.pages
       .filter(isPostPage)
+      .filter((p) => !p.data.preview)
       .map((p) => p.data)
       .reverse(),
     n

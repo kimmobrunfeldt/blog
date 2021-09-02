@@ -292,6 +292,7 @@ async function getPostData(
     slug: data.slug,
     tags: data.tags,
     description: data.description,
+    preview: data.preview,
     path: postPath,
     charCount: stats.charCount,
     wordCount: stats.wordCount,

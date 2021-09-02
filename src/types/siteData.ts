@@ -7,6 +7,7 @@ export const PostMetadataSchema = Type.Object({
   createdAt: Type.String(),
   coverImage: Type.String(),
   tags: Type.Array(Type.String()),
+  preview: Type.Optional(Type.Boolean()),
   description: Type.String(),
   charCount: Type.Number(),
   wordCount: Type.Number(),
