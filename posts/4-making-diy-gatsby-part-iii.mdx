@@ -14,7 +14,7 @@ tags:
   - gatsby
 ---
 
-*This is the Part&nbsp;III of a series where we'll look into how kimmo.blog works. Part&nbsp;III covers how MDX rendering works.*
+*This is the Part&nbsp;III of a series where we'll look into how kimmo.blog works. Part&nbsp;III covers MDX rendering.*
 
 *Motivation has been covered in [Writing, or coding](../1-writing-or-coding/).*
 
@@ -38,9 +38,9 @@ would render:
   <ButtonLink onClick={() => info('This is amazing!')}>Spawn a toast</ButtonLink>
 </div>
 
-All this could be achieved with just React components, but it's just not as smooth of a writing experience. Paragraphs would need to be wrapped in `<p>` elements, links would become cumbersome to type, and *blah*.
+All this could be achieved with good old React components, but it's just not as smooth of a writing experience. Paragraphs would need to be wrapped in `<p>` elements, links would become cumbersome to type, and *blah*.
 
-Writing blog posts as React components would make the build steps cushy, but we are already on the over-engineering train so let's continue.
+Writing blog posts in React would make the site generator simpler, but we're already on the over-engineering train so let's continue.
 
 ## How MDX works
 
