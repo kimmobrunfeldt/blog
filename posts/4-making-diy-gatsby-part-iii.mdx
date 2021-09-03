@@ -49,7 +49,7 @@ While MDX is an incredible authoring experience, it comes at the price of comple
 
 > "⚠️ warning: this is not the preferred way to use MDX since it introduces a substantial amount of overhead and dramatically increases bundle sizes. It must not be used with user input that isn’t sandboxed."
 
-To speed things up in the browser, next-mdx-remote compiles the MDX to minified JavaScript server-side. In the blog context, server-side means in [src/generator/render.tsx](https://github.com/kimmobrunfeldt/blog/blob/3f15ad33ed431486136b612a32a1b1339596b28b/src/generator/render.tsx#L193). The [serialize](https://github.com/hashicorp/next-mdx-remote/blob/3.0.4/src/serialize.ts#L57) method does this using [@mdx-js/mdx](https://github.com/mdx-js/mdx/blob/v2.0.0-next.9/docs/getting-started/index.mdx#do-it-yourself) and [esbuild](https://github.com/evanw/esbuild) under the hood. The compiled code is a React component that represents the MDX content.
+To speed things up in the browser, next-mdx-remote compiles the MDX to minified JavaScript server-side. The [serialize](https://github.com/hashicorp/next-mdx-remote/blob/3.0.4/src/serialize.ts#L57) method does this using [@mdx-js/mdx](https://github.com/mdx-js/mdx/blob/v2.0.0-next.9/docs/getting-started/index.mdx#do-it-yourself) and [esbuild](https://github.com/evanw/esbuild) under the hood.
 
 This is how the previous example would be serialized:
 
@@ -111,7 +111,7 @@ The high-level flow of rendering `.mdx` pages is similar to React pages, but has
     * Render [PostPage.tsx.template](https://github.com/kimmobrunfeldt/blog/blob/main/src/templates/PostPage.tsx.template)
     * Render [pageHydrate.tsx.template](https://github.com/kimmobrunfeldt/blog/blob/main/src/templates/pageHydrate.tsx.template)
     * Render [page.html.template](https://github.com/kimmobrunfeldt/blog/blob/main/src/templates/page.html.template) with the HTML generated from MDX and other metadata
-    * Save a `compiledSource.txt` file which contains the MDX content compiled to minified JavaScript.
+    * Save a `compiledSource.txt` file which contains the MDX content as minified JavaScript.
 
 We'll soon understand why `.txt` extension is used. Let's go through the templates one by one.
 
@@ -166,7 +166,7 @@ Again, the same template as for React pages. The MDX content will be rendered as
 
 ### compiledSource.txt
 
-As mentioned, this file contains the minified JavaScript that represents the MDX as a React component.
+As mentioned, this file contains the MDX as minified JavaScript.
 
 *Why does it have a `.txt` extension then?*
 
