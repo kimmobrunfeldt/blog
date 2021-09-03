@@ -92,7 +92,7 @@ function MDXContent(n) {
 }
 ```
 
-In the browser, [next-mdx-remote evals](https://github.com/hashicorp/next-mdx-remote/blob/3.0.4/src/index.tsx#L97) the code with [Reflect.construct()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/construct), and renders the MDXContent:
+In the browser, next-mdx-remote [evals](https://github.com/hashicorp/next-mdx-remote/blob/3.0.4/src/index.tsx#L97) the code with [Reflect.construct()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/construct), and renders the MDXContent:
 
 
 ```tsx
@@ -140,7 +140,7 @@ It's easier to debug the build process when unique names are used instead of ten
 
 ### pageHydrate.tsx.template
 
-The same template that we used to render React pages in [Part II](../3-diy-gatsby-part-ii/). In React pages, the import refers to a page component in the source code.
+The same template that we used to render React pages in [Part II](../3-diy-gatsby-part-ii/). In React pages, the import refers to a page component in the source code.
 
 ```tsx
 import PageComponent from "src/pages/NotFound404";
@@ -159,9 +159,17 @@ The template is saved to `output/posts/<slug>/<slug>-post-hydrate.tsx`.
 Again, the same template as for React pages. The MDX content will be rendered as HTML in `<body>`. Blog post title, description, and tags from the front matter are rendered into `<head>`:
 
 ```html
-<title>Writing, or coding - kimmo.blog</title>
-<meta name="description" content="Do I want to write content, or do I want to code a blog?" />
-<meta name="keywords" content="meta,blog,content creation" />
+<html>
+  <head>
+    <title>Writing, or coding - kimmo.blog</title>
+    <meta name="description" content="Do I want to write content, or do I want to code a blog?" />
+    <meta name="keywords" content="meta,blog,content creation" />
+  </head>
+  <body>
+    <div id="react-root"><!-- MDX blog page as HTML --></div>
+    <script type="module" src="./1-writing-or-coding-post-hydrate.js"></script>
+  </body>
+</html>
 ```
 
 ### compiledSource.txt
