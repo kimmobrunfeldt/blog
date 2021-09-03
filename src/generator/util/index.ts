@@ -15,3 +15,7 @@ export function renderTemplate(
   });
   return compiled(varsObj);
 }
+
+export function roundToNearest(numToRound: number, numToRoundTo: number) {
+  return Math.round(numToRound / numToRoundTo) * numToRoundTo;
+}

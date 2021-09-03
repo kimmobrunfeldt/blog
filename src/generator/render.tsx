@@ -10,7 +10,11 @@ import _ from "lodash";
 import Ajv from "ajv";
 import { serialize } from "next-mdx-remote/serialize";
 import { mapSeriesAsync } from "src/generator/util/promise";
-import { getProjectPath, renderTemplate } from "src/generator/util/index";
+import {
+  getProjectPath,
+  renderTemplate,
+  roundToNearest,
+} from "src/generator/util/index";
 import { PostLayout } from "src/components/PostLayout";
 import { pages as PAGES } from "src/pages/_exports";
 import {
@@ -295,7 +299,7 @@ async function getPostData(
     preview: data.preview,
     path: postPath,
     charCount: stats.charCount,
-    wordCount: stats.wordCount,
+    wordCount: roundToNearest(stats.wordCount, 10),
     readTimeMin: stats.readTimeMin,
     html: htmlContent,
   };
