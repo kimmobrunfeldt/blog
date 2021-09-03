@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  isPostPage,
-  PageMetadata,
-  PostMetadata,
-  SiteData,
-} from "src/types/siteData";
+import { PageMetadata, SiteData } from "src/types/siteData";
 import take from "lodash/take";
 import { H } from "src/components/H";
 import { P } from "src/components/P";
@@ -17,22 +12,12 @@ import { ButtonLink } from "src/components/ButtonLink";
 import { ContentWrapper } from "src/components/ContentWrapper";
 import * as twGlobals from "src/twGlobals";
 import { SubscribeEnvelope } from "src/components/SubscribeEnvelope";
+import { getPosts } from "src/util/site";
 
 type Props = {
   siteData: SiteData;
   pageData: PageMetadata;
 };
-
-function takeLatestPosts(siteData: SiteData, n: number): PostMetadata[] {
-  return take(
-    siteData.pages
-      .filter(isPostPage)
-      .filter((p) => !p.data.preview)
-      .map((p) => p.data)
-      .reverse(),
-    n
-  );
-}
 
 function Index(props: Props): JSX.Element {
   return (
@@ -80,7 +65,7 @@ function Index(props: Props): JSX.Element {
         <div className="col-span-12 sm:col-start-2 sm:col-span-10 xl:col-start-3 xl:col-span-6">
           <ContentWrapper className="pt-7">
             <div className="space-y-8">
-              {takeLatestPosts(props.siteData, 3).map((post) => (
+              {take(getPosts(props.siteData).reverse(), 3).map((post) => (
                 <PostSummary key={post.slug} post={post} />
               ))}
             </div>

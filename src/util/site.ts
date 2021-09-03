@@ -1,4 +1,17 @@
 import isFunction from "lodash/isFunction";
+import { AnyPage, PostMetadata, PostPage, SiteData } from "src/types/siteData";
+
+export function isPostPage(page: AnyPage): page is PostPage {
+  return page.type === "post";
+}
+
+export function getPostPages(siteData: SiteData): PostPage[] {
+  return siteData.pages.filter(isPostPage).filter((p) => !p.data.preview);
+}
+
+export function getPosts(siteData: SiteData): PostMetadata[] {
+  return getPostPages(siteData).map((page) => page.data);
+}
 
 function formatOrdinalNumber(integer: number): string {
   const pr = new Intl.PluralRules("en-US", {

@@ -21,13 +21,13 @@ import {
   SiteData,
   PostMetadata,
   AnyPage,
-  isPostPage,
   PostMetadataSchema,
 } from "src/types/siteData";
 import { resolveLinks } from "src/generator/util/remark-resolve-links";
 import { Root } from "src/components/Root";
 import { getMarkdownTextStatistics } from "./util/markdown";
 import { MDXRemote } from "src/components/MDXRemote";
+import { isPostPage } from "src/util/site";
 
 type PageComponent = typeof PAGES[0];
 type File = {

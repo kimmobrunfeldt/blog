@@ -3,10 +3,10 @@ import { promisify } from "util";
 import RSS from "rss";
 import glob from "glob";
 import { URL } from "url";
-import { isPostPage } from "src/types/siteData";
 import { getSiteData } from "src/generator/render";
 import { getProjectPath } from "src/generator/util";
 import cheerio from "cheerio";
+import { getPosts } from "src/util/site";
 
 const globAsync = promisify(glob);
 
@@ -59,10 +59,7 @@ async function main() {
     mdxFileNames,
   });
 
-  const posts = siteData.pages
-    .filter(isPostPage)
-    .filter((p) => !p.data.preview)
-    .map((page) => page.data);
+  const posts = getPosts(siteData);
 
   const feed = new RSS({
     title: "kimmo.blog",

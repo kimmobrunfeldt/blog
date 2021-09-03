@@ -1,10 +1,11 @@
 import React from "react";
-import { isPostPage, PageMetadata, SiteData } from "src/types/siteData";
+import { PageMetadata, SiteData } from "src/types/siteData";
 import { NavBar } from "src/components/NavBar";
 import { Footer } from "src/components/Footer";
 import { PostSummary } from "src/components/PostSummary";
 import { ContentWrapper } from "src/components/ContentWrapper";
 import * as twGlobals from "src/twGlobals";
+import { getPostPages } from "src/util/site";
 
 type Props = {
   siteData: SiteData;
@@ -12,10 +13,7 @@ type Props = {
 };
 
 function Posts(props: Props): JSX.Element {
-  const postPages = props.siteData.pages
-    .filter(isPostPage)
-    .filter((p) => !p.data.preview)
-    .reverse();
+  const postPages = getPostPages(props.siteData).reverse();
   return (
     <div className={`grid grid-rows-layout min-h-full ${twGlobals.gap}`}>
       <NavBar siteData={props.siteData} pageData={props.pageData} />

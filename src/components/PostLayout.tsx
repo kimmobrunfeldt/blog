@@ -1,11 +1,11 @@
 import React from "react";
 import findIndex from "lodash/findIndex";
-import { isPostPage, PostMetadata, SiteData } from "src/types/siteData";
+import { PostMetadata, SiteData } from "src/types/siteData";
 import { Footer } from "src/components/Footer";
 import { ContentWrapper } from "src/components/ContentWrapper";
 import { H } from "src/components/H";
 import { NavBar } from "src/components/NavBar";
-import { kFormatter, formatPostDate } from "src/util/site";
+import { kFormatter, formatPostDate, getPosts } from "src/util/site";
 import { cls } from "src/util/tailwind";
 import * as twGlobals from "src/twGlobals";
 import { PostSummaryLink } from "src/components/PostSummaryLink";
@@ -55,9 +55,7 @@ export function PostLayout(props: Props): JSX.Element {
     xl:row-start-1 xl:col-start-5 xl:col-span-6
   `);
 
-  const allPosts = props.siteData.pages
-    .filter(isPostPage)
-    .map((page) => page.data);
+  const allPosts = getPosts(props.siteData);
   const { previous, next } = findRelated(props.data, allPosts);
   const readTimeMin = Math.max(Math.round(props.data.readTimeMin), 1);
 

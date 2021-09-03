@@ -40,7 +40,3 @@ export type AnyPage = RegularPage | PostPage;
 export type SiteData = {
   pages: AnyPage[];
 };
-
-export function isPostPage(page: AnyPage): page is PostPage {
-  return page.type === "post";
-}
