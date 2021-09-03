@@ -47,7 +47,7 @@ While MDX is an incredible authoring experience, it comes at the price of comple
 
 It is possible to greatly simplify the rendering, if performance is not a concern. MDX text could be sent as a raw string to the browser and it would do the heavy rendering with e.g. [@mdx-js/runtime](https://mdxjs.com/advanced/runtime#mdx-jsruntime). It would make the build pipeline simpler, but other aspects worse:
 
-> "⚠️ warning: this is not the preferred way to use MDX since it introduces a substantial amount of overhead and dramatically increases bundle sizes. It must not be used with user input that isn’t sandboxed."
+> "warning: this is not the preferred way to use MDX since it introduces a substantial amount of overhead and dramatically increases bundle sizes. It must not be used with user input that isn’t sandboxed."
 
 This blog uses [next-mdx-remote](https://github.com/hashicorp/next-mdx-remote/) library to deal with MDX rendering. It's been designed for Next.js, but it also works well for our use case.
 
