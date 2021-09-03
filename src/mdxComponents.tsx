@@ -60,10 +60,10 @@ export const components = {
   strong: (props: any) => <strong className="font-bold" {...props} />,
   em: (props: any) => <em className="italic" {...props} />,
   del: (props: any) => <del className="line-through" {...props} />,
-  li: (props: any) => <li className={`pl-2`} {...props} />,
-  ul: (props: any) => <ul className={`pl-8 list-disc space-y-1`} {...props} />,
+  li: (props: any) => <li className={`md:pl-2`} {...props} />,
+  ul: (props: any) => <ul className={`pl-6 list-disc space-y-1`} {...props} />,
   ol: (props: any) => (
-    <ol className={`pl-8 list-decimal space-y-1`} {...props} />
+    <ol className={`pl-6 list-decimal space-y-1`} {...props} />
   ),
   a: (props: any) => <Link {...props} color="none" />,
   code: (props: any) => <Prism {...props} />,
