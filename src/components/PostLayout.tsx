@@ -103,11 +103,12 @@ export function PostLayout(props: Props): JSX.Element {
 
             <article className={mdxContainerCls}>
               <H>{props.data.title}</H>
-              <div
-                style={{ height: "33vh" }}
-                className="sticky pointer-events-none z-10 top-0 left-1/2 dark:bg-gray-9"
-              >
-                {props.data.layout === "presentic" && (
+
+              {props.data.layout === "presentic" && (
+                <div
+                  style={{ height: "33vh" }}
+                  className="sticky pointer-events-none z-10 top-0 left-1/2 dark:bg-gray-9"
+                >
                   <Presentic
                     slide={slideIndex}
                     alt="Presentation slides"
@@ -115,8 +116,8 @@ export function PostLayout(props: Props): JSX.Element {
                     height="100%"
                     src={props.data.presenticSource}
                   />
-                )}
-              </div>
+                </div>
+              )}
 
               {props.children}
             </article>
