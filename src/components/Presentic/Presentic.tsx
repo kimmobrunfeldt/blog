@@ -95,7 +95,8 @@ export function Presentic({
   if (isControlled) {
     React.useEffect(() => {
       if (presentation) {
-        presentation?.animateToSlide(slide);
+        // TODO: Remove when ts 4.4 upgrade
+        presentation.animateToSlide(slide!);
       }
     }, [slide]);
   }
