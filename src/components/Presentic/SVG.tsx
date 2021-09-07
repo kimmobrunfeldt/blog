@@ -32,7 +32,7 @@ export const SVG = React.forwardRef<HTMLDivElement, SVGProps>((props, ref) => {
     (async () => {
       try {
         setSvg(await getUrl(src));
-      } catch (error) {
+      } catch (error: any) {
         console.error(error);
         setError(error);
       }

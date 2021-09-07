@@ -26,6 +26,7 @@ type PresentationOptions = {
   initialAnimateDuration?: number;
   initialAnimationTriggerTop?: string;
   onSlideChange?: (index: number) => void;
+  disableClickToNext?: boolean;
 };
 
 export function initialize(
@@ -37,6 +38,7 @@ export function initialize(
     initialAnimateToSlide,
     initialAnimateDuration,
     initialAnimationTriggerTop,
+    disableClickToNext,
     onSlideChange,
     ...viewportOptsIn
   } = optsIn;
@@ -46,6 +48,7 @@ export function initialize(
     initialAnimateToSlide,
     initialAnimateDuration,
     onSlideChange: onSlideChange ?? (() => undefined),
+    disableClickToNext: disableClickToNext ?? false,
   };
 
   const presentationRootGroup = svgUtil.cloneSvgAndAddRootGroup(svgElement);
@@ -197,7 +200,9 @@ export function initialize(
   }
 
   function addListeners() {
-    svgElement.addEventListener("click", next);
+    if (!disableClickToNext) {
+      svgElement.addEventListener("click", next);
+    }
 
     if (!isUndefined(observer)) {
       observer.observe(svgElement);

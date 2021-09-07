@@ -12,15 +12,16 @@ import Tippy from "@tippyjs/react";
 
 export type PresenticProps = {
   src: string;
-  width: React.CSSProperties["width"];
-  height: string;
+  width?: React.CSSProperties["width"];
+  height?: string;
   alt: JSX.IntrinsicElements["img"]["alt"];
   title?: JSX.IntrinsicElements["img"]["title"];
+  duration?: number;
+  maxWidth?: React.CSSProperties["maxWidth"];
   initialAnimateToSlide?: number;
   initialAnimateDuration?: number;
   initialAnimationTriggerTop?: string;
-  duration?: number;
-  maxWidth?: React.CSSProperties["maxWidth"];
+  slide?: number;
 };
 
 export function Presentic({
@@ -30,11 +31,14 @@ export function Presentic({
   initialAnimateToSlide,
   initialAnimateDuration = 1600,
   initialAnimationTriggerTop = "30%",
+  slide,
   duration = 800,
   width = "100%",
   maxWidth,
   height,
 }: PresenticProps) {
+  const isControlled = !isUndefined(slide);
+
   const [presentation, setPresentation] = React.useState<
     ReturnType<typeof initialize> | undefined
   >(undefined);
@@ -50,6 +54,7 @@ export function Presentic({
         initialAnimationTriggerTop,
         duration,
         onSlideChange: (index) => setSlideIndex(index),
+        disableClickToNext: isControlled,
       });
 
       const original = {
@@ -87,6 +92,14 @@ export function Presentic({
     };
   }, []);
 
+  if (isControlled) {
+    React.useEffect(() => {
+      if (presentation) {
+        presentation?.animateToSlide(slide);
+      }
+    }, [slide]);
+  }
+
   function canClickNext() {
     return (
       !isUndefined(presentation) && slideIndex <= presentation.length() - 2
@@ -112,58 +125,61 @@ export function Presentic({
   }
 
   const disabledCls = "cursor-not-allowed text-gray-3 dark:text-gray-7";
+  const buttons = (
+    <ul className="flex flex-row justify-end mb-2">
+      <li>
+        <Tippy content="Previous slide">
+          <button
+            type="button"
+            className={cn(
+              canClickPrevious() ? linkStyles.rust : disabledCls,
+              "block top-[1px]"
+            )}
+            title={"Previous"}
+            aria-label={"Previous animation state"}
+            onClick={previous}
+            disabled={!canClickPrevious()}
+          >
+            <span style={{ fontSize: "1.3em" }}>
+              <Icon className="box-content p-2" icon={leftIcon} />
+            </span>
+          </button>
+        </Tippy>
+      </li>
+      <li>
+        <Tippy content={canClickNext() ? "Next slide" : "Back to start"}>
+          <button
+            type="button"
+            className={cn(linkStyles.rust, "block top-[1px]")}
+            title={canClickNext() ? "Next" : "Back to start"}
+            aria-label={canClickNext() ? "Next slide" : "Back to start"}
+            onClick={next}
+          >
+            <span style={{ fontSize: "1.3em" }}>
+              {/* Keep both in DOM at first to load the icon */}
+              <Icon
+                className={cn("box-content p-2", {
+                  hidden: canClickNext(),
+                })}
+                icon={clockwiseIcon}
+              />
+
+              <Icon
+                className={cn("box-content p-2", {
+                  hidden: !canClickNext(),
+                })}
+                icon={rightIcon}
+              />
+            </span>
+          </button>
+        </Tippy>
+      </li>
+    </ul>
+  );
+
   return (
     <div className="mt-12 mb-16 select-none">
-      <ul className="flex flex-row justify-end mb-2">
-        <li>
-          <Tippy content="Previous slide">
-            <button
-              type="button"
-              className={cn(
-                canClickPrevious() ? linkStyles.rust : disabledCls,
-                "block top-[1px]"
-              )}
-              title={"Previous"}
-              aria-label={"Previous animation state"}
-              onClick={previous}
-              disabled={!canClickPrevious()}
-            >
-              <span style={{ fontSize: "1.3em" }}>
-                <Icon className="box-content p-2" icon={leftIcon} />
-              </span>
-            </button>
-          </Tippy>
-        </li>
-        <li>
-          <Tippy content={canClickNext() ? "Next slide" : "Back to start"}>
-            <button
-              type="button"
-              className={cn(linkStyles.rust, "block top-[1px]")}
-              title={canClickNext() ? "Next" : "Back to start"}
-              aria-label={canClickNext() ? "Next slide" : "Back to start"}
-              onClick={next}
-            >
-              <span style={{ fontSize: "1.3em" }}>
-                {/* Keep both in DOM at first to load the icon */}
-                <Icon
-                  className={cn("box-content p-2", {
-                    hidden: canClickNext(),
-                  })}
-                  icon={clockwiseIcon}
-                />
-
-                <Icon
-                  className={cn("box-content p-2", {
-                    hidden: !canClickNext(),
-                  })}
-                  icon={rightIcon}
-                />
-              </span>
-            </button>
-          </Tippy>
-        </li>
-      </ul>
-
+      {!isControlled && buttons}
       <ImmutableSVG
         alt={alt}
         title={title}

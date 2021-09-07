@@ -1,6 +1,10 @@
 import { Type, Static } from "@sinclair/typebox";
 
 export const PostMetadataSchema = Type.Object({
+  layout: Type.Optional(
+    Type.Union([Type.Literal("regular"), Type.Literal("presentic")])
+  ),
+  presenticSource: Type.Optional(Type.String()),
   title: Type.String(),
   slug: Type.String(),
   path: Type.String(),
@@ -13,11 +17,24 @@ export const PostMetadataSchema = Type.Object({
   wordCount: Type.Number(),
   readTimeMin: Type.Number(),
 });
-export type PostMetadata = Static<typeof PostMetadataSchema> & {
-  // Generated dynamically
+
+type CommonPostMetadata = Omit<
+  Static<typeof PostMetadataSchema>,
+  "layout" | "presenticSource"
+> & {
+  // Auto-generated
   orderNumber: number;
   html: string;
 };
+
+export type PostMetadata =
+  | ({
+      layout: "regular";
+    } & CommonPostMetadata)
+  | ({
+      layout: "presentic";
+      presenticSource: string;
+    } & CommonPostMetadata);
 
 export type PageMetadata = {
   title: string;

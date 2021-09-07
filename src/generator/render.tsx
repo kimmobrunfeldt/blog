@@ -192,7 +192,7 @@ async function getFilesForOneMdxPage(
     .filter(isPostPage)
     // Use non-null assertion since the page should be found with path
     .find((page) => page.data.path === partialPostData.path)!.data.orderNumber;
-  const postData = { ...partialPostData, orderNumber };
+  const postData = { ...partialPostData, orderNumber } as PostMetadata;
 
   const renderedMdxSource = await serialize(matterMdx.content, {
     mdxOptions: {
@@ -290,6 +290,8 @@ async function getPostData(
   const validate = new Ajv({ strict: false }).compile(PostMetadataSchema);
 
   const postData = {
+    layout: data.layout ?? "regular",
+    presenticSource: data.presenticSource,
     title: data.title,
     createdAt: data.createdAt,
     coverImage: data.coverImage,
@@ -309,6 +311,11 @@ async function getPostData(
     console.error(validate.errors);
     throw new Error(`Invalid data found for MDX post '${mdxFilePath}'`);
   }
+
+  if (data.layout === "presentic" && !data.presenticSource) {
+    throw new Error("presenticSource must be defined if layout is presentic");
+  }
+
   return postData;
 }
 
@@ -318,18 +325,16 @@ export async function getSiteData(input: SiteInput): Promise<SiteData> {
     page.getData()
   );
 
-  const sortedPostPages: PostMetadata[] = _.orderBy(
-    postPages,
-    ["createdAt"],
-    ["asc"]
-  ).map((page, index) => ({
-    ...page,
-    orderNumber: index + 1,
-  }));
+  const sortedPostPages = _.orderBy(postPages, ["createdAt"], ["asc"]).map(
+    (page, index) => ({
+      ...page,
+      orderNumber: index + 1,
+    })
+  );
   const allPages: AnyPage[] = _.flatten<AnyPage>([
     sortedPostPages.map((pageData) => ({
       type: "post" as const,
-      data: pageData,
+      data: pageData as PostMetadata,
     })),
     regularPages.map((pageData) => ({ type: "page" as const, data: pageData })),
   ]);
