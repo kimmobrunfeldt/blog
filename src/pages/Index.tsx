@@ -87,7 +87,7 @@ function Index(props: Props): JSX.Element {
 
 export async function getData(): Promise<PageMetadata> {
   return {
-    title: "Welcome",
+    title: "Blog about web-focused software development",
     path: "/",
     tags: [
       "blog",
