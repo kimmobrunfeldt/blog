@@ -13,15 +13,71 @@ tags:
   - gatsby
 ---
 
-*This is the Part&nbsp;IV of a series where we'll look into how kimmo.blog works. Part&nbsp;IV focuses on the pros and cons.*
+*This is the Part&nbsp;IV of a series where we'll look into how kimmo.blog works. Part&nbsp;IV focuses on the pros and cons of the setup.*
 
 *Motivation has been covered in [Writing, or coding](../1-writing-or-coding/).*
 
-## Pros
+## DIY vs Gatsby
 
-* Network tab to see bundle sizes
+Before diving into the pros and cons, let's have a classic feature comparison.
+
+Feature | DIY  | Gatsby
+--------|------|---------
+Generates a site | ✔ | ✔
+Performance | ✔ | ✔
+MDX | ✔ | ✔
+Good documentation  | ✕ | ✔
+Frontend routing  | ✕ | ✔
+Custom data sources  | ✕ | ✔
+Plugins  | ✕ | ✔
+Community  | ✕ | ✔
+
+Even though the title hints that we'd build a competitor for Gatsby, we've covered only a small fraction of the whole ecosystem.
+
+Still, I think some parts work better in the DIY solution than what Gatsby offers. By better I mostly mean simpler and that's mostly possible because our version isn't as generic as Gatsby is.
+
+That said, let's go through the good and bad.
+
+## Good #1: Rollup bundling
+
+By leveraging Rollup and [ES6 modules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules), the bundling becomes intuitive. Instead of a single large bundle.js, source code and its dependencies are bundled into separate cachable files.
+
+ES6 modules are used in the development environment as well as in the production site. Because this is a developer-focused blog, I can just ignore the browsers that [don't support ESM](https://caniuse.com/?search=esm).
+
+![Chrome Devtools](/content-assets/5/devtools.jpg)
+
+Dependencies are bundled under `node_modules` directory, for example `/node_modules/lodash.js`. It makes the developer experience familiar, and there's an awesome side-effect: the network panel can be directly used as to see which dependencies weigh the most. No need for an external bundle analyzer tool! This is achieved with Rollup's [manual bundle chunking](https://github.com/kimmobrunfeldt/blog/blob/8e261e0cc61ecf165f2e291afeb6450243cf79ad/rollup.config.js#L58-L75).
+
+Sounds neat, but *why isn't this used more widely?*
+
+One big reason probably is that the approach used to be a performance killer in HTTP/1.1. However, nowadays doing multiple requests is just fine! Multiplexing in HTTP/2 solved the bottleneck. Another reason would be that ES6 modules are a fairly new standard (browser support landed on 2017). Fortunately the tools are improving every day: [Snowpack](https://www.snowpack.dev/) uses ESM exclusively and many frontend packages in npm are shipping only the ESM bundles for the latest versions.
+
+A downside still is that browser needs to do multiple request-response round trips to be able to fetch all relevant files in the module tree. For example:
+
+Browser loads `index.html` _(1)_ which refers to a JS module.
+
+```html
+<script type="module" src="./hydrate.js"></script>
+```
+
+Browser requests `hydrate.js` _(2)_ from the server and parses the file. There's a new import inside.
+
+```tsx
+import App from "./app.js"
+```
+
+Browser requests `app.js` _(3)_ from the server. There's yet another import.
+
+```tsx
+import PostsPage from "./pages/Posts.js"  // (4)
+```
+
+This continues until we've reached the final leaf module in the import tree.
+
+The example had 4 rounds-trips between the browser and the server. The process is slow and web performance tools often report about chaining requests. I'm not sure what the real fix would be but maybe [import maps](https://github.com/WICG/import-maps) will help in the future.
+
+
 * Good learning
-* Rollup
 * Page sizes are small considering what we can achieve with the stack
 
 
@@ -31,3 +87,6 @@ tags:
 * Complicated, I made my own framework with bad documentation and no tests
 * Slow dev iteration
 * Rollup config had some pitfalls
+
+
+*[ESM]: ES6 Modules
