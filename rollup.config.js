@@ -53,7 +53,7 @@ export default {
     dir: "output",
     format: "esm",
     chunkFileNames: "[name].js",
-    sourcemap: "inline",
+    sourcemap: process.env.NODE_ENV !== "production" ? "inline" : undefined,
   },
   manualChunks(id) {
     if (id.includes("node_modules/")) {
