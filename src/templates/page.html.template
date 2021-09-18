@@ -38,9 +38,9 @@
       }
     </script>
 
-    <link defer rel="stylesheet" href="{{{ relativePathToRoot }}}styles.css"/>
-    <link defer rel="stylesheet" href="{{{ relativePathToRoot }}}blobz.css"/>
-    <link defer rel="stylesheet" href="https://use.typekit.net/jyf2raq.css"/>
+    <link rel="stylesheet" rel="preload" as="style" href="{{{ relativePathToRoot }}}styles.css"/>
+    <link rel="stylesheet" rel="preload" as="style" href="{{{ relativePathToRoot }}}blobz.css"/>
+    <link rel="stylesheet" rel="preload" as="style" href="https://use.typekit.net/jyf2raq.css"/>
     {{{ headAfter }}}
   </head>
   <body class="h-full w-full text-gray-8 dark:text-gray-3 overflow-x-hidden dark:bg-gray-9">
@@ -56,6 +56,6 @@
     <div class="h-full w-full overflow-x-hidden" id="react-root">{{{ htmlContent }}}</div>
 
     <script src="https://polyfill.io/v3/polyfill.min.js?features=Intl%2CrequestIdleCallback%2CURLSearchParams%2CURL%2CPromise"></script>
-    <script type="module" src="{{{ hydrateScriptPath }}}"></script>
+    <script async type="module" src="{{{ hydrateScriptPath }}}"></script>
   </body>
 </html>
