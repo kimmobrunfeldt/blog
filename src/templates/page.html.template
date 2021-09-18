@@ -38,9 +38,16 @@
       }
     </script>
 
-    <link rel="stylesheet" rel="preload" as="style" href="{{{ relativePathToRoot }}}styles.css"/>
-    <link rel="stylesheet" rel="preload" as="style" href="{{{ relativePathToRoot }}}blobz.css"/>
-    <link rel="stylesheet" rel="preload" as="style" href="https://use.typekit.net/jyf2raq.css"/>
+    <!-- https://web.dev/defer-non-critical-css/ -->
+    <link rel="preload" href="{{{ relativePathToRoot }}}styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="{{{ relativePathToRoot }}}styles.css"></noscript>
+
+    <link rel="preload" href="{{{ relativePathToRoot }}}blobz.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="{{{ relativePathToRoot }}}blobz.css"></noscript>
+
+    <link rel="preload" href="https://use.typekit.net/jyf2raq.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://use.typekit.net/jyf2raq.css"></noscript>
+
     {{{ headAfter }}}
   </head>
   <body class="h-full w-full text-gray-8 dark:text-gray-3 overflow-x-hidden dark:bg-gray-9">
