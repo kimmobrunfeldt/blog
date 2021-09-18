@@ -39,14 +39,14 @@
     </script>
 
     <!-- Needs to be loaded at start -->
-    <link rel="stylesheet" href="{{{ relativePathToRoot }}}styles.css">
+    <link rel="stylesheet" href="{{{ relativePathToRoot }}}styles.css" />
 
     <!-- https://web.dev/defer-non-critical-css/ -->
-    <link rel="preload" href="{{{ relativePathToRoot }}}blobz.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="{{{ relativePathToRoot }}}blobz.css"></noscript>
+    <link rel="preload" href="{{{ relativePathToRoot }}}blobz.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link rel="stylesheet" href="{{{ relativePathToRoot }}}blobz.css" /></noscript>
 
-    <link rel="preload" href="https://use.typekit.net/jyf2raq.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://use.typekit.net/jyf2raq.css"></noscript>
+    <link rel="preload" href="https://use.typekit.net/jyf2raq.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link rel="stylesheet" href="https://use.typekit.net/jyf2raq.css" /></noscript>
 
     {{{ headAfter }}}
   </head>
