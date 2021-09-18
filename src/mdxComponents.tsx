@@ -67,7 +67,11 @@ export const components = {
   ),
   a: (props: any) => <Link {...props} color="none" />,
   code: (props: any) => <Prism {...props} />,
-  img: (props: any) => <img {...props} />,
+  img: (props: any) => (
+    <a href={props.src} rel="noreferrer" target="_blank">
+      <img {...props} />
+    </a>
+  ),
   hr: (props: any) => (
     <hr
       className="border-gray-2 dark:border-gray-6 border-t-2 w-16 mx-auto my-20"

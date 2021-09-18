@@ -16,9 +16,15 @@ export function Image({
 }: ImageProps) {
   return (
     <div className="my-12">
-      <img className="mx-auto w-full" {...otherImageProps} style={{ maxWidth }}>
-        {children}
-      </img>
+      <a href={otherImageProps.src} rel="noreferrer" target="_blank">
+        <img
+          className="mx-auto w-full"
+          {...otherImageProps}
+          style={{ maxWidth }}
+        >
+          {children}
+        </img>
+      </a>
 
       {caption && <p className="italic text-sm mt-4 text-center">{caption}</p>}
     </div>
