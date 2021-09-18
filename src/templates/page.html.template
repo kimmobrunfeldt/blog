@@ -38,10 +38,10 @@
       }
     </script>
 
-    <!-- https://web.dev/defer-non-critical-css/ -->
-    <link rel="preload" href="{{{ relativePathToRoot }}}styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="{{{ relativePathToRoot }}}styles.css"></noscript>
+    <!-- Needs to be loaded at start -->
+    <link rel="stylesheet" href="{{{ relativePathToRoot }}}styles.css">
 
+    <!-- https://web.dev/defer-non-critical-css/ -->
     <link rel="preload" href="{{{ relativePathToRoot }}}blobz.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="{{{ relativePathToRoot }}}blobz.css"></noscript>
 
