@@ -85,7 +85,7 @@ export function PostSummary({ post }: PostSummaryProps) {
             </span>
 
             <Link className="whitespace-nowrap" href={post.path}>
-              Read more{" "}
+              Read post{" "}
               <Icon className="inline-block" icon={arrowRightOutline} />
             </Link>
           </div>
