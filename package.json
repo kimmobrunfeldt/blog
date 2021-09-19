@@ -9,7 +9,7 @@
     "start": "npm run build:development && concurrently --exit -c blue,yellow,green,cyan,pink -n pages,css,rollup,output,serve 'npm run watch:pages' 'npm run watch:postcss' 'npm run watch:rollup' 'npm run watch:output' 'npm run serve'",
     "serve": "http-server -g -c-1 ./output",
     "rollup": "rollup -c rollup.config.js",
-    "postcss": "postcss src/css/main.css -o output/styles.css --verbose",
+    "postcss": "postcss src/css/main.css -o output/styles.css --verbose && postcss src/css/fonts.css -o output/fonts.css --verbose",
     "copy-public": "cp -r public/* output/",
     "clean": "rm -rf output output-tmp-rollup .tmp && mkdir output output-tmp-rollup .tmp",
     "test": "jest",
