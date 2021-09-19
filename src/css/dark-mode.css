@@ -3,6 +3,5 @@ html.dark img:not(.keep-opacity), html.dark svg:not(.keep-opacity), html.dark vi
 }
 
 .loaded, .loaded * {
-  transition: all 500ms ease;
-  transition-property: box-shadow, background-color, border-color;
+  transition: box-shadow 500ms ease, background-color 500ms ease, border-color 500ms ease;
 }
