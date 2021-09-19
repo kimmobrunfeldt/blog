@@ -18,3 +18,4 @@ export * from "./Video";
 export * from "./Image";
 export * from "./Presentic/Presentic";
 export * from "./InView";
+export * from "./InlineIcon";

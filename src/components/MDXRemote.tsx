@@ -1,5 +1,6 @@
 import React from "react";
 import { MDXRemote as OriginalMDXRemote } from "next-mdx-remote";
+import Tippy, { TippyProps } from "@tippyjs/react";
 import * as components from "src/components";
 import { info, success, warning, error } from "src/components/Toast";
 import { components as mdxComponents } from "src/mdxComponents";
@@ -13,6 +14,15 @@ const icons = {
   tickOutlineIcon,
   xOutlineIcon,
   xSmallOutlineIcon,
+};
+
+const TippyWrapper = ({ children, ...props }: TippyProps) => {
+  // This wrapper is required to solve some issue with forward ref
+  return (
+    <Tippy {...props}>
+      <span>{children}</span>
+    </Tippy>
+  );
 };
 
 export type MDXRemoteProps = {
@@ -29,6 +39,7 @@ export const MDXRemote = ({ compiledSource }: MDXRemoteProps) => {
       ...components,
       ...mdxComponents,
       Icon,
+      Tippy: TippyWrapper,
     },
   };
 

@@ -69,7 +69,7 @@ export const components = {
   code: (props: any) => <Prism {...props} />,
   img: (props: any) => (
     <a href={props.src} rel="noreferrer" target="_blank">
-      <img {...props} />
+      <img {...props} className="my-12" />
     </a>
   ),
   hr: (props: any) => (

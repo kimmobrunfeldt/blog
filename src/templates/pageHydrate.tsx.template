@@ -3,7 +3,6 @@ import ReactDOM from "react-dom";
 import siteData from "{{{ relativePathToRoot }}}site-data.json";
 import PageComponent from "{{{ pageImportPath }}}";
 import { Root } from "src/components/Root";
-import { getKey } from "src/util/storage";
 
 const reactRoot = "react-root";
 const pagePath = "{{{ pagePath }}}";
