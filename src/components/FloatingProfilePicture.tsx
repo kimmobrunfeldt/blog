@@ -117,13 +117,17 @@ export const FloatingProfilePicture = (props: Props) => {
         <div className="floating-map-container-layer-1" />
 
         <div className="floating-map-container">
-          <img
-            className={`transition-opacity duration-500 ${
-              mapHidden ? "opacity-0" : "opacity-100"
-            }`}
-            alt="Map of Helsinki"
-            src={`/map-${stateTheme}.jpg`}
-          />
+          <picture>
+            <source srcSet={`/map-${stateTheme}.webp`} type="image/webp" />
+            <source srcSet={`/map-${stateTheme}.jpg`} type="image/jpeg" />
+            <img
+              className={`transition-opacity duration-500 ${
+                mapHidden ? "opacity-0" : "opacity-100"
+              }`}
+              alt="Map of Helsinki"
+              src={`/map-${stateTheme}.jpg`}
+            />
+          </picture>
         </div>
       </div>
     </div>
