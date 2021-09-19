@@ -87,7 +87,7 @@ function Index(props: Props): JSX.Element {
 
 export async function getData(): Promise<PageMetadata> {
   return {
-    title: "Blog about web-focused software development",
+    title: "Web-focused software development",
     path: "/",
     tags: [
       "blog",
@@ -98,8 +98,11 @@ export async function getData(): Promise<PageMetadata> {
       "frontend",
       "software development",
     ],
-    description:
-      "Blog about web-focused software development with a hint of business, design, and tiny perfect details. Welcome.",
+    description: [
+      "Blog about web-focused software development with a hint of business, design, and tiny perfect details.",
+      "I’m Kimmo and I’ve been in the industry for nearly ten years: consulting enterprises, doing product",
+      "development in different startups, and managing a webshop I co-founded.",
+    ].join(" "),
   };
 }
 
