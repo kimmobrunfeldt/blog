@@ -45,7 +45,7 @@ const makeShadow = (name, rgb) => {
 
 module.exports = {
   mode: "jit",
-  purge: ["./src/**/*.{js,jsx,ts,tsx,html,template}"],
+  purge: ["./src/**/*.{js,jsx,ts,tsx,html,template}", "./posts/**/*.mdx"],
   darkMode: "class",
   theme: {
     fontFamily: {

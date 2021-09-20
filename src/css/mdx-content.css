@@ -50,3 +50,9 @@
 .mdx table tr > *:not(:first-child) {
   @apply pl-8;
 }
+
+/* Image */
+
+.mdx img, .mdx picture {
+  @apply rounded;
+}

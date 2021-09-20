@@ -19,7 +19,9 @@ tags:
 
 ## DIY vs Gatsby
 
-Before diving into details, let's look at a classic feature comparison table.
+The disclaimers in [Part I](../2-diy-gatsby-part-i/) briefly mentioned this already, but it's worth recapping. [Gatsby](https://www.gatsbyjs.com/) is a production-ready tool and in this series we built a small part of it.
+
+Let's look at a classic feature comparison table.
 
 Feature | DIY | Gatsby
 --------|:----:|:-------:
@@ -31,29 +33,28 @@ Custom data sources  | <InlineIcon icon={xSmallOutlineIcon} /> | <InlineIcon ico
 Documentation  | <InlineIcon icon={xSmallOutlineIcon} /> | <InlineIcon icon={tickOutlineIcon} />
 Community  | <InlineIcon icon={xSmallOutlineIcon} /> | <InlineIcon icon={tickOutlineIcon} />
 
-Even though the title hints that we'd build a competitor for Gatsby, we've covered only a small fraction of the whole ecosystem. There are benefits to the custom approach sure, but it's just not a matching offering.
-
-That said, the lack of features also means less code and smaller bundles.
+Our DIY solution has a similar core functionality, but that's about it. Nevertheless, the tool works and successfully builds this blog in a similar way Gatsby would. There are some benefits to the DIY approach, but it's not a direct comparison.
 
 Let's go through the good and the bad.
 
 
-![Positive image](/content-assets/5/jason-leung-60j0UB-Z_Yk-unsplash.jpg)
+<Icon className="mt-32 mb-20 mx-auto text-rust-5" height="55px" icon={moodSmileOutlineIcon} />
 
 ## Good #1: Technical simplicity
 
-My thoughts are biased because I've incrementally gathered knowledge while developing the blog. But even knowing that, I'd still claim that the build system is pretty simple considering how much it does.
+My thoughts are inevitably biased because I've incrementally gathered knowledge of the system while developing the blog. Knowing that, I'd still claim that the build system is pretty simple considering how much it does.
 
-The simplicity has been achieved by keeping the amount of abstraction levels minimal. A few examples:
+The simplicity has been achieved by keeping the amount of abstraction levels to a minimum. A few examples:
 
 * Build steps operate on directories and files
 * Each build step is a narrowly scoped CLI command
-* Modern standards (e.g. ESM) are leveraged
-* Data is plain JSON
+* ES6 modules are leveraged to keep bundling simple
 
-Part of the minimalism can be attributed to the amount of use cases. Gatsby supports thousands of use cases, while the custom-tailored tooling caters just this blog.
+Part of the minimalism can be attributed to the lack of varying use cases. Gatsby supports thousands of use cases, while the custom-tailored tooling caters just this blog.
 
-There's another unfortunate side to this argument though. Simplicity has been obtained with the cost of build speeds. More on this later.
+There's an unfortunate side to this argument though. Simplicity has been obtained with the cost of build speeds. More on that later.
+
+Another counter argument would be that simple doesn't equal easy. While the tooling is simple, it doesn't automatically mean a better choice for a new website. The lack of documentation and community around the tooling would likely total to a net negative in comparison to widely used tools like [Gatsby](https://www.gatsbyjs.com/) or [react-static](https://github.com/react-static/react-static).
 
 ## Good #2: Rollup bundling
 
@@ -61,15 +62,64 @@ By leveraging Rollup and [ES6 modules](https://developer.mozilla.org/en-US/docs/
 
 ES6 modules are used in the development environment as well as in the production site. Because this is a developer-focused blog, I can just ignore the browsers that [don't support ESM](https://caniuse.com/?search=esm).
 
-![Chrome Devtools](/content-assets/5/devtools.jpg)
+Below we have screenshots of what JS files are loaded for kimmo.blog in comparison to [Gatsby starter blog](https://gatsbystarterblogsource.gatsbyjs.io/).
 
-Dependencies are bundled under `node_modules` directory, for example `/node_modules/lodash.js`. It makes the developer experience familiar, and there's an awesome side-effect: the network panel can be directly used as to see which dependencies weigh the most. No need for an external bundle analyzer tool! This is achieved with Rollup's [manual bundle chunking](https://github.com/kimmobrunfeldt/blog/blob/8e261e0cc61ecf165f2e291afeb6450243cf79ad/rollup.config.js#L58-L75).
+<Image caption="kimmo.blog" alt="Chrome Devtools for DIY solution" src="/content-assets/5/devtools.jpg" />
 
-Sounds like a neat setup, *why isn't this used more widely?*
+<Image caption="Gatsby starter blog" alt="Chrome Devtools for Gatsby site" src="/content-assets/5/devtools-gatsby.jpg" />
 
-One big reason probably is that the approach used to be a performance killer in HTTP/1.1. However, nowadays doing multiple requests is just fine! Multiplexing in HTTP/2 solved the network bottleneck. Another reason would be that ES6 modules are a fairly new standard (browser support landed on 2017). Fortunately the tools are improving every day: [Snowpack](https://www.snowpack.dev/) uses ESM exclusively and many frontend packages in npm are shipping only the ESM bundles for the latest versions.
+Although the starter blog doesn't have [many components](https://github.com/gatsbyjs/gatsby-starter-blog/tree/master/src/components), Gatsby uses Webpack to bundle components into a few different bundles. This process leads to less individual JS files, but makes the built JS bundles quite cryptic. Gatsby's [documentation](https://www.gatsbyjs.com/docs/how-code-splitting-works/) explains how bundles are formed in great detail.
 
-A downside that must be mentioned is that browser needs to do multiple request-response round trips to be able to fetch all relevant files in the module tree. For example:
+The DIY version on the other hand has a predictable mapping from source code to built version of the site:
+
+* `src/components/PostSummary.tsx` -> `/PostSummary.js`
+* `import _ from "lodash"` -> `/node_modules/lodash.js`
+
+Nice and simple.
+
+The intuitive bundling is achieved with Rollup's [manual bundle chunking](https://github.com/kimmobrunfeldt/blog/blob/8e261e0cc61ecf165f2e291afeb6450243cf79ad/rollup.config.js#L58-L75). The forementioned `/node_modules/` directory is not a valid npm-usable directory, but just a regular directory that groups bundles of external dependencies under a familiar name.
+
+Bundling modules in the described way has an awesome side-effect: the network panel can be directly used as to see which dependencies weigh the most. No need for an external bundle analyzer tool.
+
+It would be fair to question whether this matters. Production bundles are anyways going to be minified and optimizations should be higher priority than developer convenience in production environmennt. I'd have to agree. But still, if it's possible to get equal performance with a simpler solution, I'll take it!
+
+Sounds like a neat setup! *Why isn't this used more widely?*
+
+One big reason probably is that the approach used to be a performance killer in HTTP/1.1. However, nowadays doing multiple requests is just fine! Multiplexing in HTTP/2 solved the network bottleneck.
+
+Another reason would be that ES6 modules are a fairly new standard: initial browser support landed in 2017. Fortunately the tools are improving every day. [Snowpack](https://www.snowpack.dev/) uses ESM exclusively and many frontend libraries in npm are shipping only the ESM bundles for their latest versions.
+
+There's one more possible reason that will be covered in the cons section.
+
+<Icon className="mt-32 mb-20 mx-auto text-rust-5" height="55px" icon={moodSadOutlineIcon} />
+
+## Bad #1: Messy architectural boundaries
+
+Gatsby as a framework provides boundaries and a well defined API. There's a strict border between your app, and Gatsby framework.
+
+The same cannot be said from the DIY approach. As much as I tried to keep the boundaries clear, the blog code knows too much about the supposedly generic site generator and vice-versa.
+
+## Bad #2: Onboardability
+
+If you'd have to onboard a team member into a website project, would you rather guide them to Gatsby docs or spend days to explain how your custom system works?
+
+The answer is quite clear.
+
+## Bad #3: Everything consumes time
+
+While writing an RSS feed generating script is easy, it still takes development time. In Gatsby, you'd probably install a plugin to do the same, and implement the configuration for it.
+
+Doing everything from scratch has one benefit: you more likely have a deep understanding of how each little part of the site generation works. The advantage lasts during the active development, but creates a maintenance burden for later. You'll have to deal with all the bug fixes. There's no community issue discussion, let alone others creating fixes for bugs or implementations for new features.
+
+## Bad #5: Slow iteration
+
+The downside of simplicity is slowness. Many build systems leverage caching, in-memory data structures, and other complex abstractions to improve performance. Since the DIY approach opted for simpler abstractions, the cost is slower iteration during development.
+
+Everything can be improved, but at the time of writing it took around 8 seconds from code change to seeing it in the browser.
+
+## Bad #6: Chaining requests
+
+While the Rollup ESM setup is a nice, there's a downside. Using imports causes request chaining in the critical render path. The browser needs to do multiple request-response round trips to fetch all relevant files in the module tree. For example:
 
 Browser loads `index.html` _(1)_ which refers to a JS module.
 
@@ -91,29 +141,18 @@ import PostsPage from "./pages/Posts.js"  // (4)
 
 This continues until we've reached the final leaf module in the import tree.
 
-The example had 4 rounds-trips between the browser and the server. The process is slow and web performance tools often report about chaining requests. I'm not sure what the real fix would be but maybe [import maps](https://github.com/WICG/import-maps) will help in the future.
+The example had 4 rounds-trips between the browser and the server. The process is slow and web performance tools often complain about chaining requests for a reason. I'm not sure what the real fix would be but maybe [import maps](https://github.com/WICG/import-maps) will help in the future.
+
+If you know of a solution, I'd be curious to [hear about it](https://twitter.com/kimmobrunfeldt)!
 
 
-## Good #3: Something
+## Conclusion
 
-Something here.
+For me, building a site generator was definitely worth it. I learned about ES6 modules, Gatsby, web performance, and much more. It also supported my goals for the blog and proved to be an enjoyable coding exercise.
 
+For a professional project, I'd definitely recommend adopting more widely used tools like [Gatsby](https://www.gatsbyjs.com/) or [react-static](https://github.com/react-static/react-static).
 
-Another point.
-
-
-![Negative image](/content-assets/5/matthew-brodeur-zEFyM4sulJ8-unsplash.jpg)
-
-
-## Bad #1: Something
-
-This is going to be bad.
-
-* Even though it is technically simpler than Gatsby, it's not easier to onboard anyone else to the project.
-* Complicated, I made my own framework with bad documentation and no tests
-* Slow dev iteration
-* Rollup config had some pitfalls
-
+Sometimes – for personal growth or other reasons – the goal itself is to walk the unwalked path. You can decide if that's the goal or not.
 
 *[ESM]: ES6 Modules
 *[DX]: Developer experience

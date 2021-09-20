@@ -9,11 +9,15 @@ import { Icon } from "@iconify/react";
 import tickOutlineIcon from "@iconify/icons-teenyicons/tick-outline";
 import xOutlineIcon from "@iconify/icons-teenyicons/x-outline";
 import xSmallOutlineIcon from "@iconify/icons-teenyicons/x-small-outline";
+import moodSmileOutlineIcon from "@iconify/icons-teenyicons/mood-smile-outline";
+import moodSadOutlineIcon from "@iconify/icons-teenyicons/mood-sad-outline";
 
 const icons = {
   tickOutlineIcon,
   xOutlineIcon,
   xSmallOutlineIcon,
+  moodSmileOutlineIcon,
+  moodSadOutlineIcon,
 };
 
 const TippyWrapper = ({ children, ...props }: TippyProps) => {
