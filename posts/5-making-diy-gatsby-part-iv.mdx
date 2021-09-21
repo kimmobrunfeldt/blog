@@ -19,7 +19,7 @@ tags:
 
 ## DIY vs Gatsby
 
-The disclaimers in [Part I](../2-diy-gatsby-part-i/) briefly mentioned this already, but it's worth recapping. [Gatsby](https://www.gatsbyjs.com/) is a production-ready tool and in this series we built a small part of it.
+The disclaimers in [Part I](../2-diy-gatsby-part-i/) briefly mentioned this already, but it's worth recapping. [Gatsby](https://www.gatsbyjs.com/) is a production-ready tool and in this series we built only a part of it.
 
 Let's look at a classic feature comparison table.
 
@@ -33,7 +33,7 @@ Custom data sources  | <InlineIcon icon={xSmallOutlineIcon} /> | <InlineIcon ico
 Documentation  | <InlineIcon icon={xSmallOutlineIcon} /> | <InlineIcon icon={tickOutlineIcon} />
 Community  | <InlineIcon icon={xSmallOutlineIcon} /> | <InlineIcon icon={tickOutlineIcon} />
 
-Our DIY solution has a similar core functionality, but that's about it. Nevertheless, the tool works and successfully builds this blog in a similar way Gatsby would. There are some benefits to the DIY approach, but it's not a direct comparison.
+The DIY solution has a similar core functionality, but lacks in some areas. Nevertheless, the tool works and successfully builds this blog in a similar way Gatsby would. The solutions are similar, but it's not a direct comparison.
 
 Let's go through the good and the bad.
 
@@ -52,17 +52,37 @@ The simplicity has been achieved by keeping the amount of abstraction levels to 
 
 Part of the minimalism can be attributed to the lack of varying use cases. Gatsby supports thousands of use cases, while the custom-tailored tooling caters just this blog.
 
-There's an unfortunate side to this argument though. Simplicity has been obtained with the cost of build speeds. More on that later.
+Something to keep in mind is that simple doesn't equal easy. While the tooling is simple, it doesn't automatically mean a better choice for a new website. The lack of documentation and community around the tooling would likely total to a net negative in comparison to widely used tools like [Gatsby](https://www.gatsbyjs.com/) or [react-static](https://github.com/react-static/react-static).
 
-Another counter argument would be that simple doesn't equal easy. While the tooling is simple, it doesn't automatically mean a better choice for a new website. The lack of documentation and community around the tooling would likely total to a net negative in comparison to widely used tools like [Gatsby](https://www.gatsbyjs.com/) or [react-static](https://github.com/react-static/react-static).
+## Good #2: No GraphQL in simple workflows
 
-## Good #2: Rollup bundling
+Some simple tasks are overly complicated to achieve in Gatsby. The reason for that in my opinion is the GraphQL layer. It's applicable when fetching more complex data from a content management system but for not so much for retrieving local .mdx files.
 
-By leveraging Rollup and [ES6 modules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules), the bundling becomes intuitive. Instead of a single large bundle.js, source code and its dependencies are bundled into separate cachable files.
+The [documentation](https://www.gatsbyjs.com/plugins/gatsby-plugin-mdx/) for using MDX content in Gatsby starts with configuring the `gatsby-source-filesystem` plugin. After that you'll spend time reading documentation for accessing the file system via GraphQL queries. It's not a very common pattern after all.
+
+With the DIY system, you access the files as you'd normally do:
+
+```tsx
+const files = await glob("posts/*.mdx");
+```
+
+The argument might not be a fair one, since it's completely understandable why Gatsby does this. They rely on GraphQL as the single tech choice for accessing data. It's a smart choice for the average use case – accessing CMS data via GraphQL is very convenient.
+
+## Good #3: No plugin overuse
+
+Gatsby has over [2500 plugins](https://www.gatsbyjs.com/plugins). Many of them are tremendous and greatly simplify otherwise complicated workflow. For example `gatsby-plugin-image` which adds responsive images automatically on your website.
+
+The downside of plugins are that they introduce an unnecessary Gatsby-specific abstraction on top of the original problem. For example markdown processing is already complicated enough with [remark](https://github.com/remarkjs/remark) and [unified](https://github.com/unifiedjs/unified), but Gatsby makes it even more complicated with its own set of [plugins](https://www.gatsbyjs.com/plugins/gatsby-plugin-sitemap/?=remark).
+
+Even in a Gatsby project, I prefer to solve some problems natively instead of using a plugin. For example it might be simpler to just add manifest.json in the [static directory](https://www.gatsbyjs.com/docs/how-to/images-and-media/static-folder/), instead using the official plugin for that.
+
+## Good #4: Rollup bundling
+
+By leveraging Rollup and [ES6 modules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules), the bundling becomes intuitive. Instead of a single large bundle.js, source code and its dependencies are bundled into separate cacheable files.
 
 ES6 modules are used in the development environment as well as in the production site. Because this is a developer-focused blog, I can just ignore the browsers that [don't support ESM](https://caniuse.com/?search=esm).
 
-Below we have screenshots of what JS files are loaded for kimmo.blog in comparison to [Gatsby starter blog](https://gatsbystarterblogsource.gatsbyjs.io/).
+The screenshots below show which JS files are loaded for kimmo.blog in comparison to [Gatsby starter blog](https://gatsbystarterblogsource.gatsbyjs.io/).
 
 <Image caption="kimmo.blog" alt="Chrome Devtools for DIY solution" src="/content-assets/5/devtools.jpg" />
 
@@ -72,24 +92,29 @@ Although the starter blog doesn't have [many components](https://github.com/gats
 
 The DIY version on the other hand has a predictable mapping from source code to built version of the site:
 
-* `src/components/PostSummary.tsx` -> `/PostSummary.js`
+* `PostSummary.tsx` -> `/PostSummary.js`
+* `Button.tsx` -> `/Button.js`
 * `import _ from "lodash"` -> `/node_modules/lodash.js`
 
-Nice and simple.
+Simple and intuitive.
 
-The intuitive bundling is achieved with Rollup's [manual bundle chunking](https://github.com/kimmobrunfeldt/blog/blob/8e261e0cc61ecf165f2e291afeb6450243cf79ad/rollup.config.js#L58-L75). The forementioned `/node_modules/` directory is not a valid npm-usable directory, but just a regular directory that groups bundles of external dependencies under a familiar name.
+The bundling is achieved with Rollup's [manual bundle chunking](https://github.com/kimmobrunfeldt/blog/blob/8e261e0cc61ecf165f2e291afeb6450243cf79ad/rollup.config.js#L58-L75). The forementioned `/node_modules/` directory is not a valid npm-usable directory, but just a regular directory that groups bundles of external dependencies under a familiar name.
 
 Bundling modules in the described way has an awesome side-effect: the network panel can be directly used as to see which dependencies weigh the most. No need for an external bundle analyzer tool.
 
-It would be fair to question whether this matters. Production bundles are anyways going to be minified and optimizations should be higher priority than developer convenience in production environmennt. I'd have to agree. But still, if it's possible to get equal performance with a simpler solution, I'll take it!
+It would be fair to question whether this actually matters. Production bundles are anyways going to be minified and optimizing software distributables should be higher priority than developer convenience in the production environment. I'd have to agree. But still – if it's possible to get equal performance with a simpler solution, I'll take it!
 
-Sounds like a neat setup! *Why isn't this used more widely?*
+<ChatDiscussion>
+  <ChatMessage from="them">
+    Sounds like a neat setup, but <i>why isn't this used more widely?</i>
+  </ChatMessage>
+</ChatDiscussion>
 
-One big reason probably is that the approach used to be a performance killer in HTTP/1.1. However, nowadays doing multiple requests is just fine! Multiplexing in HTTP/2 solved the network bottleneck.
+One big reason is that ES6 modules are a fairly new standard: initial browser support landed in 2017. Fortunately the tools are improving every day. [Snowpack](https://www.snowpack.dev/) uses ESM exclusively and many frontend libraries in npm are shipping only the ESM bundles for their latest versions.
 
-Another reason would be that ES6 modules are a fairly new standard: initial browser support landed in 2017. Fortunately the tools are improving every day. [Snowpack](https://www.snowpack.dev/) uses ESM exclusively and many frontend libraries in npm are shipping only the ESM bundles for their latest versions.
+Another reason may be that the approach used to be a performance killer in HTTP/1.1. However, nowadays doing multiple requests is just fine! Multiplexing in HTTP/2 solved the network bottleneck.
 
-There's one more possible reason that will be covered in the cons section.
+There's one more possible reason that will be covered in *"Bad #6: Chaining requests"*.
 
 <Icon className="mt-32 mb-20 mx-auto text-rust-5" height="55px" icon={moodSadOutlineIcon} />
 
