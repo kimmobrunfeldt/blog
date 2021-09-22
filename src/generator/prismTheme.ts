@@ -14,7 +14,7 @@ export const theme = {
   highlightAccent: twTheme.colors.warning[4],
   highlightBackground: twTheme.colors.warning[1],
   inlineCodeBackground: twTheme.colors.gray[1],
-  inlineCodeColor: twTheme.colors.gray[5],
+  inlineCodeColor: twTheme.colors.gray[8],
   keywordColor: twTheme.colors.amber[5],
   operatorBackground: twTheme.colors.transparent,
   operatorColor: twTheme.colors.rust[5],
