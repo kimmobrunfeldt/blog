@@ -3,7 +3,7 @@ title: "DIY Gatsby – Part IV: Conclusion"
 slug: "5-diy-gatsby-part-iv"
 createdAt: "2021-09-06"
 coverImage: "/content-assets/5/cover.png"
-preview: true
+preview: false
 description: >
   The fourth post of a series where we'll look into how this blog was made. Part IV focuses on the pros and cons of the DIY build system.
 tags:
@@ -64,17 +64,25 @@ With the DIY system, you access the files as you'd normally do:
 
 ```tsx
 const files = await glob("posts/*.mdx");
+const promises = files.map((name) => fs.promises.readFile(name, {
+  encoding: 'utf8'
+}));
+const contents = await Promise.all(promises);
 ```
 
 The argument might not be a fair one, since it's completely understandable why Gatsby does this. They rely on GraphQL as the single tech choice for accessing data. It's a smart choice for the average use case – accessing CMS data.
 
-## Good #3: No plugin overuse
+
+## Good #3: Skipping an abstraction layer
 
 Gatsby has over [2500 plugins](https://www.gatsbyjs.com/plugins). Many of them are tremendous and greatly simplify otherwise complicated workflows. For example `gatsby-plugin-image` adds responsive images automatically on your website.
 
 The downside of plugins are that they introduce an unnecessary Gatsby-specific abstraction on top of the original problem. For example markdown processing is already complicated enough with [remark](https://github.com/remarkjs/remark) and [unified](https://github.com/unifiedjs/unified), but Gatsby makes it even more complicated with its own set of [plugins](https://www.gatsbyjs.com/plugins/gatsby-plugin-sitemap/?=remark).
 
-Even in a Gatsby project, I prefer to solve some problems natively instead of using a plugin. For example it might be simpler to just add manifest.json in the [static directory](https://www.gatsbyjs.com/docs/how-to/images-and-media/static-folder/), instead using the official plugin for that.
+Even in a Gatsby project, I prefer to solve some problems natively instead of using a plugin. For example it might be simpler to just add a [favicon.svg](https://medium.com/swlh/are-you-using-svg-favicons-yet-a-guide-for-modern-browsers-836a6aace3df) in the [static directory](https://www.gatsbyjs.com/docs/how-to/images-and-media/static-folder/), instead using a plugin for that.
+
+In the DIY setup, we skip an abstraction layer. The code directly uses [rss](https://www.npmjs.com/package/rss), [remark](https://github.com/remarkjs/remark), and other libraries. There's no plugin API or configuration format in the middle to learn.
+
 
 ## Good #4: Rollup bundling
 
@@ -92,9 +100,11 @@ Although the starter blog doesn't have [many components](https://github.com/gats
 
 The DIY version on the other hand has a predictable mapping from source code to built version of the site:
 
-* `PostSummary.tsx` -> `/PostSummary.js`
-* `Button.tsx` -> `/Button.js`
-* `import _ from "lodash"` -> `/node_modules/lodash.js`
+<UnorderedList>
+  <Item><code>PostSummary.tsx</code> → <code>/PostSummary.js</code></Item>
+  <Item><code>Button.tsx</code> → <code>/Button.js</code></Item>
+  <Item><code>import _ from "lodash"</code> → <code>/node_modules/lodash.js</code></Item>
+</UnorderedList>
 
 Simple and intuitive.
 
@@ -116,7 +126,9 @@ Another reason may be that the approach used to be a performance killer in HTTP/
 
 There's one more possible reason that will be covered in *"Bad #6: Chaining requests"*.
 
+
 <Icon className="mt-32 mb-20 mx-auto text-rust-5" height="55px" icon={moodSadOutlineIcon} />
+
 
 ## Bad #1: Messy architectural boundaries
 
@@ -124,25 +136,29 @@ Gatsby as a framework provides boundaries and a well defined API. There's a stri
 
 The same cannot be said from the DIY approach. As much as I tried to keep the boundaries clear, the blog code knows too much about the supposedly generic site generator and vice-versa.
 
-## Bad #2: Onboardability
+
+## Bad #2: Onboarding experience
 
 Let's say you'd have to onboard a new developer into a website project. Would you rather guide them to read Gatsby's documentation or spend days explaining how a custom system works?
 
 I think we both know the answer. There's even a good chance they already have experience with Gatsby!
 
+
 ## Bad #3: Everything consumes time
 
-While writing a script that generates an RSS feed is fairly straightforward, it takes development time. Small tasks add up. You'll end up spending too much time building mundane supporting scripts, instead of the actual website.
+While writing a [script](https://github.com/kimmobrunfeldt/blog/blob/main/src/generator/generateRss.ts) that generates an RSS feed is fairly straightforward, it takes development time. Small tasks add up. A bunch of time is wasted building mundane supporting functionality, instead of the actual website.
 
-You'll more likely end up with a deep understanding of how each little part of the site works. The advantage lasts during the active development, but creates a maintenance burden for later. There's no public issue discussion, let alone contributors opening PRs that help the whole community.
+In the do-it-yourself approach, you'll gain deep understanding about each little part of the build tool. It's likely to be useful knowledge even in the following projects, but unfortunately it doesn't remove the maintenance burden later. There's no public issue discussion, let alone contributors opening PRs that help the whole community.
+
 
 ## Bad #5: Slow iteration
 
-The downside of simplicity is slowness. Many build systems leverage caching, in-memory data structures, and other complex abstractions to improve performance. Since the DIY approach opted for simpler abstractions, the cost is slower iteration during development.
+The downside of simplicity is slowness. Many other build systems leverage [caching](https://www.gatsbyjs.com/docs/debugging-cache-issues/), [in-memory data structures](https://gulpjs.com/docs/en/getting-started/working-with-files/), and [complex abstractions](https://webpack.js.org/concepts/) to improve performance. Since the DIY approach opted for simpler abstractions, the cost is sluggish iteration during development.
 
-Everything can be improved, but at the time of writing it took around 8 seconds from code change to seeing it in the browser.
+The file-based build pipeline could be improved in the future, but at the time of writing it took around 8 seconds from a code change to seeing it in the browser. That's a tad too much.
 
-## Bad #6: Chaining requests
+
+## Bad #6: Chaining requests at page load
 
 While the Rollup ESM setup is a nice, there's a downside. Using imports causes request chaining in the critical render path. The browser needs to do multiple request-response round trips to fetch all relevant files in the module tree. For example:
 
@@ -172,6 +188,29 @@ If you know of a solution, I'd be curious to [hear about it](https://twitter.com
 
 
 ## Conclusion
+
+Let's summarize the arguments above.
+
+Good:
+
+<UnorderedList>
+  <Item icon={thumbUpOutlineIcon}>Technical simplicity</Item>
+  <Item icon={thumbUpOutlineIcon}>No GraphQL for simple workflows</Item>
+  <Item icon={thumbUpOutlineIcon}>Skipping an abstraction layer</Item>
+  <Item icon={thumbUpOutlineIcon}>Rollup bundling</Item>
+</UnorderedList>
+
+
+Bad:
+
+<UnorderedList>
+  <Item icon={thumbDownOutlineIcon}>Messy architectural boundaries</Item>
+  <Item icon={thumbDownOutlineIcon}>Onboarding experience</Item>
+  <Item icon={thumbDownOutlineIcon}>Everything consumes time</Item>
+  <Item icon={thumbDownOutlineIcon}>Slow iteration during development</Item>
+  <Item icon={thumbDownOutlineIcon}>Chaining requests at page load</Item>
+</UnorderedList>
+
 
 For me, building a site generator was definitely worth it. I learned about ES6 modules, Gatsby, web performance, and much more. It also supported my goals for the blog and proved to be an enjoyable coding exercise.
 

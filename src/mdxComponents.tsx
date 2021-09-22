@@ -6,6 +6,11 @@ import { Link } from "src/components/Link";
 import { Prism } from "src/components/Prism";
 import { Abbr } from "src/components/Abbr";
 
+export const classNames = {
+  ul: `pl-6 list-disc space-y-1`,
+  li: `md:pl-2`,
+};
+
 // Note: more complex css is done at mdx-content.css
 export const components = {
   h1: (props: any) => (
@@ -60,8 +65,8 @@ export const components = {
   strong: (props: any) => <strong className="font-bold" {...props} />,
   em: (props: any) => <em className="italic" {...props} />,
   del: (props: any) => <del className="line-through" {...props} />,
-  li: (props: any) => <li className={`md:pl-2`} {...props} />,
-  ul: (props: any) => <ul className={`pl-6 list-disc space-y-1`} {...props} />,
+  li: (props: any) => <li className={classNames.li} {...props} />,
+  ul: (props: any) => <ul className={classNames.ul} {...props} />,
   ol: (props: any) => (
     <ol className={`pl-6 list-decimal space-y-1`} {...props} />
   ),

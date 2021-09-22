@@ -29,5 +29,6 @@ export const darkTheme = {
   baseColor: twTheme.colors.gray[2],
   blockBackground: twTheme.colors.gray[7],
   inlineCodeBackground: twTheme.colors.gray[7],
+  inlineCodeColor: twTheme.colors.gray[3],
   punctuationColor: twTheme.colors.gray[3],
 };
