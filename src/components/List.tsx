@@ -1,5 +1,5 @@
 import React from "react";
-import { InlineIcon } from "src/components/InlineIcon";
+import { Icon } from "@iconify/react";
 import { classNames } from "src/mdxComponents";
 
 export function UnorderedList(props: JSX.IntrinsicElements["ul"]) {
@@ -12,8 +12,15 @@ export type ItemProps = JSX.IntrinsicElements["li"] & {
 
 export function Item({ icon, children }: ItemProps) {
   return (
-    <li className={`${classNames.li} flex flex-row items-center space-x-4`}>
-      {icon && <InlineIcon icon={icon} />}
+    <li className={`${classNames.li} flex flex-row items-start space-x-4`}>
+      {icon && (
+        <Icon
+          className="relative flex-shrink-0 top-[4px]"
+          width={18}
+          height={18}
+          icon={icon}
+        />
+      )}
       <span>{children}</span>
     </li>
   );

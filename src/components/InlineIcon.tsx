@@ -6,6 +6,15 @@ export type InlineIconProps = IconifyIcon & {
   className?: string;
 };
 
-export function InlineIcon({ children, ...otherProps }: InlineIconProps) {
-  return <Icon {...otherProps} className={`inline-block`}></Icon>;
+export function InlineIcon({
+  children,
+  className,
+  ...otherProps
+}: InlineIconProps) {
+  return (
+    <Icon
+      {...otherProps}
+      className={`inline-block ${className ? className : ""}`}
+    ></Icon>
+  );
 }

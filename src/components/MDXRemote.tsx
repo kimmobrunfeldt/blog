@@ -13,6 +13,7 @@ import moodSmileOutlineIcon from "@iconify/icons-teenyicons/mood-smile-outline";
 import moodSadOutlineIcon from "@iconify/icons-teenyicons/mood-sad-outline";
 import thumbUpOutlineIcon from "@iconify/icons-teenyicons/thumb-up-outline";
 import thumbDownOutlineIcon from "@iconify/icons-teenyicons/thumb-down-outline";
+import eyeOutlineIcon from "@iconify/icons-teenyicons/eye-outline";
 
 const icons = {
   tickOutlineIcon,
@@ -22,6 +23,7 @@ const icons = {
   moodSadOutlineIcon,
   thumbUpOutlineIcon,
   thumbDownOutlineIcon,
+  eyeOutlineIcon,
 };
 
 const TippyWrapper = ({ children, ...props }: TippyProps) => {
