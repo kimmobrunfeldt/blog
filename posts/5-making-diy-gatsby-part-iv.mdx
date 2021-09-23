@@ -125,7 +125,7 @@ One big reason is that ES6 modules are a fairly new standard: initial browser su
 
 Another reason may be that the approach used to be a performance killer in HTTP/1.1. However, nowadays doing multiple requests is just fine! Multiplexing in HTTP/2 solved the network bottleneck.
 
-There's one more possible reason that will be covered in *"Bad #6: Chaining requests at page load"*.
+There's one more possible reason that will be covered in *"Bad #5: Chaining requests at page load"*.
 
 
 <Icon className="mt-32 mb-20 mx-auto text-rust-5" height="55px" icon={moodSadOutlineIcon} />
@@ -152,14 +152,14 @@ While writing a [script](https://github.com/kimmobrunfeldt/blog/blob/main/src/ge
 In the do-it-yourself approach, you'll gain a deep understanding of each little part of the build tool. It's likely to be useful knowledge even in the following projects, but unfortunately, it doesn't remove the maintenance burden later. The DIY solution has no public issue discussion, let alone contributors opening PRs that help the whole community.
 
 
-## Bad #5: Slow iteration
+## Bad #4: Slow iteration
 
 The downside of simplicity is slowness. Many other build systems leverage [caching](https://www.gatsbyjs.com/docs/debugging-cache-issues/), [in-memory data structures](https://gulpjs.com/docs/en/getting-started/working-with-files/), and [complex abstractions](https://webpack.js.org/concepts/) to improve performance. Since the DIY approach opted for simpler abstractions, the cost is sluggish iteration during development.
 
 The file-based build pipeline could be improved in the future, but at the time of writing, it took around 8 seconds from a code change to seeing it in the browser. That's a tad too much.
 
 
-## Bad #6: Chaining requests at page load
+## Bad #5: Chaining requests at page load
 
 While the Rollup ESM setup is a pleasant development experience, there's a downside. Using imports causes request chaining in the critical render path. The browser needs to do multiple request-response round trips to fetch all relevant files in the module tree. For example:
 
