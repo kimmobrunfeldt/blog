@@ -147,11 +147,12 @@ export function PostLayout(props: Props): JSX.Element {
                 <div
                   style={{ height: "33vh" }}
                   className={cls(`
-                    sticky pointer-events-none z-10
-                    top-2
-                    border rounded-md border-rust-6 border-opacity-30
-                    p-2 md:p-3
-                    mb-4
+                    sticky
+                    pointer-events-none z-10
+                    top-0
+                    pt-2
+                    pb-2
+                    mb-paragraph
                     -mx-2 md:-mx-4
                     bg-white dark:bg-gray-9
                     xl:-mx-0
@@ -160,15 +161,23 @@ export function PostLayout(props: Props): JSX.Element {
                     xl:ml-8
                   `)}
                 >
-                  <Presentic
-                    className="mt-0 mb-0 h-full"
-                    svgContainerClassName="h-full"
-                    slide={slideIndex}
-                    alt="Presentation slides"
-                    duration={1200}
-                    height="100%"
-                    src={props.data.presenticSource}
-                  />
+                  <div
+                    className={cls(`
+                      h-full w-full
+                      p-2 md:p-3
+                      border rounded-md border-rust-6 border-opacity-30
+                    `)}
+                  >
+                    <Presentic
+                      className="mt-0 mb-0 h-full"
+                      svgContainerClassName="h-full"
+                      slide={slideIndex}
+                      alt="Presentation slides"
+                      duration={1200}
+                      height="100%"
+                      src={props.data.presenticSource}
+                    />
+                  </div>
                 </div>
               )}
 
