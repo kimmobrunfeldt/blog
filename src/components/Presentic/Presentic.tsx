@@ -3,6 +3,7 @@ import isUndefined from "lodash/isUndefined";
 import { ImmutableSVG } from "./SVG";
 import { initialize } from "./presentation";
 import { linkStyles } from "../Link";
+import { overrideTw } from "src/util/site";
 import { Icon } from "@iconify/react";
 import leftIcon from "@iconify/icons-teenyicons/left-circle-outline";
 import rightIcon from "@iconify/icons-teenyicons/right-circle-outline";
@@ -12,6 +13,8 @@ import Tippy from "@tippyjs/react";
 
 export type PresenticProps = {
   src: string;
+  className?: string;
+  svgContainerClassName?: string;
   width?: React.CSSProperties["width"];
   height?: string;
   alt: JSX.IntrinsicElements["img"]["alt"];
@@ -29,13 +32,15 @@ export function Presentic({
   alt,
   title,
   initialAnimateToSlide,
+  className = "",
+  svgContainerClassName = "",
   initialAnimateDuration = 1600,
   initialAnimationTriggerTop = "30%",
   slide,
   duration = 800,
   width = "100%",
   maxWidth,
-  height,
+  height = "100%",
 }: PresenticProps) {
   const isControlled = !isUndefined(slide);
 
@@ -76,7 +81,7 @@ export function Presentic({
             (newPxWidth / original.width) * original.height;
           svgEl.setAttribute("height", `${lockedPxHeight}`);
         } else {
-          svgEl.setAttribute("height", height);
+          svgEl.setAttribute("height", String(height));
         }
       }
 
@@ -179,11 +184,12 @@ export function Presentic({
   );
 
   return (
-    <div className="mt-12 mb-16 select-none">
+    <div className={overrideTw("mt-12 mb-16 select-none", className)}>
       {!isControlled && buttons}
       <ImmutableSVG
         alt={alt}
         title={title}
+        className={svgContainerClassName}
         maxWidth={maxWidth}
         ref={svgRef}
         src={src}

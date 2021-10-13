@@ -55,13 +55,6 @@ export const PostContext = React.createContext(context);
 
 export function PostLayout(props: Props): JSX.Element {
   const [slideIndex, setSlideIndex] = React.useState(context.slideIndex);
-  const mdxContainerCls = cls(`
-    mdx max-w-md
-    row-start-2 col-span-12 col-start-1
-    sm:col-start-2 sm:col-span-10
-    lg:row-start-1 lg:col-start-4 lg:col-span-7
-    xl:row-start-1 xl:col-start-5 xl:col-span-6
-  `);
 
   const allPosts = getPosts(props.siteData);
   const { previous, next } = findRelated(props.data, allPosts);
@@ -72,17 +65,31 @@ export function PostLayout(props: Props): JSX.Element {
       <div
         className={`grid grid-rows-layout min-h-full w-full ${twGlobals.gap}`}
       >
-        <NavBar siteData={props.siteData} pageData={props.data} />
+        <NavBar
+          presenticLayout={props.data.layout === "presentic"}
+          siteData={props.siteData}
+          pageData={props.data}
+        />
         <ContentWrapper className="relative">
           <main className={`grid grid-cols-12 grid-rows-auto ${twGlobals.gap}`}>
             <div
-              className={cls(`
-              text-sm mb-10
-              row-start-1 col-start-1 col-span-12
-              sm:col-start-2 sm:col-span-10
-              lg:col-start-2 lg:col-span-2 lg:mb-0
-              xl:col-start-3 xl:col-span-2
-            `)}
+              className={cls(
+                props.data.layout === "presentic"
+                  ? `
+                    text-sm mb-12
+                    row-start-1 col-start-1 col-span-12
+                    sm:col-start-2 sm:col-span-10
+                    lg:col-start-2 lg:col-span-2 lg:mb-0
+                    xl:col-start-2 xl:col-span-3 xl:mb-12
+                    `
+                  : `
+                    text-sm mb-10
+                    row-start-1 col-start-1 col-span-12
+                    sm:col-start-2 sm:col-span-10
+                    lg:col-start-2 lg:col-span-2 lg:mb-0
+                    xl:col-start-3 xl:col-span-2
+                    `
+              )}
             >
               <div className="text-gray-6 dark:text-gray-4 font-bold text">
                 {formatPostDate(props.data.createdAt)}
@@ -101,15 +108,49 @@ export function PostLayout(props: Props): JSX.Element {
               </div>
             </div>
 
-            <article className={mdxContainerCls}>
-              <H>{props.data.title}</H>
+            <article
+              className={cls(
+                props.data.layout === "presentic"
+                  ? `
+                    mdx max-w-md
+                    row-start-2 col-span-12 col-start-1
+                    sm:col-start-2 sm:col-span-10
+                    lg:row-start-1 lg:col-start-4 lg:col-span-7
+                    xl:row-start-2 xl:col-start-2 xl:col-span-10
+                    xl:grid xl:grid-cols-12 ${twGlobals.gap}
+                    xl:max-w-full
+                    `
+                  : `
+                    mdx max-w-md
+                    row-start-2 col-span-12 col-start-1
+                    sm:col-start-2 sm:col-span-10
+                    lg:row-start-1 lg:col-start-4 lg:col-span-7
+                    xl:row-start-1 xl:col-start-5 xl:col-span-6
+                    `
+              )}
+            >
+              {props.data.layout !== "presentic" && <H>{props.data.title}</H>}
 
               {props.data.layout === "presentic" && (
                 <div
                   style={{ height: "33vh" }}
-                  className="sticky pointer-events-none z-10 top-0 left-1/2 dark:bg-gray-9"
+                  className={cls(`
+                    sticky pointer-events-none z-10
+                    top-2
+                    border rounded-md border-rust-6 border-opacity-30
+                    p-2 md:p-3
+                    mb-4
+                    -mx-2 md:-mx-4
+                    bg-white dark:bg-gray-9
+                    xl:-mx-0
+                    xl:row-start-1 xl:col-start-7 xl:col-span-6
+                    xl:mt-2
+                    xl:top-8
+                  `)}
                 >
                   <Presentic
+                    className="mt-0 mb-0 h-full"
+                    svgContainerClassName="h-full"
                     slide={slideIndex}
                     alt="Presentation slides"
                     duration={1200}
@@ -119,18 +160,34 @@ export function PostLayout(props: Props): JSX.Element {
                 </div>
               )}
 
-              {props.children}
+              <div className="xl:max-w-md xl:row-start-1 xl:col-start-1 xl:col-span-6">
+                {props.data.layout === "presentic" && (
+                  <H className={"hidden xl:block"}>{props.data.title}</H>
+                )}
+                {props.children}
+              </div>
             </article>
 
             <div
-              className={cls(`
-              max-w-md
-              mt-16
-              row-start-3 col-span-12 col-start-1
-              sm:col-start-2 sm:col-span-10
-              lg:row-start-2 lg:col-start-4 lg:col-span-7
-              xl:row-start-2 xl:col-start-5 xl:col-span-6
-            `)}
+              className={cls(
+                props.data.layout === "presentic"
+                  ? `
+                    max-w-md
+                    mt-16
+                    row-start-3 col-span-12 col-start-1
+                    sm:col-start-2 sm:col-span-10
+                    lg:row-start-2 lg:col-start-4 lg:col-span-7
+                    xl:row-start-3 xl:col-start-5 xl:col-span-6
+                    `
+                  : `
+                    max-w-md
+                    mt-16
+                    row-start-3 col-span-12 col-start-1
+                    sm:col-start-2 sm:col-span-10
+                    lg:row-start-2 lg:col-start-4 lg:col-span-7
+                    xl:row-start-2 xl:col-start-5 xl:col-span-6
+                    `
+              )}
             >
               <div className="space-y-6">
                 {next && <PostSummaryLink label="Next" post={next} />}

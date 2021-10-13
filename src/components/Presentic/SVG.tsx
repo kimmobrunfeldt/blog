@@ -1,4 +1,5 @@
 import React from "react";
+import { overrideTw } from "src/util/site";
 
 async function getUrl(url: string): Promise<string> {
   const response = await fetch(url);
@@ -11,6 +12,7 @@ async function getUrl(url: string): Promise<string> {
 
 export type SVGProps = {
   src: string;
+  className?: string;
   alt?: JSX.IntrinsicElements["img"]["alt"];
   title: JSX.IntrinsicElements["img"]["title"];
   maxWidth: React.CSSProperties["maxWidth"];
@@ -23,6 +25,7 @@ export const SVG = React.forwardRef<HTMLDivElement, SVGProps>((props, ref) => {
     alt,
     title,
     maxWidth,
+    className = "",
     errorElement = "Error fetching SVG",
   } = props;
   const [svg, setSvg] = React.useState<string>();
@@ -41,7 +44,7 @@ export const SVG = React.forwardRef<HTMLDivElement, SVGProps>((props, ref) => {
 
   const commonProps = {
     style: { maxWidth },
-    className: "mx-auto",
+    className: overrideTw("mx-auto", className),
   };
 
   if (error) {

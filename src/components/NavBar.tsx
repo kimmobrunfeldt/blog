@@ -13,12 +13,14 @@ import { AppContext } from "src/components/App";
 
 export type NavBarProps = JSX.IntrinsicElements["header"] & {
   className?: string;
+  presenticLayout?: boolean;
   pageData: AnyPage["data"];
   siteData: SiteData;
 };
 
 export function NavBar({
   className = "",
+  presenticLayout = false,
   siteData,
   pageData,
   ...otherProps
@@ -40,12 +42,20 @@ export function NavBar({
     setThemeButtonHidden(false);
   }, [context.theme]);
 
+  const headerXlCls = presenticLayout
+    ? "lg:pt-10 lg:pb-12"
+    : "lg:pt-10 lg:pb-20";
+
+  const divXlCls = presenticLayout
+    ? "sm:col-span-8"
+    : "xl:col-start-3 xl:col-span-8";
+
   return (
     <header
       {...otherProps}
-      className={`grid grid-cols-12 ${twGlobals.gap} pt-3 pb-10 lg:pt-10 lg:pb-20 font-bold ${className}`}
+      className={`grid grid-cols-12 ${twGlobals.gap} pt-3 pb-10 ${headerXlCls} font-bold ${className}`}
     >
-      <div className="col-span-12 sm:col-start-2 sm:col-span-10 xl:col-start-3 xl:col-span-8">
+      <div className={`col-span-12 sm:col-start-2 sm:col-span-10 ${divXlCls}`}>
         <ContentWrapper className="flex flex-row justify-between">
           <ul className="flex flex-row items-center space-x-4">
             <li>
