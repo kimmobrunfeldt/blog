@@ -80,7 +80,7 @@ export function PostLayout(props: Props): JSX.Element {
                     row-start-1 col-start-1 col-span-12
                     sm:col-start-2 sm:col-span-10
                     lg:col-start-2 lg:col-span-2 lg:mb-0
-                    xl:col-start-2 xl:col-span-3 xl:mb-12
+                    xl:col-start-2 xl:col-span-3
                     `
                   : `
                     text-sm mb-10
@@ -106,6 +106,10 @@ export function PostLayout(props: Props): JSX.Element {
               <div className="text-gray-5 mt-4 italic text-xs">
                 {props.data.tags.join(", ")}
               </div>
+
+              {props.data.layout === "presentic" && (
+                <H className={"hidden mb-0 xl:block"}>{props.data.title}</H>
+              )}
             </div>
 
             <article
@@ -117,7 +121,7 @@ export function PostLayout(props: Props): JSX.Element {
                     sm:col-start-2 sm:col-span-10
                     lg:row-start-1 lg:col-start-4 lg:col-span-7
                     xl:row-start-2 xl:col-start-2 xl:col-span-10
-                    xl:grid xl:grid-cols-12 ${twGlobals.gap}
+                    xl:flex xl:flex-row-reverse xl:justify-end
                     xl:max-w-full
                     `
                   : `
@@ -129,7 +133,15 @@ export function PostLayout(props: Props): JSX.Element {
                     `
               )}
             >
-              {props.data.layout !== "presentic" && <H>{props.data.title}</H>}
+              {
+                <H
+                  className={cls(
+                    props.data.layout === "presentic" ? `block xl:hidden` : ``
+                  )}
+                >
+                  {props.data.title}
+                </H>
+              }
 
               {props.data.layout === "presentic" && (
                 <div
@@ -144,8 +156,8 @@ export function PostLayout(props: Props): JSX.Element {
                     bg-white dark:bg-gray-9
                     xl:-mx-0
                     xl:row-start-1 xl:col-start-7 xl:col-span-6
-                    xl:mt-2
                     xl:top-8
+                    xl:ml-8
                   `)}
                 >
                   <Presentic
@@ -161,9 +173,6 @@ export function PostLayout(props: Props): JSX.Element {
               )}
 
               <div className="xl:max-w-md xl:row-start-1 xl:col-start-1 xl:col-span-6">
-                {props.data.layout === "presentic" && (
-                  <H className={"hidden xl:block"}>{props.data.title}</H>
-                )}
                 {props.children}
               </div>
             </article>

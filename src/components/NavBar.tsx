@@ -47,7 +47,7 @@ export function NavBar({
     : "lg:pt-10 lg:pb-20";
 
   const divXlCls = presenticLayout
-    ? "sm:col-span-8"
+    ? "xl:col-start-2 xl:col-span-8"
     : "xl:col-start-3 xl:col-span-8";
 
   return (
