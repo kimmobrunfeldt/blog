@@ -125,7 +125,6 @@ export function initialize(
         }
       },
       {
-        root: document.body,
         rootMargin: `0px 0px -${fromBottom}% 0px`,
         threshold: 0,
       }

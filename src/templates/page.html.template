@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="no-js h-full w-full overflow-y-auto overflow-x-hidden" lang="en">
+<html class="no-js h-full w-full overflow-y-auto" lang="en">
   <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -53,7 +53,7 @@
 
     {{{ headAfter }}}
   </head>
-  <body class="h-full w-full text-gray-8 dark:text-gray-3 overflow-x-hidden dark:bg-gray-9">
+  <body class="h-full w-full text-gray-8 dark:text-gray-3 dark:bg-gray-9">
     <noscript class="absolute px-2 py-1 top-0 right-0 bg-white dark:bg-gray-9">
       <div class="flex flex-row items-center">
         <svg focusable="false" class="h-4 w-4 fill-current text-warning-5" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -63,7 +63,7 @@
       </div>
     </noscript>
 
-    <div class="h-full w-full overflow-x-hidden" id="react-root">{{{ htmlContent }}}</div>
+    <div class="h-full w-full" id="react-root">{{{ htmlContent }}}</div>
 
     <script src="https://polyfill.io/v3/polyfill.min.js?features=Intl%2CrequestIdleCallback%2CURLSearchParams%2CURL%2CPromise"></script>
     <script async type="module" src="{{{ hydrateScriptPath }}}"></script>

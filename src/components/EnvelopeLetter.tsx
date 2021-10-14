@@ -15,7 +15,6 @@ export const EnvelopeLetter = ({
   className,
 }: EnvelopeLetterProps) => {
   const { ref, inView } = useInView({
-    root: globalThis.window ? document.body : undefined,
     threshold: 0.5,
     triggerOnce: true,
   });

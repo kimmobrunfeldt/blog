@@ -10,7 +10,6 @@ export type InViewProps = Omit<IntersectionObserverProps, "children"> & {
 
 export const InView = (propsIn: InViewProps) => {
   const props = {
-    root: globalThis.window ? document.body : undefined,
     threshold: 0.5,
     triggerOnce: true,
     onInView: () => undefined,

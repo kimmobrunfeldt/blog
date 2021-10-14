@@ -70,7 +70,7 @@ export function PostLayout(props: Props): JSX.Element {
           siteData={props.siteData}
           pageData={props.data}
         />
-        <ContentWrapper className="relative">
+        <ContentWrapper>
           <main className={`grid grid-cols-12 grid-rows-auto ${twGlobals.gap}`}>
             <div
               className={cls(
@@ -150,6 +150,7 @@ export function PostLayout(props: Props): JSX.Element {
                   style={{ height: "33vh" }}
                   className={cls(`
                     sticky
+                    flex-1
                     pointer-events-none z-10
                     top-0
                     pt-2
@@ -183,7 +184,7 @@ export function PostLayout(props: Props): JSX.Element {
                 </div>
               )}
 
-              <div className="xl:max-w-md xl:row-start-1 xl:col-start-1 xl:col-span-6">
+              <div className="overflow-x-hidden flex-1 xl:max-w-md xl:w-full">
                 {props.children}
               </div>
             </article>
