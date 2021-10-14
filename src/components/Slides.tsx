@@ -18,15 +18,28 @@ function getCoords(elem: HTMLElement) {
 }
 
 export const Slides = ({ children }: SlidesProps) => {
-  const { setSlideIndex } = React.useContext(PostContext);
+  const { slideIndex, setSlideIndex } = React.useContext(PostContext);
   const childrenRef = React.useRef<HTMLDivElement[]>([]);
   const revPositions = React.useRef<ReturnType<typeof getCoords>[]>([]);
 
   function onScroll() {
-    console.log("sroll", window.scrollY);
-    const index = revPositions.current.findIndex((p) => p.top > window.scrollY);
-    const slide = index !== -1 ? index : 0;
-    setSlideIndex(slide);
+    // Start searching from the bottom-most slide towards up.
+    const index = revPositions.current.findIndex((p) => {
+      const buffer = window.innerHeight / 3;
+      return window.scrollY > p.top - buffer;
+    });
+    const lastIndex = revPositions.current.length - 1;
+    const newSlide =
+      index !== -1
+        ? // Positions is reversed, so reverse indexes too
+          lastIndex - index
+        : // If no matching slides were found -> window is scrolled above first
+          // slide, which means we want first slide to show
+          0;
+
+    if (newSlide !== slideIndex) {
+      setSlideIndex(newSlide);
+    }
   }
 
   const throttledScroll = throttle(onScroll, 100);
@@ -36,13 +49,8 @@ export const Slides = ({ children }: SlidesProps) => {
     const positions = childrenRef.current.map((el) => getCoords(el));
     // Reverse at this stage to minimize work in onScroll
     revPositions.current = positions.reverse();
-    console.log(positions.map((p) => p.top));
 
-    const root = document.querySelector("#react-root");
-    if (!root) {
-      throw new Error("React root not found");
-    }
-
+    onScroll();
     window.addEventListener("scroll", throttledScroll);
     return () => {
       window.removeEventListener("scroll", throttledScroll);
@@ -51,6 +59,7 @@ export const Slides = ({ children }: SlidesProps) => {
 
   return React.Children.map(children, (child, index) => {
     return React.cloneElement(child as any, {
+      active: index === slideIndex,
       ref: (el: HTMLDivElement) => {
         childrenRef.current[index] = el;
       },
@@ -60,10 +69,19 @@ export const Slides = ({ children }: SlidesProps) => {
 
 export type SlideProps = {
   children: React.ReactNode;
+  active: boolean;
 };
 
 export const Slide = React.forwardRef<HTMLDivElement, SlideProps>(
-  (props, ref) => {
-    return <div ref={ref} {...props} />;
+  ({ active, ...props }, ref) => {
+    return (
+      <div
+        ref={ref}
+        className={`transition-opacity duration-700 ${
+          active ? "opacity-100" : "opacity-30"
+        }`}
+        {...props}
+      />
+    );
   }
 );
