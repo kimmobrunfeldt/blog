@@ -12,11 +12,12 @@ tags:
   - test
 ---
 
+<Slides>
+<Slide>
+
 [MDX](https://mdxjs.com/) is an amazing markup format. It allows familiar authoring experience using markdown syntax – with the capability of adding custom React components along with the text.
 
 For example this source
-
-<InView onInView={() => setSlideIndex(0)} />
 
 ```markdown
 **Here's** an _example_ of a [toast](https://ux.stackexchange.com/questions/11998/what-is-a-toast-notification):
@@ -44,7 +45,8 @@ It is possible to greatly simplify the rendering, if performance is not a concer
 
 > "warning: this is not the preferred way to use MDX since it introduces a substantial amount of overhead and dramatically increases bundle sizes. It must not be used with user input that isn’t sandboxed."
 
-<InView onInView={() => setSlideIndex(1)} />
+</Slide>
+<Slide>
 
 This blog uses [next-mdx-remote](https://github.com/hashicorp/next-mdx-remote/) library to deal with MDX rendering. It's been designed for Next.js, but it also works well for our use case.
 
@@ -180,3 +182,6 @@ As mentioned, this file contains the MDX as minified JavaScript.
 We need to be able to transfer the code exactly as-is to the browser, so that it can be passed as a string to [MDXRemote](https://github.com/hashicorp/next-mdx-remote#apis). A good way to do this is using a [rollup string plugin](https://github.com/TrySound/rollup-plugin-string). The plugin has been [configured](https://github.com/kimmobrunfeldt/blog/blob/3f15ad33ed431486136b612a32a1b1339596b28b/rollup.config.js#L28) so that a TypeScript code can import any `.txt` file, and the exact contents will be assigned to a variable.
 
 This functionality used to be just a simple text replacement directly into code, but that broke with special characters and line breaks.
+
+</Slide>
+</Slides>

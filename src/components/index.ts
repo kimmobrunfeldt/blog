@@ -20,3 +20,4 @@ export * from "./Presentic/Presentic";
 export * from "./InView";
 export * from "./InlineIcon";
 export * from "./List";
+export * from "./Slides";

@@ -81,6 +81,7 @@ export function PostLayout(props: Props): JSX.Element {
                     sm:col-start-2 sm:col-span-10
                     lg:col-start-2 lg:col-span-2 lg:mb-0
                     xl:col-start-2 xl:col-span-3
+                    2xl:col-start-3 2xl:col-span-2
                     `
                   : `
                     text-sm mb-10
@@ -123,6 +124,7 @@ export function PostLayout(props: Props): JSX.Element {
                     xl:row-start-2 xl:col-start-2 xl:col-span-10
                     xl:flex xl:flex-row-reverse xl:justify-end
                     xl:max-w-full
+                    2xl:col-start-3 2xl:col-span-9
                     `
                   : `
                     mdx max-w-md
@@ -151,7 +153,7 @@ export function PostLayout(props: Props): JSX.Element {
                     pointer-events-none z-10
                     top-0
                     pt-2
-                    pb-2
+                    pb-1
                     mb-paragraph
                     -mx-2 md:-mx-4
                     bg-white dark:bg-gray-9

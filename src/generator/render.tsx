@@ -27,7 +27,7 @@ import {
   AnyPage,
   PostMetadataSchema,
 } from "src/types/siteData";
-import { resolveLinks } from "src/generator/util/remark-resolve-links";
+import { resolveLinks } from "src/generator/util/remarkResolveLinks";
 import { Root } from "src/components/Root";
 import { getMarkdownTextStatistics } from "./util/markdown";
 import { MDXRemote } from "src/components/MDXRemote";

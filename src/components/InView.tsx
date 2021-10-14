@@ -4,7 +4,7 @@ import {
   IntersectionObserverProps,
 } from "react-intersection-observer";
 
-export type InViewProps = IntersectionObserverProps & {
+export type InViewProps = Omit<IntersectionObserverProps, "children"> & {
   onInView?: () => void;
 };
 
@@ -29,5 +29,9 @@ export const InView = (propsIn: InViewProps) => {
     }
   };
 
-  return <OriginalInView {...restProps} onChange={onChange} />;
+  return (
+    <OriginalInView {...restProps} onChange={onChange}>
+      <div />
+    </OriginalInView>
+  );
 };
