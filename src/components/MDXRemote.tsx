@@ -41,8 +41,8 @@ export type MDXRemoteProps = {
 
 export const MDXRemote = ({ compiledSource }: MDXRemoteProps) => {
   const ctx = React.useContext(PostContext);
-
-  const mdxRemoteProps = {
+  const props = {
+    lazy: true,
     compiledSource,
     scope: { info, success, warning, error, ...icons, ...ctx },
     components: {
@@ -53,5 +53,5 @@ export const MDXRemote = ({ compiledSource }: MDXRemoteProps) => {
     },
   };
 
-  return <OriginalMDXRemote {...mdxRemoteProps} />;
+  return <OriginalMDXRemote {...props} />;
 };

@@ -64,7 +64,7 @@ export const Slides = ({ children }: SlidesProps) => {
     return () => {
       window.removeEventListener("resize", throttledUpdatePositions);
     };
-  }, []);
+  }, [updatePositions]);
 
   React.useEffect(() => {
     updateSlide();
@@ -73,19 +73,20 @@ export const Slides = ({ children }: SlidesProps) => {
     return () => {
       window.removeEventListener("scroll", throttledUpdateSlide);
     };
-  }, []);
+  }, [updateSlide]);
 
-  function updateRefs(containerEl: HTMLDivElement) {
+  const updateRefs = React.useCallback(function updateRefs(
+    containerEl: HTMLDivElement
+  ) {
     if (containerEl) {
       const children = Array.from(containerEl.children) as HTMLDivElement[];
       childrenRef.current = children;
     }
-  }
+  },
+  []);
 
   return <div ref={updateRefs}>{children}</div>;
 };
-
-Slides.whyDidYouRender = true;
 
 export type SlideProps = {
   children: React.ReactNode;
