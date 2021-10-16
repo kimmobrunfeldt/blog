@@ -49,19 +49,22 @@ function findRelated(
 
 const context = {
   slideIndex: 0,
-  setSlideIndex: (() => undefined) as (index: number) => any,
+  setSlideIndex: (() => undefined) as (index: number) => void,
 };
 export const PostContext = React.createContext(context);
 
 export function PostLayout(props: Props): JSX.Element {
   const [slideIndex, setSlideIndex] = React.useState(context.slideIndex);
+  const ctx = React.useMemo(() => ({ slideIndex, setSlideIndex }), [
+    slideIndex,
+  ]);
 
   const allPosts = getPosts(props.siteData);
   const { previous, next } = findRelated(props.data, allPosts);
   const readTimeMin = Math.max(Math.round(props.data.readTimeMin), 1);
 
   return (
-    <PostContext.Provider value={{ slideIndex, setSlideIndex }}>
+    <PostContext.Provider value={ctx}>
       <div
         className={`grid grid-rows-layout min-h-full w-full ${twGlobals.gap}`}
       >
@@ -174,7 +177,7 @@ export function PostLayout(props: Props): JSX.Element {
                     <Presentic
                       className="mt-0 mb-0 h-full"
                       svgContainerClassName="h-full"
-                      slide={slideIndex}
+                      slide={ctx.slideIndex}
                       alt="Presentation slides"
                       duration={1200}
                       height="100%"

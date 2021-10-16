@@ -43,6 +43,9 @@ export const App = ({ children }: Props) => {
   const [localStorageTheme, setLocalStorageTheme] = useLocalStorage("theme");
 
   const theme = localStorageTheme === null ? osPreference : localStorageTheme;
+  const ctx = React.useMemo(() => ({ theme, setTheme: setLocalStorageTheme }), [
+    theme,
+  ]);
 
   React.useEffect(() => {
     setThemeClass(theme);
@@ -64,7 +67,7 @@ export const App = ({ children }: Props) => {
   }, []);
 
   return (
-    <AppContext.Provider value={{ theme, setTheme: setLocalStorageTheme }}>
+    <AppContext.Provider value={ctx}>
       <Toaster />
       {children}
     </AppContext.Provider>
