@@ -159,6 +159,7 @@ export function PostLayout(props: Props): JSX.Element {
                     pt-2
                     pb-1
                     mb-paragraph
+                    max-w-[750px]
                     -mx-2 md:-mx-4
                     bg-white dark:bg-gray-9
                     xl:-mx-0
