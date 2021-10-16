@@ -40,18 +40,19 @@ export type MDXRemoteProps = {
 };
 
 export const MDXRemote = ({ compiledSource }: MDXRemoteProps) => {
-  const ctx = React.useContext(PostContext);
-  const props = {
+  const [props, _setProps] = React.useState({
     lazy: true,
     compiledSource,
-    scope: { info, success, warning, error, ...icons, ...ctx },
+    // Note: if the scope object changes (===), mdx content is remounted
+    //       because the content is reconstructed with Reflect.construct
+    scope: { info, success, warning, error, ...icons },
     components: {
       ...components,
       ...mdxComponents,
       Icon,
       Tippy: TippyWrapper,
     },
-  };
+  });
 
   return <OriginalMDXRemote {...props} />;
 };
