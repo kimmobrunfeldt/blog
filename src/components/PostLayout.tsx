@@ -164,7 +164,7 @@ export function PostLayout(props: Props): JSX.Element {
                     bg-white dark:bg-gray-9
                     xl:-mx-0
                     xl:row-start-1 xl:col-start-7 xl:col-span-6
-                    xl:top-8
+                    xl:top-[20%]
                     xl:ml-8
                   `)}
                 >

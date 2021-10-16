@@ -1,8 +1,8 @@
 import React from "react";
 import throttle from "lodash/throttle";
 import { PostContext } from "./PostLayout";
-import isArray from "lodash/isArray";
-import { isFunction } from "lodash";
+
+const SCREEN_XL_WIDTH = 1280;
 
 export type SlidesProps = {
   children: React.Component;
@@ -28,7 +28,10 @@ export const Slides = ({ children }: SlidesProps) => {
     // Start searching from the bottom-most slide towards up.
     const index = revPositions.current.findIndex((p) => {
       // Set next slide when content reaches top 1/3 of viewport
-      const buffer = window.innerHeight / 3;
+      const buffer =
+        window.innerWidth > SCREEN_XL_WIDTH
+          ? window.innerHeight / 2
+          : window.innerHeight - window.innerHeight / 3;
       return window.scrollY > p.top - buffer;
     });
     const lastIndex = revPositions.current.length - 1;
@@ -41,11 +44,10 @@ export const Slides = ({ children }: SlidesProps) => {
           0;
 
     if (newSlide !== slideIndex) {
-      console.log("set new slide!", newSlide);
       setSlideIndex(newSlide);
     }
   }
-  const throttledUpdateSlide = throttle(updateSlide, 100);
+  const throttledUpdateSlide = throttle(updateSlide, 50);
 
   function updatePositions() {
     // Get slide positions after mount
@@ -55,7 +57,7 @@ export const Slides = ({ children }: SlidesProps) => {
 
     updateSlide();
   }
-  const throttledUpdatePositions = throttle(updatePositions, 100);
+  const throttledUpdatePositions = throttle(updatePositions, 50);
 
   React.useEffect(() => {
     updatePositions();
@@ -85,21 +87,27 @@ export const Slides = ({ children }: SlidesProps) => {
   },
   []);
 
-  return <div ref={updateRefs}>{children}</div>;
+  return (
+    <div ref={updateRefs}>
+      {React.Children.map(children, (child, index) => {
+        return React.cloneElement(child as any, {
+          active: slideIndex === index,
+        });
+      })}
+    </div>
+  );
 };
 
 export type SlideProps = {
   children: React.ReactNode;
-  slide: number;
+  active: boolean;
 };
 
-export const Slide = ({ slide, children }: SlideProps) => {
-  const { slideIndex } = React.useContext(PostContext);
-
+export const Slide = ({ active, children }: SlideProps) => {
   return (
     <div
       className={`transition-opacity duration-700 ${
-        slideIndex === slide ? "opacity-100" : "opacity-30"
+        active ? "opacity-100" : "opacity-20"
       }`}
     >
       {children}

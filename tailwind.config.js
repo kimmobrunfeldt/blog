@@ -45,6 +45,7 @@ const makeShadow = (name, rgb) => {
 
 module.exports = {
   mode: "jit",
+  important: true,
   purge: ["./src/**/*.{js,jsx,ts,tsx,html,template}", "./posts/**/*.mdx"],
   darkMode: "class",
   theme: {
