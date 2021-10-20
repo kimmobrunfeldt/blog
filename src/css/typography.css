@@ -10,5 +10,5 @@ html {
 
 /* The page layouting should cover the whitespace before the first header */
 h1:first-child {
-  @apply mt-0;
+  @apply mt-0 !important;
 }
