@@ -185,3 +185,14 @@ This functionality used to be just a simple text replacement directly into code,
 
 </Slide>
 </Slides>
+
+
+### compiledSource.txt
+
+As mentioned, this file contains the MDX as minified JavaScript.
+
+*Why does it have a `.txt` extension then?*
+
+We need to be able to transfer the code exactly as-is to the browser, so that it can be passed as a string to [MDXRemote](https://github.com/hashicorp/next-mdx-remote#apis). A good way to do this is using a [rollup string plugin](https://github.com/TrySound/rollup-plugin-string). The plugin has been [configured](https://github.com/kimmobrunfeldt/blog/blob/3f15ad33ed431486136b612a32a1b1339596b28b/rollup.config.js#L28) so that a TypeScript code can import any `.txt` file, and the exact contents will be assigned to a variable.
+
+This functionality used to be just a simple text replacement directly into code, but that broke with special characters and line breaks.
