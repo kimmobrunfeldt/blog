@@ -1,11 +1,11 @@
 ---
-title: "The ultimate Tailwind typings"
-slug: "6-the-ultimate-tailwind-typings"
+title: "The ultimate Tailwind typings in a React project"
+slug: "6-the-ultimate-tailwind-typings-in-a-react-project"
 createdAt: "2021-10-20"
 coverImage: "/content-assets/7/cover.png"
 preview: true
 description: >
-  Making the ultimate TypeScript typings for Tailwind.
+  Making the ultimate TypeScript typings for Tailwind in a React project.
 tags:
   - typescript
   - tailwind
@@ -13,9 +13,9 @@ tags:
   - advanced
 ---
 
-This post is about making the ultimate TypeScript typings for Tailwind class names. In the process, we'll dive deep into advanced TypeScript features.
+This post is about making the ultimate Tailwind-React integration and typings for it. In the process, we'll learn about advanced TypeScript features including template literals and recursive types.
 
-First, what is Tailwind? Their website describes the following:
+Sounds cool, but what's Tailwind? Their website describes the following:
 
 > A utility-first CSS framework packed with classes like flex, pt-4, text-center and rotate-90 that can be composed to build any design, directly in your markup.
 
@@ -24,7 +24,7 @@ It's an accurate pitch. Tailwind produces plain CSS and doesn't require any spec
 
 ## Prerequisite
 
-Before presenting the desired typing solution, let's cover one important detail. Using Tailwind in dynamic components, such as in React, has [one important rule](https://tailwindcss.com/docs/optimizing-for-production#writing-purgeable-html).
+Before presenting the desired typing solution, let's cover one crucial detail. Using Tailwind in dynamic components, such as in React, has [a vital rule](https://tailwindcss.com/docs/optimizing-for-production#writing-purgeable-html).
 
 > It is important to avoid dynamically creating class strings in your templates with string concatenation, otherwise PurgeCSS won’t know to preserve those classes.
 
@@ -34,18 +34,72 @@ In other words, don't do this:
 <p className={`text-${color}`}>Hello!</p>
 ```
 
-Tailwind doesn't know which specific `text-` color classes to include in the CSS build. It uses a regex to find complete strings from the source code, to detect which Tailwind classes are actually used in the project. This process of minification is called purging. You can safelist special cases and even regex class name patterns, but it's tedious and can lead to large CSS output.
+When doing string concatenation, Tailwind doesn't know which specific `text-` color classes to include in the CSS build. It uses a regex to find complete strings from the source code, to detect which Tailwind classes are actually used in the project. This process of minification is called purging. You can safelist special cases and even regex class name patterns, but it's tedious and can lead to large CSS output.
 
-Purging is important, because there is a huge amount of possible combinations of class names. There's actually tens of thousands of them! Unpurged `output.css` from Tailwind can weigh 8 megabytes.
+Purging is important, because there is a huge amount of possible combinations of class names. There's actually tens of thousands of them! Unpurged `output.css` from Tailwind can weigh even 8 megabytes.
 
-In reality, the
+
+It sounds scary, but in reality your application will use only a fraction of them. Maybe a few thousands at maximum, which totals to some 10kB.
+
+![Tailwind class names Venn diagram](/content-assets/6/tailwind-classes-venn.svg)
+
+Now that we know this limitation, the following decisions make more sense.
 
 ## The desired result
 
-https://www.npmjs.com/package/classnames
+The problem we are solving in its shortest form is: *What's the cleanest way to implement a function that transforms component props into class names?*
+
+In other words, we should implement a function with signature `(props: Props) => string`.
+
+There are multiple ways to achieve the goal, but to me the perfect balance is using a solution like [classnames](https://www.npmjs.com/package/classnames). It's great as is, but there's nothing guarding you from typos or using class names that were purged for some reason.
+
+The solution is to implement strict typings on top of *classnames*. Let's call the new function `cn`. A wrapper for *classnames*, but with strict types.
 
 ```typescript
+import classnames from 'classnames'
 
+// TODO: Implement typings
+const cn = (...args: Todo) => classnames(...args)
+```
+
+After implementing the types, we should be able to catch all the incorrect calls:
+
+```typescript
+const Hello = () => {
+  // typo in regular string
+  return <p className={cn(`text-blaxk-100 bg-white`)}>
+    Hello!
+  </p>
+}
+
+const Hello2 = ({ dense }: Props) => {
+  return <p className={cn(`text-black-100 bg-white`, {
+    // typo in object key format
+    'px-asd2 py-1 my-2': dense,
+    'px-3 py-2 my-3': !dense,
+  })}>
+    Hello!
+  </p>
+}
+
+const Hello2 = ({ dense }: Props) => {
+  return <p
+    // long class name definition, with a typo
+    // note the leading and trailing spaces
+    // on each line
+    className={cn(`
+      flexxx
+      text-black-100 bg-white
+      hover:text-black-300
+      hover:border-b-2
+    `, {
+      'px-1 py-3 my-4': dense
+      'px-2 py-4 my-6': !dense,
+    })}
+  >
+    Hello!
+  </p>
+}
 ```
 
 
