@@ -1,0 +1,144 @@
+---
+title: "Advanced TypeScript tips"
+slug: "7-advanced-typescript-tips"
+createdAt: "2021-10-20"
+coverImage: "/content-assets/6/cover.png"
+preview: true
+description: >
+  TypeScript tips and tricks on the more advanced side.
+tags:
+  - typescript
+  - advanced
+---
+
+This post covers slightly more advanced TypeScript tips and tricks that I've encountered during the year and a half of using it in daily work.
+
+The examples aim to build on top of each other and link to the underlying TypeScript concepts. Let's jump into it!
+
+## Conditional types
+
+
+
+
+## Flatten array or object types into a union
+
+By using [Indexed Access Types](https://www.typescriptlang.org/docs/handbook/2/indexed-access-types.html), we can flatten array item types into a union type.
+
+```typescript
+// const array: (string | number | string[])[]
+const array = [1, 'test', ['array']]
+
+// type Item = string | number | string[]
+type Item = typeof array[number]
+```
+
+Pretty neat! By accessing the array's type with `number`, we access
+all possible indexes from the array type which results into union of its item types.
+
+The same can be done for object's values, by using `keyof Obj`.
+
+```typescript
+// const obj: { num: number; str: string; arr: string[]; }
+const obj = {
+  num: 1,
+  str: 'test',
+  arr: ['array']
+}
+
+// type Item = string | number | string[]
+type Item = typeof obj[keyof typeof obj]
+```
+
+[Playground link](https://www.typescriptlang.org/play?#code/PTAEGMHsDsGcBdQEMBOKkE8BcoAUCUBLaAc1AB9RoBXAWwCMBTFC0A4kgbQF0BKHgFBQ4iVOgygAvKE4BGADSgA5PEYIlizkrGYl3bgIEhQ8DAAdGoAJKraUtvCKlWNBs1btSg0xeu37PoyQAGbIaJicrkwoBkZgwgigkPQAVjgA3lR0OFHMANwOKDieJAVixY4cPAUAvkIwickp9ukCoFm0OApthTgqavAaPeUy2uEYegJ1cSbmlgBqSAA21JbSJS500R6VXgaBoIsra7MWIUmpnADWjBjngedN3EA)
+
+
+## Iterate object's key-value types
+
+As an example, let's convert object's value types to nullable. To do this, we'll use [Mapped types](https://www.typescriptlang.org/docs/handbook/2/mapped-types.html).
+
+```typescript
+// const obj: { num: number; str: string; arr: string[]; }
+const obj = {
+  num: 1,
+  str: 'test',
+  arr: ['array']
+}
+
+// Alias for convenience
+// type Obj = { num: number; str: string; arr: string[]; }
+type Obj = typeof obj
+
+// type NullableObj = {
+//   num: number | null
+//   str: string | null
+//   arr: string[] | null
+// }
+type NullableObj = {
+  // Declarative way to iterate over each key in Object
+  [Key in keyof Obj]: Obj[Key] | null
+}
+
+
+```
+
+Using `Key in keyof Obj` as the key, tells typescript that you want to deal with each key separately. `Key` will become a temporary type variable, that can be used to index `Obj` or any other type.
+
+
+## Use generics to make type functions
+
+Generics can be thought as type functions. They get inputs as type arguments, and their return values are types. These functions call other type functions and even themselves to implement recursion.
+
+Let's create a generic `MakeNullable` utility type that converts an object type `T` into a version where each value type can be nullable.
+
+```typescript
+// const obj: { num: number; str: string; arr: string[]; }
+const obj = {
+  num: 1,
+  str: 'test',
+  arr: ['array']
+}
+
+type MakeNullable<T> = {
+  [Key in keyof T]: T[Key] | null
+}
+
+type NullableObj = MakeNullable<typeof obj>
+```
+
+## Convert deep structures with recursive generics
+
+To 1-up the previous example, let's make a generic type `MakeNullableDeep` that deeply converts all object value types to nullable.
+
+```typescript
+// const obj: { num: number; str: string; arr: string[]; }
+const obj = {
+  num: 1,
+  str: 'test',
+  arr: ['array']
+}
+
+// Use alias for convenience
+// type Obj = { num: number; str: string; arr: string[]; }
+type Obj = typeof obj
+
+// The generic type takes one type argument `T`, which will
+// be converted to a version where each value can be nullable
+type MakeNullableObj<T> = {
+  [Key in keyof T]: T[Key] | null
+}
+```
+
+## Write complex types from scratch
+
+TypeScript supports conditionals, looping with recursion, and all kinds of advanced features, but with very limited syntax. Regular programming provides tools to make the code readable, but TypeScript offers quite little.
+
+To understand a complex generic type, it's often easiest to write it from scratch. I've spent a ton of time trying to decode what different generic types mean, without great results. Often the shortest route to understanding has been a rewrite.
+
+Writing the type again piece by piece might reveal that it wasn't that complex after all. Complexity is often a cause of the limited syntax.
+
+
+## Don't use T for everything
+
+Generics often use very cryptic type argument names. I'm not sure where the trend originates from, but it's not great for readability. I think the same naming rules apply as for regular code. Be descriptive. Instead of just `T`, you can name the type argument more explicitly, for example `Request` or `RequestT`.
+
+Marcin Wanago has written an insightful post about [TypeScript naming conventions](https://wanago.io/2020/02/17/typescript-generics-discussing-naming-conventions/).
