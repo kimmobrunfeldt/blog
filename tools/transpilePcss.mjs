@@ -13,5 +13,5 @@ for (let i = 0; i < files.length; ++i) {
   const basePath = path.join(dirName, withoutExt);
 
   await $`NODE_ENV=production postcss "${basePath}.pcss" -o "${basePath}.css" --verbose`;
-  await $`rm "${basePath}.pcss"`;
+  await $`rm -f "${basePath}.pcss"`;
 }
