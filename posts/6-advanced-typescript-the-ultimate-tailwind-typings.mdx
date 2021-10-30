@@ -1,0 +1,178 @@
+---
+title: "Advanced TypeScript — The ultimate Tailwind typings"
+slug: "6-advanced-typescript-the-ultimate-tailwind-typings"
+createdAt: "2021-10-20"
+coverImage: "/content-assets/7/cover.png"
+preview: true
+description: >
+  Making the ultimate TypeScript typings for Tailwind class names in a React project.
+tags:
+  - typescript
+  - tailwind
+  - types
+  - advanced
+  - react
+---
+
+This post is about implementing the ultimate Tailwind-React integration and typings for it. In the process, we'll learn about advanced TypeScript features including template literals and recursive types.
+
+Sounds cool, but what is Tailwind? Their website describes an accurate pitch:
+
+> A utility-first CSS framework packed with classes like flex, pt-4, text-center and rotate-90 that can be composed to build any design, directly in your markup.
+
+If you're sceptical about Tailwind in general, I suggest reading [CSS Utility Classes and "Separation of Concerns"](https://adamwathan.me/css-utility-classes-and-separation-of-concerns/) by Adam Wathan.
+
+Anyways, Tailwind produces plain CSS and doesn't require any specific JavaScript framework. We'll be focusing on React, but the typings work in any TypeScript frontend project.
+
+
+## Prerequisites
+
+The first prerequisite is about string concatenation. Using Tailwind in dynamic components, such as in React, has [one vital rule](https://tailwindcss.com/docs/optimizing-for-production#writing-purgeable-html).
+
+> It is important to avoid dynamically creating class strings in your templates with string concatenation, otherwise PurgeCSS won’t know to preserve those classes.
+
+In other words, don't do this:
+
+```tsx
+<p className={`text-${color}`}>Hello!</p>
+```
+
+When doing string concatenation, Tailwind doesn't know which specific `text-` color classes to include in the CSS build. It uses a regex to find complete strings from the source code, to detect which Tailwind classes are actually used in the project. This process of minification is called purging. You can safelist special cases and even regex class name patterns, but it's tedious and can lead to large CSS output.
+
+Purging is important, because there is a huge amount of possible combinations of class names. There's actually tens of thousands of them! Unpurged `output.css` from Tailwind can weigh even 8 megabytes.
+
+
+It sounds scary, but in reality your application will use only a fraction of them. Maybe a few thousands at maximum, which totals to some 10kB.
+
+![Tailwind class names Venn diagram](/content-assets/6/tailwind-classes-venn.svg)
+
+
+The second prerequisite is that Tailwind class names have equal specificity.  You can't override previously written class names as you might intuitively expect:
+
+```tsx
+<button className="rounded p-4 flex p-0">Ok</button>
+```
+
+In the above example `p-0` does not override `p-4`. whichever class is defined first in Tailwind's `output.css` wins. That's how CSS specificity works. Another example for a real use case:
+
+```tsx
+// Doesn't work
+const baseCls = "rounded p-4 bg-primary hover:cursor-pointer"
+const disabledCls = "bg-gray-200 hover:cursor-not-allowed"
+
+const finalCls = `
+  ${baseCls}
+  ${props.disabled ? disabledCls : ''}
+`;
+
+
+// Do this instead
+const baseCls = "rounded p-4"
+const primaryCls = "bg-primary hover:cursor-pointer"
+const disabledCls = "bg-gray-200 hover:cursor-not-allowed"
+
+const finalCls = `
+  ${baseCls}
+  ${props.disabled
+    ? disabledCls
+    : primaryCls
+   }
+`;
+```
+
+Here's a [GitHub issue discussion](https://github.com/tailwindlabs/tailwindcss/issues/1010) about this commonly appearing topic.
+
+
+Now that we know these limitations, the following decisions make more sense.
+
+
+## The desired result
+
+React components have changing props, but Tailwind doesn't like dynamically created class names. How do we solve the equation?
+
+The problem could be framed: *What's the cleanest way to implement a function that transforms component props into Tailwind class names while adhering to the limitations?*
+
+It sounds like a trivial task. However, implementing it in a clean and readable way with all the constraints in mind is another story.
+
+There are multiple ways to dynamically format `className` strings, but to me [classnames](https://www.npmjs.com/package/classnames) provides the perfect balance of readability and convenience. It's great as is, but there's nothing guarding you from typos or using Tailwind class names that were purged for some reason.
+
+What we want is *classnames*, but with strict typings. Let's call this new more strict function `cn`.
+
+```typescript
+import classnames from 'classnames'
+
+// TODO: Implement typings
+const cn = (...args: Todo) => classnames(...args)
+```
+
+After implementing the types, we should be able to catch all the incorrect calls at type-level:
+
+```typescript
+const Hello = () => {
+  // typo in regular string
+  return <p className={cn(`text-blaxk-100 bg-white`)}>
+    Hello!
+  </p>
+}
+
+const Hello2 = ({ dense }: Props) => {
+  return <p className={cn(`text-black-100 bg-white`, {
+    // typo in object key format
+    'px-asd2 py-1 my-2': dense,
+    'px-3 py-2 my-3': !dense,
+  })}>
+    Hello!
+  </p>
+}
+
+const Hello3 = ({ dense }: Props) => {
+  return <p
+    // long class name definition with a typo.
+    // note the leading and trailing spaces
+    // on each line
+    className={cn(`
+      flexxx
+      text-black-100 bg-white
+      hover:text-black-300
+      hover:border-b-2
+    `, {
+      'px-1 py-3 my-4': dense
+      'px-2 py-4 my-6': !dense,
+    })}
+  >
+    Hello!
+  </p>
+}
+```
+
+To me, that's the holy grail. Let's start implementing!
+
+
+## Implementation
+
+
+The final typings use almost all of the advanced TypeScript features. This is a good and thorough real-life example for more complex types.
+
+The individual pieces we need for the desired outcome are:
+
+1. Type containing all valid Tailwind class names. For example `type ClassName = 'p-1' | 'p-2' | 'etc'`.
+2. A way to split the whole `className` string into word tokens and validate them against `ClassName`.
+3. Trim any amount of whitespace before, after, and between the tokens.
+4. Error message that shows which is the offending token. For example `'flexxx' is not a valid Tailwind class`.
+5. Support all of the above for string, object, and array types.
+
+
+
+## Credits & further reading
+
+The final types took quite a while to finish, and I couldn't have done it without help. Credits to [@ahejlsberg](https://github.com/ahejlsberg), [@virtualkirill](https://twitter.com/virtualkirill), and [@jcalz](https://stackoverflow.com/users/2887218/jcalz) for terrific online resources.
+
+* [Make your CSS safer by type checking Tailwind CSS classes](https://dev.to/virtualkirill/make-your-css-safer-by-type-checking-tailwind-css-classes-2l14)
+* [How to type check if object keys conform a conditional recursive template type?
+](https://stackoverflow.com/questions/65737948/how-to-type-check-if-object-keys-conform-a-conditional-recursive-template-type/65738172#65738172)
+* [Pull request](https://github.com/microsoft/TypeScript/pull/40336) that introduces template literal types
+* https://github.com/ghoullier/awesome-template-literal-types
+* [Type Gymnastics](https://github.com/g-plane/type-gymnastics) – Collection of wonderful TypeScript type gymnastics code snippets
+* [ts-sql](https://github.com/codemix/ts-sql) – SQL database implemented purely in TypeScript.
+* [XML parser in TypeScript](https://github.com/0kku/destiny/blob/a3d5182658599bc117db3b4657fed71dfedf8b44/src/parsing/XmlTypeParser.ts)
+* [ts-metacode](https://github.com/gmono/ts-metacode)
