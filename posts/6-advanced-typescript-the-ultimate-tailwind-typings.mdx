@@ -1,5 +1,5 @@
 ---
-title: "Advanced TypeScript — The ultimate Tailwind typings"
+title: "Advanced TypeScript — The ultimate Tailwind typings"
 slug: "6-advanced-typescript-the-ultimate-tailwind-typings"
 createdAt: "2021-10-20"
 coverImage: "/content-assets/7/cover.png"
@@ -14,18 +14,24 @@ tags:
   - react
 ---
 
-This post is about implementing the ultimate Tailwind-React integration and typings for it. In the process, we'll learn about advanced TypeScript features including template literals and recursive types.
+This post is about implementing the ultimate Tailwind-React integration and typings for it.
 
-Sounds cool, but what is Tailwind? Their website describes an accurate pitch:
+In the process, we'll learn about most of the advanced TypeScript features including template literals and recursive types. The typings are demonstrated via React components, but the final solution works in any TypeScript project.
+
+
+
+## Quick intro to Tailwind
+
+Tailwind's website has an accurate pitch that describes its purpose well:
 
 > A utility-first CSS framework packed with classes like flex, pt-4, text-center and rotate-90 that can be composed to build any design, directly in your markup.
 
 If you're sceptical about Tailwind in general, I suggest reading [CSS Utility Classes and "Separation of Concerns"](https://adamwathan.me/css-utility-classes-and-separation-of-concerns/) by Adam Wathan.
 
-Anyways, Tailwind produces plain CSS and doesn't require any specific JavaScript framework. We'll be focusing on React, but the typings work in any TypeScript frontend project.
+Anyways, Tailwind produces plain CSS, everything is customisable via the config file, and its public API is the class names.
 
 
-## Prerequisites
+### Prerequisites
 
 The first prerequisite is about string concatenation. Using Tailwind in dynamic components, such as in React, has [one vital rule](https://tailwindcss.com/docs/optimizing-for-production#writing-purgeable-html).
 
@@ -53,7 +59,7 @@ The second prerequisite is that Tailwind class names have equal specificity.  Yo
 <button className="rounded p-4 flex p-0">Ok</button>
 ```
 
-In the above example `p-0` does not override `p-4`. whichever class is defined first in Tailwind's `output.css` wins. That's how CSS specificity works. Another example for a real use case:
+In the above example `p-0` does not override `p-4`. Whichever class is defined first in Tailwind's `output.css` wins. That's how CSS specificity works. Another example for a real use case:
 
 ```tsx
 // Doesn't work
@@ -115,7 +121,18 @@ const Hello = () => {
   </p>
 }
 
-const Hello2 = ({ dense }: Props) => {
+const Hello2 = ({ disabled }: Props) => {
+  return <p className={cn([
+    'flex my-5',
+    // typo in a string in the array format
+    `text-blaxk-100 bg-white`,
+    disabled ? 'bg-gray-100 cursor-not-allowed'
+  ])}>
+    Hello!
+  </p>
+}
+
+const Hello3 = ({ dense }: Props) => {
   return <p className={cn(`text-black-100 bg-white`, {
     // typo in object key format
     'px-asd2 py-1 my-2': dense,
@@ -125,7 +142,7 @@ const Hello2 = ({ dense }: Props) => {
   </p>
 }
 
-const Hello3 = ({ dense }: Props) => {
+const Hello4 = ({ dense }: Props) => {
   return <p
     // long class name definition with a typo.
     // note the leading and trailing spaces
@@ -150,16 +167,124 @@ To me, that's the holy grail. Let's start implementing!
 
 ## Implementation
 
-
-The final typings use almost all of the advanced TypeScript features. This is a good and thorough real-life example for more complex types.
-
-The individual pieces we need for the desired outcome are:
+The final typings serve as a neat real-life example that covers almost all advanced features in TypeScript. The individual pieces we need for the desired outcome are:
 
 1. Type containing all valid Tailwind class names. For example `type ClassName = 'p-1' | 'p-2' | 'etc'`.
-2. A way to split the whole `className` string into word tokens and validate them against `ClassName`.
-3. Trim any amount of whitespace before, after, and between the tokens.
-4. Error message that shows which is the offending token. For example `'flexxx' is not a valid Tailwind class`.
-5. Support all of the above for string, object, and array types.
+1. Type that trims leading and trailing whitespace of strings.
+1. A way to split the whole `className` string into word tokens and validate them against `ClassName`.
+1. Error message type that shows which is the offending token. For example `'flexxx' is not a valid Tailwind class`.
+1. Support all of the above for string, object, and array types.
+
+Let's cover them one by one, and tie it all together in the end.
+
+### 1. Tailwind class names
+
+There are multiple ways to generate a union type out of all class names. One solution would be to use the ability to expand template literal type unions:
+
+```typescript
+type ColorName = 'red' | 'purple' | 'blue' | 'green'
+type Luminance = 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900
+type Color = `${ColorName}-${Luminance}`
+type Layout = 'block' | 'flex' | 'grid' | 'inline-block'
+
+// Expands to all possible class names
+type ClassName = Layout | `text-${Color}` | `bg-${Color}`
+```
+
+But it's a lot of work and the typings would need to be generated based on [tailwind.config.js](https://tailwindcss.com/docs/configuration). In addition, it would lead to a huge union type with more than 60 000 unique string literals.
+
+Instead of template literal expansion, using [postcss-ts-classnames](https://github.com/esamattis/postcss-ts-classnames) eliminates the issues. It parses the output of PostCSS, exctracts all class names, and writes the union type of them to a `d.ts` file.
+
+The result is a robust typing, that doesn't care about Tailwind's configuration or purging. It accurately captures all the class names your project has.
+
+A downside is that a small lag is introduced to development:
+
+* A new valid Tailwind class name is taken into use
+* For a short while, IDE complains about the class not being valid
+* PostCSS build is ran, which re-generates the `d.ts` types
+* IDE does a TypeScript refresh, and the error is gone
+
+Now we have `tailwindClassNames.d.ts` which contains a union type of all valid class names:
+
+```typescript
+type ClassName =
+  | 'block'
+  | 'inline-block'
+  | 'flex'
+  | 'grid'
+  | 'bg-gray-100'
+  // ... a thousand more
+```
+
+### 2. Trimming whitespace
+
+Let's start with leading whitespace. For the trick, we'll use [inference with template literals](https://www.typescriptlang.org/docs/handbook/2/template-literal-types.html#inference-with-template-literals).
+
+
+```typescript
+// Newlines occur in multiline strings with backtick quotes
+type Whitespace = ' ' | '\n'
+
+// `extends string` validates that the
+// type argument `T` is a string
+type TrimLeading<T extends string> =
+  // Is `T` in format: ` ${Tail}` or `\n${Tail}`?
+  T extends `${Whitespace}${infer Tail}`
+    // Yes. Recursively call this utility again,
+    // because Tail might contain new leading
+    // whitespace.
+    ? TrimLeading<Tail>
+    // No. Stop recursion.
+    : Tail
+```
+
+Note that in each iteration of the recursive loop, only one whitespace character is "eaten" from the result at a time. This happens because in the conditional, the type argument `T` needs to exactly match the template ```${Whitespace}${infer Tail}```. Since `Whitespace` can only be 1 character long, it consumes only one whitespace character at a time.
+
+The type instantiation depth limit was [increased to 500](https://github.com/microsoft/TypeScript/pull/45025) in TypeScript, to support this exact use case better. It means that we can theoretically trim 500 leading whitespace characters at maximum. The amount decreases when the utility is a part of larger type chain, which is often the case.
+
+However, there's an optimization trick. You can pre-define a few different lengths of whitespaces to minimize the amount of depth required:
+
+```typescript
+type InstantiationDepthReducingWhitespace =
+  // This will match first, consuming 3 leading spaces at once
+  | '   '
+  | '  '
+  | ' '
+  | '\n'
+```
+
+Neat! Now let's do the same for trailing whitespace and combine both:
+
+```typescript
+type InstantiationDepthReducingWhitespace =
+  | '   '
+  | '  '
+  | ' '
+  | '\n'
+
+type TrimLeading<T extends string> =
+  T extends `${InstantiationDepthReducingWhitespace}${infer Tail}`
+    ? TrimLeading<Tail>
+    : Tail
+
+type TrimTrailing<T extends string> =
+  T extends `${infer Prefix}${InstantiationDepthReducingWhitespace}`
+    ? TrimTrailing<Prefix>
+    : Prefix
+
+type Trim<T extends string> = TrimTrailing<TrimLeading<T>>
+```
+
+### 3. Split to tokens and validate
+
+
+
+
+### 4. Error messages
+
+The built-in way to indicate a type error is to use [never](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#the-never-type).
+
+https://github.com/microsoft/TypeScript/issues/23689
 
 
 
@@ -171,7 +296,7 @@ The final types took quite a while to finish, and I couldn't have done it withou
 * [How to type check if object keys conform a conditional recursive template type?
 ](https://stackoverflow.com/questions/65737948/how-to-type-check-if-object-keys-conform-a-conditional-recursive-template-type/65738172#65738172)
 * [Pull request](https://github.com/microsoft/TypeScript/pull/40336) that introduces template literal types
-* https://github.com/ghoullier/awesome-template-literal-types
+* [awesome-template-literal-types](https://github.com/ghoullier/awesome-template-literal-types)
 * [Type Gymnastics](https://github.com/g-plane/type-gymnastics) – Collection of wonderful TypeScript type gymnastics code snippets
 * [ts-sql](https://github.com/codemix/ts-sql) – SQL database implemented purely in TypeScript.
 * [XML parser in TypeScript](https://github.com/0kku/destiny/blob/a3d5182658599bc117db3b4657fed71dfedf8b44/src/parsing/XmlTypeParser.ts)
