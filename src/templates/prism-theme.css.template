@@ -55,6 +55,16 @@ pre > code[class*="language-"] {
   opacity: .7;
 }
 
+.token.property,
+.token.tag,
+.token.boolean,
+.token.number,
+.token.constant,
+.token.symbol,
+.token.deleted {
+  color: {{{ propertyColor }}};
+}
+
 .token.comment,
 .token.prolog,
 .token.doctype,
@@ -66,23 +76,19 @@ pre > code[class*="language-"] {
   color: {{{ punctuationColor }}};
 }
 
-.token.property,
-.token.tag,
-.token.boolean,
-.token.number,
-.token.constant,
-.token.symbol,
-.token.deleted {
-  color: {{{ propertyColor }}};
-}
-
 .token.selector,
-.token.attr-name,
 .token.string,
 .token.char,
 .token.builtin,
+.token.attr-value,
 .token.inserted {
   color: {{{ selectorColor }}};
+}
+
+.token.attr-name,
+.token.atrule,
+.token.keyword {
+  color: {{{ keywordColor }}};
 }
 
 .token.operator,
@@ -92,12 +98,6 @@ pre > code[class*="language-"] {
 .style .token.string {
   color: {{{ operatorColor }}};
   background: {{{ operatorBackground }}};
-}
-
-.token.atrule,
-.token.attr-value,
-.token.keyword {
-  color: {{{ keywordColor }}};
 }
 
 .token.function {
