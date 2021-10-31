@@ -18,7 +18,7 @@ This post is about implementing the ultimate Tailwind-React integration and typi
 
 In the process, we'll learn about most of the advanced TypeScript features including template literals and recursive types. The typings are demonstrated via React components, but the final solution works in any TypeScript project.
 
-
+Here's the full solution
 
 ## Quick intro to Tailwind
 
@@ -94,9 +94,7 @@ Now that we know these limitations, the following decisions make more sense.
 
 ## The desired result
 
-React components have changing props, but Tailwind doesn't like dynamically created class names. How do we solve the equation?
-
-The problem could be framed: *What's the cleanest way to implement a function that transforms component props into Tailwind class names while adhering to the limitations?*
+React components have changing props, but Tailwind doesn't like dynamically created class names. The problem could be framed: *What's the cleanest way to implement a function that transforms component props into Tailwind class names while adhering to the limitations?*
 
 It sounds like a trivial task. However, implementing it in a clean and readable way with all the constraints in mind is another story.
 
@@ -218,7 +216,7 @@ type ClassName =
 
 ### 2. Trimming whitespace
 
-Let's start with leading whitespace. For the trick, we'll use [inference with template literals](https://www.typescriptlang.org/docs/handbook/2/template-literal-types.html#inference-with-template-literals).
+Let's start with the leading whitespace. For this trick, we'll use [inference with template literals](https://www.typescriptlang.org/docs/handbook/2/template-literal-types.html#inference-with-template-literals).
 
 
 ```typescript
@@ -227,18 +225,18 @@ type Whitespace = ' ' | '\n'
 
 // `extends string` validates that the
 // type argument `T` is a string
-type TrimLeading<T extends string> =
+type TrimStart<T extends string> =
   // Is `T` in format: ` ${Tail}` or `\n${Tail}`?
   T extends `${Whitespace}${infer Tail}`
     // Yes. Recursively call this utility again,
     // because Tail might contain new leading
     // whitespace.
-    ? TrimLeading<Tail>
+    ? TrimStart<Tail>
     // No. Stop recursion.
-    : Tail
+    : T
 ```
 
-Note that in each iteration of the recursive loop, only one whitespace character is "eaten" from the result at a time. This happens because in the conditional, the type argument `T` needs to exactly match the template ```${Whitespace}${infer Tail}```. Since `Whitespace` can only be 1 character long, it consumes only one whitespace character at a time.
+Note that in each iteration of the recursive loop, only one whitespace character is "eaten" from the result at a time. This happens because in the conditional, the type argument `T` needs to exactly match the template `` `${Whitespace}${infer Tail}` ``. Since `Whitespace` can only be 1 character long, it consumes only one whitespace character at a time.
 
 The type instantiation depth limit was [increased to 500](https://github.com/microsoft/TypeScript/pull/45025) in TypeScript, to support this exact use case better. It means that we can theoretically trim 500 leading whitespace characters at maximum. The amount decreases when the utility is a part of larger type chain, which is often the case.
 
@@ -262,29 +260,221 @@ type InstantiationDepthReducingWhitespace =
   | ' '
   | '\n'
 
-type TrimLeading<T extends string> =
+type TrimStart<T extends string> =
   T extends `${InstantiationDepthReducingWhitespace}${infer Tail}`
-    ? TrimLeading<Tail>
-    : Tail
+    ? TrimStart<Tail>
+    : T
 
-type TrimTrailing<T extends string> =
+type TrimEnd<T extends string> =
   T extends `${infer Prefix}${InstantiationDepthReducingWhitespace}`
-    ? TrimTrailing<Prefix>
-    : Prefix
+    ? TrimEnd<Prefix>
+    : T
 
-type Trim<T extends string> = TrimTrailing<TrimLeading<T>>
+type Trim<T extends string> = TrimEnd<TrimStart<T>>
 ```
+
+The end result:
+
+```typescript
+// type Result = "abc"
+type Result = Trim<'\n\n  abc   '>
+```
+
+
 
 ### 3. Split to tokens and validate
 
+This is going to be a tough piece.
 
+To ease the token processing, let's make a utility that converts `className` string into an array of tokens. Working with an array is easier than for example a string with space separated values.
+
+The new utility called `SplitToTailwindClassNames` should do the following conversions:
+
+Input | Output
+------|-------
+`"block bg-gray-100"` | `["block", "bg-gray-100"]`
+`"\n\n block\n  p-1  "` | `["block", "p-1"]`
+`" block invalid "` | `["block", never]`
+
+
+We'll start with the familiar template literal inference. This time instead of consuming whitespace characters, we want to consume Tailwind class names.
+
+```typescript
+type SplitToTailwindClassNames<T extends string> =
+  // Does `T` start with a Tailwind class name?
+  T extends `${ClassName}${infer Tail}`
+    // Yes. Continue consuming ClassName tokens with
+    // next recursion iteration.
+    ? [ClassName, ...SplitToTailwindClassNames<Tail>]
+    // No. Stop recursion.
+    : []
+```
+
+We can see that the utility now knows how to consume Tailwind class name tokens.
+
+```typescript
+// type Debug1 = []
+type Debug1 = SplitToTailwindClassNames<' '>
+
+// type Debug2 = [ClassName]
+type Debug2 = SplitToTailwindClassNames<'block'>
+
+// type Debug3 = [ClassName, ClassName]
+type Debug3 = SplitToTailwindClassNames<'blockp-1'>
+
+// Note: whitespace is not correctly handled yet!
+
+// type Debug4 = [ClassName]
+type Debug4 = SplitToTailwindClassNames<'block p-1'>
+```
+
+That's great but the array items are of type `ClassName`, which is the union type itself. What we really need is the actual tokens found, for example `['block', 'p-1']`.
+
+There's no way in TypeScript to make a template literal match a token **and** assign it to a type variable at the same time. If TypeScript supported the feature, it could look something like this:
+
+```typescript
+T extends `${infer C extends ClassName}${infer Tail}`
+// `C` would refer to the actual token
+```
+
+But it doesn't.
+
+I couldn't find a solution anywhere online, which lead me to [ask the question](https://stackoverflow.com/questions/65844206/how-to-avoid-ambiquity-in-typescript-template-literal-type-inference/65846728) in Stack Overflow. It took a while to marinate the problem until a solution clicked in my head.
+
+To get access to the first token, you can inverse the inference with a second template literal inference:
+
+```typescript
+type GetTokenTrick<T extends string> =
+  T extends `${ClassName}${infer Tail}`
+    ? T extends `${infer C}${Tail}`
+      ? C
+      // This shouldn't be possible to reach, as
+      // we just inversed the matching
+      : never
+    : never
+```
+
+Now the utility captures the first token!
+
+```typescript
+// type Debug = "block"
+type Debug = GetTokenTrick<'block<whatever>'>
+```
+
+Let's combine the knowledge so far and also deal with the whitespace by using `Trim<Tail>`.
+
+```typescript
+type SplitToTailwindClassNames<T extends string> =
+  // Does `T` start with a Tailwind class name?
+  T extends `${ClassName}${infer Tail}`
+    ? T extends `${infer C}${Tail}`
+      // Continue consuming ClassName tokens with
+      // next recursion iteration.
+      ? [C, ...SplitToTailwindClassNames<Trim<Tail>>]
+
+      // This shouldn't be possible to reach, as
+      // we just inversed the matching
+      : never
+
+    // Stop recursion.
+    : []
+```
+
+Many cases are now dealt correctly, but there's still a few issues.
+
+
+```typescript
+// type Debug1 = ["block"]
+type Debug1 = SplitToTailwindClassNames<'block'>
+// type Debug2 = ["block", "p-1"]
+type Debug2 = SplitToTailwindClassNames<'block p-1'>
+// type Debug3 = ["block", "p-1"]
+type Debug3 = SplitToTailwindClassNames<'block\n\np-1   '>
+
+// Still not working:
+
+// Whitespace at the beginning
+type Debug4 = SplitToTailwindClassNames<' block'>  // []
+
+// Errors are not dealt correctly,
+// should be [never]
+type Debug5 = SplitToTailwindClassNames<'invalid'>  // []
+```
+
+The easiest way to fix the leading whitespace issue is to make a wrapper utility that calls `Trim`:
+
+```typescript
+type Wrapper<T extends string> = SplitToTailwindClassNames<Trim<T>>
+```
+
+The error handling can be improved by separating the "invalid T" and "end recursion" cases:
+
+
+```typescript
+type SplitToTailwindClassNames<T extends string> =
+  T extends `${ClassName}${infer Tail}`
+    ? T extends `${infer C}${Tail}`
+      ? [C, ...SplitToTailwindClassNames<Trim<Tail>>]
+      : never
+
+    // Added error handling
+    // Handles cases where `T` does not match
+    // ${ClassName}${Tail}. For example
+    // 'block', '', '\n\n', 'invalid', or 'invalid  block'
+    //
+    // Note: `Tail` has already been trimmed from whitespace
+    : T extends `${infer Tail}`
+      ? Tail extends ClassName
+        // `Tail` equals a valid Tailwind class.
+        // End recursion succesfully.
+        ? [Tail]
+        : Trim<Tail> extends ''
+          // `Tail` has only whitespace left.
+          // End recursion succesfully.
+          ? []
+          // Something else was found.
+          // Raise an error
+          : [never]
+
+      // Should never happen as `T` is a string.
+      : [never]
+```
+
+Finally we got to a version that handles all the cases as expected.
 
 
 ### 4. Error messages
 
-The built-in way to indicate a type error is to use [never](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#the-never-type).
+The built-in way to indicate a type error is to use [never](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#the-never-type). It works because `never` is not assignable to any other type.
 
-https://github.com/microsoft/TypeScript/issues/23689
+In complex conditional types you might have multiple instances of `never` type, but for separate issues. This makes the code hard to read and type errors less descriptive. Unfortunately, TypeScript [doesn't natively support](https://github.com/microsoft/TypeScript/issues/23689) anything like `throw`.
+
+However, there is a hack that achieves almost the same result. Instead of returning `never`, you can return the error message as a literal string:
+
+```typescript
+type IsValid<T extends string> =
+  T extends ClassName
+    ? T
+    : `Error: '${T}' is not a valid Tailwind class`
+```
+
+The literal string error message works in a similar way as `never`. Types aren't assignable to it in practice. It's easiest to understand via an example:
+
+```typescript
+function cn<T>(singleClassName: IsValid<T>) {
+  return singleClassName;
+}
+
+// Argument of type '"invalid"' is not assignable to parameter of type
+// '"Error: 'invalid' is not a valid Tailwind class"'.
+cn('invalid')
+```
+
+The passed parameter typed as literal `'invalid'` is not assignable to the error message that's also a literal string type.
+
+
+
+
 
 
 
@@ -298,6 +488,6 @@ The final types took quite a while to finish, and I couldn't have done it withou
 * [Pull request](https://github.com/microsoft/TypeScript/pull/40336) that introduces template literal types
 * [awesome-template-literal-types](https://github.com/ghoullier/awesome-template-literal-types)
 * [Type Gymnastics](https://github.com/g-plane/type-gymnastics) – Collection of wonderful TypeScript type gymnastics code snippets
-* [ts-sql](https://github.com/codemix/ts-sql) – SQL database implemented purely in TypeScript.
+* [ts-sql](https://github.com/codemix/ts-sql) – SQL "database" implemented purely in TypeScript.
 * [XML parser in TypeScript](https://github.com/0kku/destiny/blob/a3d5182658599bc117db3b4657fed71dfedf8b44/src/parsing/XmlTypeParser.ts)
 * [ts-metacode](https://github.com/gmono/ts-metacode)
