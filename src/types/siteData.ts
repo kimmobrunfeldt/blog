@@ -16,7 +16,10 @@ export const PostMetadataSchema = Type.Object({
   charCount: Type.Number(),
   wordCount: Type.Number(),
   readTimeMin: Type.Number(),
+  showToc: Type.Optional(Type.Boolean()),
 });
+
+export type Header = { level: number; text: string; id: string };
 
 type CommonPostMetadata = Omit<
   Static<typeof PostMetadataSchema>,
@@ -25,6 +28,7 @@ type CommonPostMetadata = Omit<
   // Auto-generated
   orderNumber: number;
   html: string;
+  headers: Header[];
 };
 
 export type PostMetadata =

@@ -14,6 +14,7 @@ import { AppContext } from "src/components/App";
 export type NavBarProps = JSX.IntrinsicElements["header"] & {
   className?: string;
   presenticLayout?: boolean;
+  tocLayout?: boolean;
   pageData: AnyPage["data"];
   siteData: SiteData;
 };
@@ -21,6 +22,7 @@ export type NavBarProps = JSX.IntrinsicElements["header"] & {
 export function NavBar({
   className = "",
   presenticLayout = false,
+  tocLayout = false,
   siteData,
   pageData,
   ...otherProps
@@ -48,6 +50,8 @@ export function NavBar({
 
   const divXlCls = presenticLayout
     ? "xl:col-start-2 xl:col-span-8 2xl:col-start-3 2xl:col-span-8"
+    : tocLayout
+    ? "xl:col-start-2 xl:col-span-8 2xl:col-start-2 2xl:col-span-8"
     : "xl:col-start-3 xl:col-span-8";
 
   return (

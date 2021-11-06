@@ -1,16 +1,28 @@
 import React from "react";
+import defaultTheme from "tailwindcss/defaultTheme";
 import findIndex from "lodash/findIndex";
 import { PostMetadata, SiteData } from "src/types/siteData";
 import { Footer } from "src/components/Footer";
 import { ContentWrapper } from "src/components/ContentWrapper";
 import { H } from "src/components/H";
 import { NavBar } from "src/components/NavBar";
-import { kFormatter, formatPostDate, getPosts } from "src/util/site";
+import {
+  kFormatter,
+  formatPostDate,
+  getPosts,
+  addMediaListener,
+  removeMediaListener,
+} from "src/util/site";
 import { cls } from "src/util/tailwind";
 import * as twGlobals from "src/twGlobals";
 import { PostSummaryLink } from "src/components/PostSummaryLink";
 import { SubscribeEnvelope } from "./SubscribeEnvelope";
 import { Presentic } from "./Presentic/Presentic";
+import { TableOfContents } from "./TableOfContents";
+import { Collapse } from "react-collapse";
+import rightIcon from "@iconify/icons-teenyicons/right-outline";
+import { Link } from ".";
+import Icon from "@iconify/react";
 
 type Props = {
   children: React.ReactNode;
@@ -58,6 +70,22 @@ export function PostLayout(props: Props): JSX.Element {
   const ctx = React.useMemo(() => ({ slideIndex, setSlideIndex }), [
     slideIndex,
   ]);
+  const [tocOpen, setTocOpen] = React.useState(false);
+  const toggleTocOpen = () => setTocOpen(!tocOpen);
+
+  React.useEffect(() => {
+    const darkQuery = window.matchMedia(
+      `(min-width: ${(defaultTheme as any).screens.lg})`
+    );
+    const cb = (event: MediaQueryListEvent) => {
+      setTocOpen(event.matches ? true : false);
+    };
+
+    addMediaListener(darkQuery, cb);
+    return () => {
+      removeMediaListener(darkQuery, cb);
+    };
+  }, []);
 
   const allPosts = getPosts(props.siteData);
   const { previous, next } = findRelated(props.data, allPosts);
@@ -70,6 +98,7 @@ export function PostLayout(props: Props): JSX.Element {
       >
         <NavBar
           presenticLayout={props.data.layout === "presentic"}
+          tocLayout={props.data.showToc}
           siteData={props.siteData}
           pageData={props.data}
         />
@@ -90,8 +119,17 @@ export function PostLayout(props: Props): JSX.Element {
                     text-sm mb-10
                     row-start-1 col-start-1 col-span-12
                     sm:col-start-2 sm:col-span-10
-                    lg:col-start-2 lg:col-span-2 lg:mb-0
-                    xl:col-start-3 xl:col-span-2
+                    ${
+                      props.data.showToc
+                        ? `
+                          lg:col-start-2 lg:col-span-3 lg:mb-0
+                          xl:col-start-2 xl:col-span-3
+                        `
+                        : `
+                          lg:col-start-2 lg:col-span-2 lg:mb-0
+                          xl:col-start-3 xl:col-span-2
+                        `
+                    }
                     `
               )}
             >
@@ -107,12 +145,34 @@ export function PostLayout(props: Props): JSX.Element {
                   {kFormatter(props.data.charCount)} chars
                 </li>
               </ul>
-              <div className="text-gray-5 mt-4 italic text-xs">
+              <div className="text-gray-5 mt-4 italic text-xs max-w-[250px]">
                 {props.data.tags.join(", ")}
               </div>
 
               {props.data.layout === "presentic" && (
                 <H className={"hidden mb-0 xl:block"}>{props.data.title}</H>
+              )}
+
+              {props.data.showToc && (
+                <div className="mt-8">
+                  <Link
+                    className="flex items-center lg:hidden mb-3"
+                    onClick={toggleTocOpen}
+                  >
+                    <span className="pr-2">Show table of contents</span>
+                    <Icon
+                      height={12}
+                      className={tocOpen ? "rotate-90" : ""}
+                      icon={rightIcon}
+                    />
+                  </Link>
+
+                  <Collapse isOpened={tocOpen}>
+                    <div className="sticky top-8">
+                      <TableOfContents headers={props.data.headers} />
+                    </div>
+                  </Collapse>
+                </div>
               )}
             </div>
 
@@ -120,7 +180,7 @@ export function PostLayout(props: Props): JSX.Element {
               className={cls(
                 props.data.layout === "presentic"
                   ? `
-                    mdx max-w-md
+                    mdx max-w-[570px]
                     row-start-2 col-span-12 col-start-1
                     sm:col-start-2 sm:col-span-10
                     lg:row-start-1 lg:col-start-4 lg:col-span-7
@@ -130,11 +190,20 @@ export function PostLayout(props: Props): JSX.Element {
                     2xl:col-start-3 2xl:col-span-9
                     `
                   : `
-                    mdx max-w-md
+                    mdx max-w-[570px]
                     row-start-2 col-span-12 col-start-1
                     sm:col-start-2 sm:col-span-10
-                    lg:row-start-1 lg:col-start-4 lg:col-span-7
-                    xl:row-start-1 xl:col-start-5 xl:col-span-6
+                    ${
+                      props.data.showToc
+                        ? `
+                          lg:row-start-1 lg:col-start-5 lg:col-span-7
+                          xl:row-start-1 xl:col-start-5 xl:col-span-7
+                        `
+                        : `
+                          lg:row-start-1 lg:col-start-4 lg:col-span-7
+                          xl:row-start-1 xl:col-start-5 xl:col-span-6
+                        `
+                    }
                     `
               )}
             >

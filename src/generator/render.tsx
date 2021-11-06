@@ -29,7 +29,11 @@ import {
 } from "src/types/siteData";
 import { resolveLinks } from "src/generator/util/remarkResolveLinks";
 import { Root } from "src/components/Root";
-import { getMarkdownTextStatistics } from "./util/markdown";
+import {
+  getMarkdownHeaders,
+  getMarkdownTextStatistics,
+  rehypeSlug,
+} from "./util/markdown";
 import { MDXRemote } from "src/components/MDXRemote";
 import { isPostPage } from "src/util/site";
 
@@ -197,6 +201,7 @@ async function getFilesForOneMdxPage(
   const renderedMdxSource = await serialize(matterMdx.content, {
     mdxOptions: {
       remarkPlugins: [[remarkAbbr, {}]],
+      rehypePlugins: [[rehypeSlug, {}]],
     },
   });
   const relativePathToRoot = "../../";
@@ -280,6 +285,7 @@ async function getPostData(
         [remarkAbbr, {}],
         [resolveLinks, { currentPath: postPath }],
       ],
+      rehypePlugins: [[rehypeSlug, {}]],
     },
   });
 
@@ -297,6 +303,7 @@ async function getPostData(
     coverImage: data.coverImage,
     slug: data.slug,
     tags: data.tags,
+    showToc: data.showToc,
     description: data.description,
     preview: data.preview,
     path: postPath,
@@ -304,6 +311,7 @@ async function getPostData(
     wordCount: roundToNearest(stats.wordCount, 10),
     readTimeMin: stats.readTimeMin,
     html: htmlContent,
+    headers: await getMarkdownHeaders(content),
   };
 
   const isValid = validate(postData);
