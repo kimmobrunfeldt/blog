@@ -136,3 +136,11 @@ export function removeMediaListener(
 
   query.removeListener(cb);
 }
+
+export function safeMatchesMediaQuery(query: string): boolean {
+  if (!globalThis.window) {
+    return false;
+  }
+
+  return globalThis.window.matchMedia(query).matches;
+}

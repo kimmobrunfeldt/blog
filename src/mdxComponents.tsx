@@ -70,7 +70,7 @@ export const components = {
   ol: (props: any) => (
     <ol className={`pl-6 list-decimal space-y-1`} {...props} />
   ),
-  a: (props: any) => <Link {...props} color="none" />,
+  a: (props: any) => <Link {...props} color="underline" />,
   code: (props: any) => <Prism {...props} />,
   img: (props: any) => (
     <a href={props.src} rel="noreferrer" target="_blank">

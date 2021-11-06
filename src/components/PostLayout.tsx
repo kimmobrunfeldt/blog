@@ -12,6 +12,7 @@ import {
   getPosts,
   addMediaListener,
   removeMediaListener,
+  safeMatchesMediaQuery,
 } from "src/util/site";
 import { cls } from "src/util/tailwind";
 import * as twGlobals from "src/twGlobals";
@@ -70,6 +71,10 @@ export function PostLayout(props: Props): JSX.Element {
   const ctx = React.useMemo(() => ({ slideIndex, setSlideIndex }), [
     slideIndex,
   ]);
+
+  const [isLargeScreen, setIsLargeScreen] = React.useState(
+    safeMatchesMediaQuery(`(min-width: ${(defaultTheme as any).screens.lg})`)
+  );
   const [tocOpen, setTocOpen] = React.useState(false);
   const toggleTocOpen = () => setTocOpen(!tocOpen);
 
@@ -78,7 +83,7 @@ export function PostLayout(props: Props): JSX.Element {
       `(min-width: ${(defaultTheme as any).screens.lg})`
     );
     const cb = (event: MediaQueryListEvent) => {
-      setTocOpen(event.matches ? true : false);
+      setIsLargeScreen(event.matches ? true : false);
     };
 
     addMediaListener(darkQuery, cb);
@@ -154,7 +159,7 @@ export function PostLayout(props: Props): JSX.Element {
               )}
 
               {props.data.showToc && (
-                <div className="mt-8">
+                <div className="sticky top-6 mt-8">
                   <Link
                     className="flex items-center lg:hidden mb-3"
                     onClick={toggleTocOpen}
@@ -167,11 +172,13 @@ export function PostLayout(props: Props): JSX.Element {
                     />
                   </Link>
 
-                  <Collapse isOpened={tocOpen}>
-                    <div className="sticky top-8">
+                  {isLargeScreen ? (
+                    <TableOfContents headers={props.data.headers} />
+                  ) : (
+                    <Collapse isOpened={tocOpen}>
                       <TableOfContents headers={props.data.headers} />
-                    </div>
-                  </Collapse>
+                    </Collapse>
+                  )}
                 </div>
               )}
             </div>

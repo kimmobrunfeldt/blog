@@ -1,5 +1,9 @@
 import React from "react";
-import { addMediaListener, removeMediaListener } from "src/util/site";
+import {
+  addMediaListener,
+  removeMediaListener,
+  safeMatchesMediaQuery,
+} from "src/util/site";
 import { useLocalStorage } from "src/util/storage";
 import { Toaster } from "react-hot-toast";
 
@@ -24,14 +28,6 @@ function setThemeClass(theme: Context["theme"]): void {
   } else {
     document.documentElement.classList.remove("dark");
   }
-}
-
-function safeMatchesMediaQuery(query: string): boolean {
-  if (!globalThis.window) {
-    return false;
-  }
-
-  return globalThis.window.matchMedia(query).matches;
 }
 
 export const App = ({ children }: Props) => {

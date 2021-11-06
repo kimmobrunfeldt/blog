@@ -19,7 +19,8 @@ export const linkStyles = {
     "text-amber-6 hover:text-amber-5 active:text-amber-7 dark:text-amber-5 dark:active:text-amber-4",
   rust:
     "text-rust-6 hover:text-rust-5 active:text-rust-7 dark:text-rust-6 dark:active:text-rust-5",
-  none: "underline",
+  none: "",
+  underline: "underline",
 };
 
 export function Link({
