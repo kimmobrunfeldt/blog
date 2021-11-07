@@ -1,5 +1,5 @@
 ---
-title: "Advanced TypeScript — The ultimate Tailwind typings"
+title: "Advanced TypeScript: The ultimate Tailwind typings"
 slug: "6-advanced-typescript-the-ultimate-tailwind-typings"
 createdAt: "2021-10-20"
 coverImage: "/content-assets/7/cover.png"
@@ -64,7 +64,8 @@ The second prerequisite is that Tailwind class names have equal specificity.  Yo
 In the above example `p-0` does not override `p-4`. Whichever class is defined first in Tailwind's `output.css` wins. That's how CSS specificity works. Another example for a real use case:
 
 ```tsx
-// Doesn't work
+// Doesn't work. Background color and hover effect
+// can't be changed by adding new classes in the end.
 const baseCls = "rounded p-4 bg-primary hover:cursor-pointer"
 const disabledCls = "bg-gray-200 hover:cursor-not-allowed"
 
@@ -74,7 +75,7 @@ const finalCls = `
 `;
 
 
-// Do this instead
+// Do this instead.
 const baseCls = "rounded p-4"
 const primaryCls = "bg-primary hover:cursor-pointer"
 const disabledCls = "bg-gray-200 hover:cursor-not-allowed"
@@ -173,7 +174,9 @@ The final typings serve as a neat real-life example that covers almost all advan
 1. Type that trims leading and trailing whitespace of strings.
 1. A way to split the whole `className` string into word tokens and validate them against `ClassName`.
 1. Error message type that shows which is the offending token. For example `'flexxx' is not a valid Tailwind class`.
-1. Support all of the above for string, object, and array types.
+1. Support for a string type
+1. Support for an object type
+1. Support for an array type
 
 Let's cover them one by one, and tie it all together in the end.
 
@@ -475,9 +478,14 @@ cn('invalid')
 The passed parameter typed as literal `'invalid'` is not assignable to the error message that's also a literal string type.
 
 
-### 5. Object and array formats
+### 5. String type
 
-The string format has already been covered, but there's still objects and arrays.
+Let's turn the pieces above into the final type utility which validates that each token is a valid Tailwind class in a string. The utility only works if the string is a literal type such as `"p-1 block"` instead of the general `string` type.
+```
+
+```
+
+### 5. Object type
 
 The object format:
 
@@ -486,6 +494,15 @@ The object format:
   'block p-1': size === 'xl'
 }
 ```
+
+Proceed to tell about mapped types.
+
+
+
+### 5. Array type
+
+
+
 
 Array format:
 
@@ -497,10 +514,6 @@ Array format:
   }
 ]
 ```
-
-Let's start with the simpler object format.
-
-Proceed to tell about mapped types.
 
 
 Next, let's figure out the array format.
