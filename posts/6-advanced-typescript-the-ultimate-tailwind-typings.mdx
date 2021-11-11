@@ -3,7 +3,7 @@ title: "Advanced TypeScript: The ultimate Tailwind typings"
 slug: "6-advanced-typescript-the-ultimate-tailwind-typings"
 createdAt: "2021-10-20"
 coverImage: "/content-assets/7/cover.png"
-preview: true
+preview: false
 showToc: true
 description: >
   Making the ultimate TypeScript typings for Tailwind class names in a React project.
@@ -47,7 +47,7 @@ In other words, don't do this:
 
 When doing string concatenation, Tailwind doesn't know which specific `text-` color classes to include in the CSS build. It uses a regex to find complete strings from the source code, to detect which Tailwind classes are actually used in the project. This process of minification is called purging. You can safelist special cases and even regex class name patterns, but it's tedious and can lead to large CSS output.
 
-Purging is important, because there is a huge amount of possible combinations of class names. There's actually tens of thousands of them! Unpurged `output.css` from Tailwind can weigh even 8 megabytes.
+Purging is important, because there are a huge amount of possible class names. There's actually tens of thousands of them! Unpurged `output.css` from Tailwind can weigh even 8MB _(unminified, uncompressed)_.
 
 
 It sounds scary, but in reality your application will use only a fraction of them. Maybe a few thousands at maximum, which totals to some 10kB.
@@ -172,17 +172,17 @@ The final typings serve as a neat real-life example that covers almost all advan
 
 1. Type containing all valid Tailwind class names. For example `type ClassName = 'p-1' | 'p-2' | 'etc'`.
 1. Type that trims leading and trailing whitespace of strings.
-1. A way to split the whole `className` string into word tokens and validate them against `ClassName`.
 1. Error message type that shows which is the offending token. For example `'flexxx' is not a valid Tailwind class`.
-1. Support for a string type
-1. Support for an object type
-1. Support for an array type
+1. A way to split the whole `className` string into word tokens and validate them against `ClassName`.
+1. Support for a string
+1. Support for the object format
+1. Support for the array format
 
 Let's cover them one by one, and tie it all together in the end.
 
 ### 1. Tailwind class names
 
-There are multiple ways to generate a union type out of all class names. One solution would be to use the ability to expand template literal type unions:
+There's a few different routes for generating a union type out of all class names. One solution would be to use the ability to expand template literal type unions:
 
 ```typescript
 type ColorName = 'red' | 'purple' | 'blue' | 'green'
@@ -243,7 +243,7 @@ type TrimStart<T extends string> =
 
 Note that in each iteration of the recursive loop, only one whitespace character is "eaten" from the result at a time. This happens because in the conditional, the type argument `T` needs to exactly match the template `` `${Whitespace}${infer Tail}` ``. Since `Whitespace` can only be 1 character long, it consumes only one whitespace character at a time.
 
-The type instantiation depth limit was [increased to 500](https://github.com/microsoft/TypeScript/pull/45025) in TypeScript, to support this exact use case better. It means that we can theoretically trim 500 leading whitespace characters at maximum. The amount decreases when the utility is a part of a larger type chain, which is often the case.
+The type instantiation depth limit was [increased to 500](https://github.com/microsoft/TypeScript/pull/45025) in TypeScript, to support this exact use case better. It was later [reduced back to a 100](https://github.com/microsoft/TypeScript/pull/45711), which isn't much for template literal processing.
 
 However, there's an optimization trick. You can pre-define a few different lengths of whitespaces to minimize the amount of depth required:
 
@@ -283,11 +283,60 @@ The end result:
 ```typescript
 // type Result = "abc"
 type Result = Trim<'\n\n  abc   '>
+
+// The need for trimming long whitespace appears
+// in deeply nested (more indentation) multi-line strings:
+function doSomething() {
+  if (condition) {
+    if (another) {
+      cn(`
+        block
+        p-1
+        hover:bg-blue
+      `)
+    }
+  }
+}
+```
+
+The same [pull request](https://github.com/microsoft/TypeScript/pull/45711),which lowered the type instantiation depth limit to 100, also implemented tail recursive evaluation of conditional types. Using the tricks explained in the description the `Trim` utility could be even further improved.
+
+### 3. Error messages
+
+The built-in way to indicate a type error is to use [never](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#the-never-type). It works because `never` is not assignable to any other type.
+
+In complex conditional types you might have multiple instances of `never` type, but for separate issues. This makes the code hard to read and type errors less descriptive. Unfortunately, TypeScript [doesn't natively support](https://github.com/microsoft/TypeScript/issues/23689) anything like `throw`.
+
+However, there is a hack that achieves almost the same result. Instead of returning `never`, you can return the error message as a literal string:
+
+```typescript
+type IsValid<T extends string> =
+  T extends ClassName
+    ? T
+    : `Error: '${T}' is not a valid Tailwind class`
+```
+
+The literal string error message works in a similar way as `never`. Types aren't assignable to it in practice. It's easiest to understand via an example:
+
+```typescript
+function cn<T>(singleClassName: IsValid<T>) {
+  return singleClassName;
+}
+
+// Argument of type '"invalid"' is not assignable to parameter of type
+// '"Error: 'invalid' is not a valid Tailwind class"'.
+cn('invalid')
+```
+
+The passed parameter typed as literal `'invalid'` is not assignable to the error message that's also a literal string type. This pattern can be extracted as a utility type to make the intention more clear:
+
+```typescript
+// Utility type to provide nicer error messages
+type Err<Message extends string> = `Error: ${Message}`
 ```
 
 
-
-### 3. Split to tokens and validate
+### 4. Split to tokens and validate
 
 This is going to be a tough piece.
 
@@ -409,18 +458,18 @@ type Debug5 = SplitToTailwindClassNames<'invalid'>  // []
 The easiest way to fix the leading whitespace issue is to make a wrapper utility that calls `Trim`:
 
 ```typescript
-type Wrapper<T extends string> = SplitToTailwindClassNames<Trim<T>>
+type SplitToTailwindClassNames<T extends string> = SplitToTailwindClassNamesInner<Trim<T>>
 ```
 
-The error handling can be improved by separating the "invalid T" and "end recursion" cases:
+The error handling can be improved by using the `Err` type and separating the "invalid T" and "end recursion" cases:
 
 
 ```typescript
-type SplitToTailwindClassNames<T extends string> =
+type SplitToTailwindClassNamesInner<T extends string> =
   T extends `${ClassName}${infer Tail}`
     ? T extends `${infer C}${Tail}`
       ? [C, ...SplitToTailwindClassNames<Trim<Tail>>]
-      : never
+      : Err<'Should not happen'>
 
     // Added error handling
     // Handles cases where `T` does not match
@@ -439,51 +488,98 @@ type SplitToTailwindClassNames<T extends string> =
           ? []
           // Something else was found.
           // Raise an error
-          : [never]
+          : [Err<`'${Tail}' is not a valid Tailwind class`>]
 
       // Should never happen as `T` is a string.
-      : [never]
+      : [Err<'Should not happen'>]
 ```
 
 Finally we got to a version that handles all the cases as expected.
 
 
-### 4. Error messages
-
-The built-in way to indicate a type error is to use [never](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#the-never-type). It works because `never` is not assignable to any other type.
-
-In complex conditional types you might have multiple instances of `never` type, but for separate issues. This makes the code hard to read and type errors less descriptive. Unfortunately, TypeScript [doesn't natively support](https://github.com/microsoft/TypeScript/issues/23689) anything like `throw`.
-
-However, there is a hack that achieves almost the same result. Instead of returning `never`, you can return the error message as a literal string:
-
-```typescript
-type IsValid<T extends string> =
-  T extends ClassName
-    ? T
-    : `Error: '${T}' is not a valid Tailwind class`
-```
-
-The literal string error message works in a similar way as `never`. Types aren't assignable to it in practice. It's easiest to understand via an example:
-
-```typescript
-function cn<T>(singleClassName: IsValid<T>) {
-  return singleClassName;
-}
-
-// Argument of type '"invalid"' is not assignable to parameter of type
-// '"Error: 'invalid' is not a valid Tailwind class"'.
-cn('invalid')
-```
-
-The passed parameter typed as literal `'invalid'` is not assignable to the error message that's also a literal string type.
-
-
 ### 5. String type
 
-Let's turn the pieces above into the final type utility which validates that each token is a valid Tailwind class in a string. The utility only works if the string is a literal type such as `"p-1 block"` instead of the general `string` type.
+Let's turn the pieces above into the final type utility which validates that a string contains only valid Tailwind classes. The utility only works if the string is a literal type such as `"p-1 block"`. A generic `string` type won't suffice, because template literals operate on string constants.
+
+As the first step, let's validate that the input indeed is a literal string type.
+
+```typescript
+type IsValidTailwindClassString<T extends string> =
+  string extends T
+    ? Err<'Unexpected generic string'>
+    // Make sure each item is a valid `ClassName`
+    : SplitToTailwindClassNames<T> extends ClassName[]
+      // If yes, success and return the type `T` itself
+      ? T
+      // If no, raise an error
+      : Err<'Invalid Tailwind class string'>
 ```
 
+Now when the utility is invoked with a generic `string`, we get an error:
+
+```typescript
+// INCORRECT
+const str: string = 'generic string'
+
+// type Debug = "Error: Unexpected generic string"
+type Debug = IsValidTailwindClassString<typeof str>
+
+// CORRECT
+const str2 = 'p-1'
+
+type Debug2 = IsValidTailwindClassString<typeof str2>
+// type Debug2 = "p-1"
 ```
+
+Also, we correctly get an error in case there's an invalid class name:
+
+```typescript
+// type Debug = "Error: Invalid Tailwind class string"
+type Debug = IsValidTailwindClassString<`
+  block
+  bg-green-10c
+`>
+```
+
+That's already awesome, but let's change it to show which tokens where invalid for a better developer experience. We could for example return the actual array that contains the correct Tailwind classes and errors.
+
+```diff
+     : SplitToTailwindClassNames<T> extends ClassName[]
+       // If yes, success and return the type `T` itself
+       ? T
+       // If no, raise an error
+-      : Err<'Invalid Tailwind class string'>
++      : SplitToTailwindClassNames<T>
+```
+
+It would work, but the error messages easily become too long to be useful. Another approach, which I like more, is to get the first error from the array. Fortunately we're dealing with just a flat array!
+
+```typescript
+// Gets the first string of an array that starts with 'Error: '
+// Must be used only when `T` actually includes an error item
+type GetFirstError<T extends string[]> =
+  T extends [infer Head, ...infer Tail]
+    ? Head extends `Error: ${infer Message}`
+      // Match found, return
+      ? Head
+      // Continue searching for an error string
+      : GetFirstError<Tail>
+    : never
+```
+
+Let's add it to the string-validating utility and call it done.
+
+```diff
+     : SplitToTailwindClassNames<T> extends ClassName[]
+       // If yes, success and return the type `T` itself
+       ? T
+       // If no, raise an error
+-      : Err<'Invalid Tailwind class string'>
++      : GetFirstError<SplitToTailwindClassNames<T>>
+```
+
+Everything we've built so far has been now combined into a single utility type called `IsValidTailwindClassString`. That was a lot of work, but we still have a few other formats to cover.
+
 
 ### 5. Object type
 
@@ -544,3 +640,10 @@ The final types took quite a while to finish, and I couldn't have done it withou
 * [ts-sql](https://github.com/codemix/ts-sql) – SQL "database" implemented purely in TypeScript.
 * [XML parser in TypeScript](https://github.com/0kku/destiny/blob/a3d5182658599bc117db3b4657fed71dfedf8b44/src/parsing/XmlTypeParser.ts)
 * [ts-metacode](https://github.com/gmono/ts-metacode)
+
+### Utilities
+
+* [type-fest](https://github.com/sindresorhus/type-fest) — A collection of essential TypeScript types
+* [ts-toolbelt](https://github.com/millsp/ts-toolbelt) — TypeScript's largest utility library
+* [ts-essentials](https://github.com/krzkaczor/ts-essentials) — All basic TypeScript types in one place
+* [utility-types](https://github.com/piotrwitek/utility-types) — Think "lodash" for static types

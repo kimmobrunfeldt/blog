@@ -10,6 +10,7 @@ export const theme = {
   diffAddBackground: twTheme.colors.success[1],
   diffDeleteAccent: twTheme.colors.danger[4],
   diffDeleteBackground: twTheme.colors.danger[1],
+  diffUnchangedColor: twTheme.colors.gray[5],
   functionColor: twTheme.colors.amber[5],
   highlightAccent: twTheme.colors.warning[4],
   highlightBackground: twTheme.colors.warning[1],
@@ -31,4 +32,5 @@ export const darkTheme = {
   inlineCodeBackground: twTheme.colors.gray[7],
   inlineCodeColor: twTheme.colors.gray[3],
   punctuationColor: twTheme.colors.gray[3],
+  diffUnchangedColor: twTheme.colors.gray[5],
 };
