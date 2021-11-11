@@ -13,7 +13,11 @@ const READING_WORDS_PER_MINUTE = 200;
 
 function countText(text: string) {
   const char = text.replace(/\s+/, "").length;
-  const word = text.trim().split(/\s+/).length;
+  const word = text
+    .trim()
+    .split(/\s+/)
+    .map((w) => w.replace(/[^a-zA-Z0-9]/g, ""))
+    .filter((w) => w.length > 0).length;
   const readTimeMin = word / READING_WORDS_PER_MINUTE;
 
   return {
@@ -30,6 +34,7 @@ export async function getMarkdownTextStatistics(mdContent: string) {
 
   function visitor(node: Node) {
     const text = mdastToString(node);
+
     const counts = countText(text);
     charCount += counts.char;
     wordCount += counts.word;
