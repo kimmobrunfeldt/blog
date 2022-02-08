@@ -74,7 +74,7 @@ module.exports = {
         global: defaultTheme.spacing["2"],
       },
       spacing: {
-        paragraph: defaultTheme.spacing["6"],
+        paragraph: defaultTheme.spacing["5"],
       },
       boxShadow: {
         ...makeShadow("white", "255, 255, 255"),

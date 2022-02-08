@@ -87,7 +87,7 @@ export const components = {
   inlineCode: (props: any) => <code {...props} />,
   blockquote: (props: any) => (
     <blockquote
-      className="text-gray-6 dark:text-gray-5 italic py-2 px-7 my-10 text-center text-lg md:relative md:-left-6"
+      className="text-gray-6 dark:text-gray-5 italic py-2 px-7 my-6 text-center text-lg md:relative md:-left-6"
       {...props}
     />
   ),
