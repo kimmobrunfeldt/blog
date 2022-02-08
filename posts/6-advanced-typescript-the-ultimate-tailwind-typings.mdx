@@ -15,12 +15,17 @@ tags:
   - react
 ---
 
-This post is about implementing the ultimate Tailwind-React integration and typings for it.
+This post is about implementing utilities for the ultimate Tailwind-React ergonomics and typings for it.
 
-In the process, we'll learn about most of the advanced TypeScript features including complex conditionals, template literals, and recursive types. The typings are demonstrated via React components, but the final solution works in any TypeScript project.
+In the process, we'll learn about most of the advanced TypeScript features including complex conditionals, template literals, and recursive types. The typings are demonstrated via React components, but the final solution would work in any TypeScript project.
 
-To get an idea what we're building, you can check out the final monstrous type in [TypeScript playground](https://www.typescriptlang.org/play?#code/C4TwDgpgBAwgNgQwM5IHIILbQLwCgpQA+UA5AEZwD2AxgNYn5EAFJAlgHZwcQC0FN9RsRIAzOBAAeDAsIDmAJ1YATaUVJlZPBQhA8AjAAYDqgPQmoAOitQEUYAAtKAVyQJ2SqBkryIuXKEgoAEl2JGA3YFYESMp2ABEIMAcAJQglJ2oOWQB1e1ZgCCQwBGocIVICUnKSAlVhKplSAB12Bn9waAAVRQwAZXD5YAAeTqhJAvckKDDFdlkAPig8AlHxiEmoAAMAEgBvELCIqJj4xJS0jKzc-MLi0oBfPY4RCHkoToRWOHvNxgIAfnePX6CEGI0+cHmfygAC53n4Al0egBRdwjMYSCZKKYzLKLZbvDFYqY7XbPV5QAAKPhErAkj32oXC7Ei0VYsQSSXsqXSmTm1wKRRKEB+0MB3VYGFRSiG1IgtIkUMqsPh7UCEow6LWG1xc3xQMl0pGwIGw068yhaugyPk8iGAFlCq5ZNBtdjpsBZgsllsbfJvHC9o6UAgXaKrVBemAuMBOpQPl8AO4cJTwZBoTCFLWY9bu3Xe7CR6P5OMJuDJ9xplDoLBIELsV7GyUjC0IjpFmOliEV1OIauZuvsBt21Y5nWevFLRij4lbPZVjNYBnkt5l0XK8VE3Mkp7sF5vGAMte-ZUAqAAbRgABpLFYo53492Uwua1mNeCvhaALrQghwv1DCQvSOE4cAeOwlDAFA9gIGAkCtJaypmFAACCShKGkYy2t40FuEoXBzNCyEABJ4eIUzUMghRQIm9ivNAmydJsUBKJQ1EQVBGDRNQ9hEeY859ouIp7GuFhQAAYjhkiYNGvhIeY5BUHQJA3iQKnNOwLTqWw7AAG4IFwKg3jhOn6YZBD8MpfF8VAqCQRAcKMRCzEwVMBk+AgSggFAZAQOsdg9FgHgiP6GA0Xkgp3HJlRwjO25zmSe4Usev5QOKEJbhsL6ZqlBDIU5XzMRAACOTgGW5UBmco7xPu4UDUIJFi5VAyHSlAPjUE48hIOy7DTBkpRICIoFwCATWnpUgLnmWP4TX+BqamWixulManNXl5gFXALnIFAsSjeFNxCqUUDiCIwDjXNG1QG1HVdT1sT9dQg3DXAo2XVdU2zVdLXmL0lBYA4WRjHASDQImu0iM47gfXNyHJJ8YM2H1rz+vI60queAGbCQIkQvcNSsFMHE2JVBnVWWPb1YJmzzD+qXIcBzhgVADa6RSMFwf5u2McxROk-msPzVjtqAUzoHgZBuFcwh9PIQA4hAwBTA40C0t1UH5ntIjIzYto6HYMGa6aUzJg4pB+gGVTIfaLhQb5UAuJh+3ebR-m8zY1DAGVb3eRwDVOBhbko9hbw3BgEaK8A4msBrlsjpl7pOOwtAQYm7Dnl++LTonUzniuUDERAnk3lYFgFzNYqF8XHgrb6oeBol+5QMGzoiiep429x9hQFDydKDePje-I7CpYCReeQz5gwLEkTsE40Bg6CPHA1DbxuFhaMel6qVwlHMdx6HH6QtCcJs68baBEESAAGrk0olPPoJ-Retms75tnBBa3XnRVwBJAAFUGwSEgF7TCLphysGoNvLIJAlSVC7rQReXVXQlB7uHKA-NbBVQ8JsbKWAO7zXvCWR8SYn7plfEgFsudYCCVfJnKewQdYgEKDeJAA0nTIw8EPLqfVeZj3hBNZCQQdYQUHojaAG9UbeF3lAfescwjxyGMQ2MpDyzkP7LWFsloIwJDIE4WQPpr530Mo-Ssz8JxzCGB3SytBGAaC0D4dY+gDDUFwLTIAA).
+To get an idea what we're building, you can check out the final monstrous typings in a Replit project:
 
+* [Typings and classnames utility](https://replit.com/@KimmoBrunfeldt/the-ultimate-tailwind-typings#src/tailwindUtils.ts)
+* [Example usage in components](https://replit.com/@KimmoBrunfeldt/the-ultimate-tailwind-typings#src/Examples.tsx)
+
+
+*Note that the TypeScript IntelliSense hints appear much slower in the online environment compared to a local setup.*
 
 ## Quick intro to Tailwind
 
@@ -28,14 +33,12 @@ Tailwind's website has an accurate pitch that describes its purpose well:
 
 > A utility-first CSS framework packed with classes like flex, pt-4, text-center and rotate-90 that can be composed to build any design, directly in your markup.
 
-If you're sceptical about Tailwind in general, I suggest reading [CSS Utility Classes and "Separation of Concerns"](https://adamwathan.me/css-utility-classes-and-separation-of-concerns/) by Adam Wathan.
-
-Anyways, Tailwind produces plain CSS, everything is customisable via the config file, and its public API is the class names.
+If you're sceptical about Tailwind in general, I suggest reading [CSS Utility Classes and "Separation of Concerns"](https://adamwathan.me/css-utility-classes-and-separation-of-concerns/) by Adam Wathan. Anyways, Tailwind produces plain CSS, everything is customisable via the config file, and its public API is the class names.
 
 
-### Prerequisites
+### Constraints
 
-The first prerequisite is about string concatenation. Using Tailwind in dynamic components, such as in React, has [one vital rule](https://tailwindcss.com/docs/optimizing-for-production#writing-purgeable-html).
+There are a few constraints that greatly affect the shape of our solution. The first constraint is about string concatenation. Using Tailwind in dynamic components, such as in React, has [one vital rule](https://tailwindcss.com/docs/optimizing-for-production#writing-purgeable-html).
 
 > It is important to avoid dynamically creating class strings in your templates with string concatenation, otherwise PurgeCSS won’t know to preserve those classes.
 
@@ -45,9 +48,9 @@ In other words, don't do this:
 <p className={`text-${color}`}>Hello!</p>
 ```
 
-When doing string concatenation, Tailwind doesn't know which specific `text-` color classes to include in the CSS build. It uses a regex to find complete strings from the source code, to detect which Tailwind classes are actually used in the project. This process of minification is called purging. You can safelist special cases and even regex class name patterns, but it's tedious and can lead to large CSS output.
+When doing string concatenation, Tailwind doesn't know which specific `text-` color classes to include in the CSS build. It uses a regex to find complete strings from the source code to detect which Tailwind classes are actually used in the project. Using the information, Tailwind can purge unnecessary CSS. There are ways to fine-tune the process, for example by specifying a list of regex class name patterns that should not be purged.
 
-Purging is important, because there are a huge amount of possible class names. There's actually tens of thousands of them! Unpurged `output.css` from Tailwind can weigh even 8MB _(unminified, uncompressed)_.
+Purging is important, because there are a huge amount of possible class names. It might be a bit surprising, but there are actually tens of thousands of class names in Tailwind by default. Unpurged `output.css` from Tailwind can weigh even 8MB _(unminified, uncompressed)_.
 
 
 It sounds scary, but in reality your application will use only a fraction of them. Maybe a few thousands at maximum, which totals to some 10kB.
@@ -581,7 +584,7 @@ Let's add it to the string-validating utility and call it done.
 Everything we've built so far has been now combined into a single utility type called `IsValidTailwindClassString`. That was a lot of work, but we still have a few other formats to cover.
 
 
-### 5. Object type
+### 6. Object type
 
 The object format:
 
@@ -595,7 +598,7 @@ Proceed to tell about mapped types.
 
 
 
-### 5. Array type
+### 7. Array type
 
 
 
@@ -634,14 +637,17 @@ The final types took quite a while to finish, and I couldn't have done it withou
 * [Make your CSS safer by type checking Tailwind CSS classes](https://dev.to/virtualkirill/make-your-css-safer-by-type-checking-tailwind-css-classes-2l14)
 * [How to type check if object keys conform a conditional recursive template type?
 ](https://stackoverflow.com/questions/65737948/how-to-type-check-if-object-keys-conform-a-conditional-recursive-template-type/65738172#65738172)
-* [Pull request](https://github.com/microsoft/TypeScript/pull/40336) that introduces template literal types
-* [awesome-template-literal-types](https://github.com/ghoullier/awesome-template-literal-types)
-* [Type Gymnastics](https://github.com/g-plane/type-gymnastics) – Collection of wonderful TypeScript type gymnastics code snippets
-* [ts-sql](https://github.com/codemix/ts-sql) – SQL "database" implemented purely in TypeScript.
+* [Pull request](https://github.com/microsoft/TypeScript/pull/40336) that introduced template literal types
+* [awesome-template-literal-types](https://github.com/ghoullier/awesome-template-literal-types) — Collection of even more resources
+* [Type Gymnastics](https://github.com/g-plane/type-gymnastics) — Collection of wonderful TypeScript type gymnastics code snippets
+* [ts-sql](https://github.com/codemix/ts-sql) — SQL "database" implemented purely in TypeScript.
 * [XML parser in TypeScript](https://github.com/0kku/destiny/blob/a3d5182658599bc117db3b4657fed71dfedf8b44/src/parsing/XmlTypeParser.ts)
-* [ts-metacode](https://github.com/gmono/ts-metacode)
+* [ts-metacode](https://github.com/gmono/ts-metacode) — TypeScript metaprogramming
 
 ### Utilities
+
+We ended up implementing many of the advanced TypeScript tricks from scratch.
+In many cases it makes sense to use an existing library instead. Consider libraries can be considered as the "lodash" for TypeScript.
 
 * [type-fest](https://github.com/sindresorhus/type-fest) — A collection of essential TypeScript types
 * [ts-toolbelt](https://github.com/millsp/ts-toolbelt) — TypeScript's largest utility library
