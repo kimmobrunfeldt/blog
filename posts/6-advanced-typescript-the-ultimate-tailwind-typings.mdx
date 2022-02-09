@@ -102,7 +102,7 @@ Now that we know these limitations, the following decisions make more sense.
 
 ## The desired result
 
-It sounds like a trivial task, simply transform component props into Tailwind class names. It's not rocket science, but achieving that it in a clean, readable, and type-safe way with all the above constraints in mind does require some thinking.
+It sounds like a trivial task: simply add Tailwind class names to `className` prop. Well, it actually is if you are happy with the ergonomics, but we are aiming pretty high here _(read: over engineering)_. Achieving a great developer experience with a clean, readable, and type-safe solution with all the above constraints in mind does require some thinking.
 
 There are multiple ways to dynamically format `className` strings, but to me [classnames](https://www.npmjs.com/package/classnames) provides the perfect balance of readability and convenience. It's great as is, but there's nothing guarding you from typos or using Tailwind class names that were purged for some reason.
 
@@ -115,7 +115,7 @@ import classnames from 'classnames'
 const cn = (...args: Todo) => classnames(...args)
 ```
 
-After implementing the types, we should be able to catch all the incorrect calls at type-level. The API of _classnames_ is flexible, let's look at the different possibilities we need to be able to catch.
+After implementing the types, we should be able to catch all the incorrect calls at type-level. The API of _classnames_ is flexible, let's look at the different possibilities we need to be able to handle.
 
 Regular class name string.
 
@@ -188,12 +188,12 @@ const Hello4 = ({ dense = false }: Props) => {
 }
 ```
 
-The ability to raise type errors in all the cases would be the holy grail. Let's start implementing!
+If we were able to raise type errors for all the cases, that'd be the holy grail. Let's start implementing!
 
 
 ## Implementation
 
-The final typings serve as a neat real-life example that covers almost all advanced features in TypeScript. The individual pieces we need for the desired result are:
+It might look just moderately complex to type the _classnames_ API, but it gets tough. Chewing the complexity into smaller pieces helps. The individual pieces we need for the typings are:
 
 1. Type containing all valid Tailwind class names. For example `type ClassName = 'p-1' | 'p-2' | 'etc'`.
 1. Type that trims leading and trailing whitespace of strings.
@@ -268,7 +268,7 @@ type TrimStart<T extends string> =
     : T
 ```
 
-`TrimStart` loops recursively until it has "eaten" all the whitespace characters from the beginning. You could think it as a while-loop:
+`TrimStart` loops recursively until it has "eaten" all the whitespace characters from the beginning. You could think it as a while-loop, but done with recursion.
 
 ```javascript
 while (str.startsWith(' ') || str.startsWith('\n')) {
@@ -363,10 +363,10 @@ type IsValid<T extends string> =
     : `Error: '${T}' is not a valid Tailwind class`
 ```
 
-The literal string error message works in a similar way as `never`. Types aren't assignable to it in practice. It's easiest to understand via an example:
+The literal string error message works in a similar way as `never`. Types aren't assignable to it in practice. It's easiest to understand via an example ([TypeScript playground](https://www.typescriptlang.org/play?#code/C4TwDgpgBAwgNgQwM5IHIILbQLwCgpQA+UA5AEZwD2AxgNYn5EAFJAlgHZwcQC0FN9RsRIAzOBAAeDAsIDmAJ1YATaUVJlZPBQhA8AjAAYDqgPQmoAOitQEUYAAtKAVyQJ2SqBkryIuP6EgoAEkkADUELiUAHgAVKElgCHckKCRgRXZZAD4oPAI4hKSlFPhkNExfAgIAfigYxgIALigAAwBReXlvZpIAEgBvGIBfEihWFPZKYBsoADcI5TqEVjgAdw4PakQUFr9cESd2amBWSnYoanZY+IlE5NT0jmyACiQn8VKUdCxmkPDI2JZACUUH6jB8wCc8nOb0yH225SwAG5cEM-GYoABBeSyJxYdjTSgiOzgaAkABEHHmkXJo3GUEm0zKrFk7AQFGgwEoUDACHkFUS8igRJJkFwGIpHS68h6VIWKjGEymM2pixiyzWGwuCNpFlwl2ebHYqpUQKAA)):
 
 ```typescript
-function cn<T>(singleClassName: IsValid<T>) {
+function cn<T extends string>(singleClassName: IsValid<T>) {
   return singleClassName;
 }
 
@@ -375,7 +375,7 @@ function cn<T>(singleClassName: IsValid<T>) {
 cn('invalid')
 ```
 
-The passed parameter typed as literal `'invalid'` is not assignable to the error message that's also a literal string type. This pattern can be extracted as a utility type to make the intention more clear:
+The passed parameter typed as literal `'invalid'` is not assignable to the error message that is also a literal string type. This pattern can be extracted as a utility type to make the intention more clear:
 
 ```typescript
 // Utility type to provide nicer error messages
