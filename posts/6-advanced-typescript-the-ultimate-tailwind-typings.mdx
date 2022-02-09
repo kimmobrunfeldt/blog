@@ -1,8 +1,8 @@
 ---
 title: "Advanced TypeScript: The ultimate Tailwind typings"
 slug: "6-advanced-typescript-the-ultimate-tailwind-typings"
-createdAt: "2021-10-20"
-coverImage: "/content-assets/5/cover.png"
+createdAt: "2022-02-13"
+coverImage: "/content-assets/6/cover.png"
 preview: true
 showToc: true
 description: >
@@ -38,9 +38,9 @@ If you're sceptical about Tailwind in general, I suggest reading [CSS Utility Cl
 
 ### Constraints
 
-There are a few constraints that greatly affect the shape of our solution. The first constraint is about string concatenation. Using Tailwind in dynamic components, such as in React, has [one vital rule](https://tailwindcss.com/docs/optimizing-for-production#writing-purgeable-html).
+There are a few constraints that affect the shape of our solution. The first constraint is about string concatenation. Using Tailwind in dynamic components, such as in React, has [one vital rule](https://tailwindcss.com/docs/optimizing-for-production#writing-purgeable-html).
 
-> It is important to avoid dynamically creating class strings in your templates with string concatenation, otherwise PurgeCSS won’t know to preserve those classes.
+> It is important to avoid dynamically creating class strings in your templates with string concatenation, otherwise PurgeCSS won't know to preserve those classes.
 
 In other words, don't do this:
 
@@ -48,7 +48,9 @@ In other words, don't do this:
 <p className={`text-${color}`}>Hello!</p>
 ```
 
-When doing string concatenation, Tailwind doesn't know which specific `text-` color classes to include in the CSS build. It uses a regex to find complete strings from the source code to detect which Tailwind classes are actually used in the project. Using the information, Tailwind can purge unnecessary CSS. There are ways to fine-tune the process, for example by specifying a list of regex class name patterns that should not be purged.
+When doing string concatenation, Tailwind doesn't know which specific `text-` color classes to include in the CSS build. It uses a regex to find complete strings from the source code to detect which Tailwind classes are actually used in the project. Using the information, Tailwind can purge unnecessary CSS.
+
+You _can_ configure a static list of regex class name patterns that Tailwind will leave to the final build, but it easily leads to bloated CSS.
 
 Purging is important, because there are a huge amount of possible class names. It might be a bit surprising, but there are actually tens of thousands of class names in Tailwind by default. Unpurged `output.css` from Tailwind can weigh even 8MB _(unminified, uncompressed)_.
 
@@ -58,17 +60,17 @@ It sounds scary, but in reality your application will use only a fraction of the
 ![Tailwind class names Venn diagram](/content-assets/6/tailwind-classes-venn.svg)
 
 
-The second prerequisite is that Tailwind class names have equal specificity.  You can't override previously written class names as you might intuitively expect:
+The second constraint is that Tailwind class names have equal specificity. You can't override previously written class names as you might intuitively expect:
 
 ```tsx
 <button className="rounded p-4 flex p-0">Ok</button>
 ```
 
-In the above example `p-0` does not override `p-4`. Whichever class is defined first in Tailwind's `output.css` wins. That's how CSS specificity works. Another example for a real use case:
+In the above example `p-0` does not override `p-4`. Whichever class is defined first in Tailwind's `output.css` wins. That's how CSS works in general. Another example for a real use case:
 
 ```tsx
 // Doesn't work. Background color and hover effect
-// can't be changed by adding new classes in the end.
+// can't be changed by appending new classes to the end.
 const baseCls = "rounded p-4 bg-primary hover:cursor-pointer"
 const disabledCls = "bg-gray-200 hover:cursor-not-allowed"
 
@@ -100,9 +102,7 @@ Now that we know these limitations, the following decisions make more sense.
 
 ## The desired result
 
-React components have changing props, but Tailwind doesn't like dynamically created class names. The problem could be framed: *What's the cleanest way to implement a function that transforms component props into Tailwind class names while adhering to the limitations?*
-
-It sounds like a trivial task. However, implementing it in a clean and readable way with all the constraints in mind is another story.
+It sounds like a trivial task, simply transform component props into Tailwind class names. It's not rocket science, but achieving that it in a clean, readable, and type-safe way with all the above constraints in mind does require some thinking.
 
 There are multiple ways to dynamically format `className` strings, but to me [classnames](https://www.npmjs.com/package/classnames) provides the perfect balance of readability and convenience. It's great as is, but there's nothing guarding you from typos or using Tailwind class names that were purged for some reason.
 
@@ -115,50 +115,72 @@ import classnames from 'classnames'
 const cn = (...args: Todo) => classnames(...args)
 ```
 
-After implementing the types, we should be able to catch all the incorrect calls at type-level:
+After implementing the types, we should be able to catch all the incorrect calls at type-level. The API of _classnames_ is flexible, let's look at the different possibilities we need to be able to catch.
+
+Regular class name string.
 
 ```typescript
 const Hello = () => {
   // typo in regular string
-  return <p className={cn(`text-blaxk-100 bg-white`)}>
+  return <p className={cn(`text-grau-100 bg-white`)}>
     Hello!
   </p>
 }
+```
+
+An array of class name strings.
+
+```typescript
+type Props = { disabled?: boolean }
 
 const Hello2 = ({ disabled }: Props) => {
   return <p className={cn([
     'flex my-5',
     // typo in a string in the array format
-    `text-blaxk-100 bg-white`,
-    disabled ? 'bg-gray-100 cursor-not-allowed'
+    `text-grau-800 bg-white`,
+    disabled ? 'bg-gray-300 cursor-not-allowed' : ''
   ])}>
     Hello!
   </p>
 }
+```
 
-const Hello3 = ({ dense }: Props) => {
-  return <p className={cn(`text-black-100 bg-white`, {
+An object where each key is a string of class names.
+
+```typescript
+type Props = { dense?: boolean }
+
+const Hello3 = ({ dense = false }: ) => {
+  return <p className={cn(`text-gray-800 bg-white`, {
     // typo in object key format
     'px-asd2 py-1 my-2': dense,
+    // try this:
+    // 'px-2 py-1 my-2': dense,
     'px-3 py-2 my-3': !dense,
   })}>
     Hello!
   </p>
 }
+```
 
-const Hello4 = ({ dense }: Props) => {
+A combination of multi-line class name string and object format.
+
+```typescript
+type Props = { dense?: boolean }
+
+const Hello4 = ({ dense = false }: Props) => {
   return <p
     // long class name definition with a typo.
     // note the leading and trailing spaces
     // on each line
     className={cn(`
       flexxx
-      text-black-100 bg-white
-      hover:text-black-300
+      text-gray-800 bg-white
+      hover:text-gray-900
       hover:border-b-2
     `, {
-      'px-1 py-3 my-4': dense
-      'px-2 py-4 my-6': !dense,
+      'px-1 py-3 my-4': dense,
+      'px-2 py-4 my-6': !dense
     })}
   >
     Hello!
@@ -166,18 +188,18 @@ const Hello4 = ({ dense }: Props) => {
 }
 ```
 
-To me, that's the holy grail. Let's start implementing!
+The ability to raise type errors in all the cases would be the holy grail. Let's start implementing!
 
 
 ## Implementation
 
-The final typings serve as a neat real-life example that covers almost all advanced features in TypeScript. The individual pieces we need for the desired outcome are:
+The final typings serve as a neat real-life example that covers almost all advanced features in TypeScript. The individual pieces we need for the desired result are:
 
 1. Type containing all valid Tailwind class names. For example `type ClassName = 'p-1' | 'p-2' | 'etc'`.
 1. Type that trims leading and trailing whitespace of strings.
 1. Error message type that shows which is the offending token. For example `'flexxx' is not a valid Tailwind class`.
 1. A way to split the whole `className` string into word tokens and validate them against `ClassName`.
-1. Support for a string
+1. Support for a class name string
 1. Support for the object format
 1. Support for the array format
 
@@ -199,23 +221,25 @@ type ClassName = Layout | `text-${Color}` | `bg-${Color}`
 
 But it's a lot of work and the typings would need to be generated based on [tailwind.config.js](https://tailwindcss.com/docs/configuration). In addition, it would lead to a huge union type with more than 60 000 unique string literals.
 
-Instead of template literal expansion, using [postcss-ts-classnames](https://github.com/esamattis/postcss-ts-classnames) eliminates the issues. It parses the output of PostCSS, exctracts all class names, and writes the union type of them to a `d.ts` file.
+Instead of template literal expansion, I found that [postcss-ts-classnames](https://github.com/esamattis/postcss-ts-classnames) works well. It parses the output of PostCSS, exctracts all class names, and writes the union type of them to a `d.ts` file.
 
 The result is a robust typing, that doesn't care about Tailwind's configuration or purging. It accurately captures all the class names your project has.
 
-A downside is that a small lag is introduced to development:
+A downside is that we introduce a small lag to the development cycle:
 
 * A new valid Tailwind class name is taken into use
 * For a short while, IDE complains about the class not being valid
 * PostCSS build is ran, which re-generates the `d.ts` types
 * IDE does a TypeScript refresh, and the error is gone
 
+That said, the lag isn't a big issue in reality. The union type performs well enough even if your project happens to use a few thousand unique class names.
+
 Now we have `tailwindClassNames.d.ts` which contains a union type of all valid class names:
 
 ```typescript
 type ClassName =
   | 'block'
-  | 'inline-block'
+  | 'inline-block'
   | 'flex'
   | 'grid'
   | 'bg-gray-100'
@@ -224,7 +248,7 @@ type ClassName =
 
 ### 2. Trimming whitespace
 
-Let's start with the leading whitespace. For this trick, we'll use [inference with template literals](https://www.typescriptlang.org/docs/handbook/2/template-literal-types.html#inference-with-template-literals).
+For this trick, we'll use [inference with template literals](https://www.typescriptlang.org/docs/handbook/2/template-literal-types.html#inference-with-template-literals) and type recursion. To get started, here's the generously commented `TrimStart` utility that deals with the leading whitespace.
 
 
 ```typescript
@@ -244,11 +268,29 @@ type TrimStart<T extends string> =
     : T
 ```
 
-Note that in each iteration of the recursive loop, only one whitespace character is "eaten" from the result at a time. This happens because in the conditional, the type argument `T` needs to exactly match the template `` `${Whitespace}${infer Tail}` ``. Since `Whitespace` can only be 1 character long, it consumes only one whitespace character at a time.
+`TrimStart` loops recursively until it has "eaten" all the whitespace characters from the beginning. You could think it as a while-loop:
 
-The type instantiation depth limit was [increased to 500](https://github.com/microsoft/TypeScript/pull/45025) in TypeScript, to support this exact use case better. It was later [reduced back to a 100](https://github.com/microsoft/TypeScript/pull/45711), which isn't much for template literal processing.
+```javascript
+while (str.startsWith(' ') || str.startsWith('\n')) {
+  str = str.substring(1)
+}
+```
 
-However, there's an optimization trick. You can pre-define a few different lengths of whitespaces to minimize the amount of depth required:
+In each iteration of the recursive loop, only one whitespace character is consumed at a time. This happens because in the conditional, the type argument `T` needs to exactly match the template `` `${Whitespace}${infer Tail}` ``. Since `Whitespace` can only be 1 character long, it consumes a single whitespace character at a time.
+
+
+Here's a few example results ([TypeScript playground](https://www.typescriptlang.org/play?#code/PTAEDkFMHcBsEsB2kDOoD2BjTBXATqEqALY6wAu8CyoK5eSA5mtPOQBagBGAhpgNaUBoAI4505VAFgAUOQCeAB0igA6uzapFfFQF5QAckOgAPoYA6iA7NkhQAA0gAPSYgAmaOg0SN7oAG48CG48kmgcoaAckLZgCsqgPHiMOMSQiOQOACp+8Gg8tPRMsvEqWQzEAMrkSeQAPFmgzq4ehd6MAHygurKgoHYAkmj2OYSIoABm6HjEoQBcDqAAJADeWTxUAL5+0w6Wq+tb9gD8vaCNzemt9qvqmijamJCbq0gTkASHsNtnfXYAmqgAHSgABKkFweBQ8H8kFg8lAmCCsCiGjQOEoCAUiUYG0QABpfv0wFwITwcCgyhsUcR4Ix2JlMOgMnjQMhoKBYJAeG5ijI+n8wNANGFHpAgUTjucKtVag1qR0iXZwOgQdV0IpQHgIfhocyJfyBQssjYZCUlCpwSgyOQAIzdaXwKo1PD1IygSygACCBkVcgtYNQNod5SdstddXd3r6vqAA)).
+
+```typescript
+// type Result1 = "A"
+type Result1 = TrimStart<'  \n A'>
+// type Result2 = "A  "
+type Result2 = TrimStart<'   A  '>
+```
+
+It's a neat trick, but type recursion has its limitations. There is a type instantiation depth limit in TypeScript, which limits the recursion depth. It is possible to hit the limit when trying to trim a string with very long leading whitespace.
+
+Fortunately, there's an optimization trick. You can pre-define a few different lengths of whitespaces to minimize the amount of recursion depth required:
 
 ```typescript
 type InstantiationDepthReducingWhitespace =
@@ -259,7 +301,7 @@ type InstantiationDepthReducingWhitespace =
   | '\n'
 ```
 
-Neat! Now let's do the same for trailing whitespace and combine both:
+Clever! Now let's implement `TrimEnd` and combine them together:
 
 ```typescript
 type InstantiationDepthReducingWhitespace =
@@ -302,7 +344,9 @@ function doSomething() {
 }
 ```
 
-The same [pull request](https://github.com/microsoft/TypeScript/pull/45711),which lowered the type instantiation depth limit to 100, also implemented tail recursive evaluation of conditional types. Using the tricks explained in the description the `Trim` utility could be even further improved.
+**For the curious minds:** the type instantiation depth was first [increased to 500](https://github.com/microsoft/TypeScript/pull/45025) but later [reduced back to a 100](https://github.com/microsoft/TypeScript/pull/45711), which isn't a huge amount for template literal processing.
+
+The same [pull request](https://github.com/microsoft/TypeScript/pull/45711), which lowered the type instantiation depth limit to 100, also implemented tail recursive evaluation of conditional types. The description has examples of how the `Trim` utility could be even further improved.
 
 ### 3. Error messages
 
