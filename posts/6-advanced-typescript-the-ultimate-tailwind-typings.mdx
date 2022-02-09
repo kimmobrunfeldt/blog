@@ -288,7 +288,7 @@ type Result1 = TrimStart<'  \n A'>
 type Result2 = TrimStart<'   A  '>
 ```
 
-It's a neat trick, but type recursion has its limitations. There is a type instantiation depth limit in TypeScript, which limits the recursion depth. It is possible to hit the limit when trying to trim a string with very long leading whitespace.
+It's a neat trick, but there is a maximum type instantiation depth limit in TypeScript which limits the recursion depth. It is possible to hit the limit when trying to trim a string with very long leading whitespace.
 
 Fortunately, there's an optimization trick. You can pre-define a few different lengths of whitespaces to minimize the amount of recursion depth required:
 
@@ -546,7 +546,7 @@ Finally we got to a version that handles all the cases as expected.
 
 ### 5. String type
 
-Let's turn the pieces above into the final type utility which validates that a string contains only valid Tailwind classes. The utility only works if the string is a literal type such as `"p-1 block"`. A generic `string` type won't suffice, because template literals operate on string constants.
+Let's turn the pieces above into a utility which validates that a string contains only valid Tailwind classes. The utility type only works if the string is a literal type such as `"p-1 block"`. A generic `string` type won't suffice, because template literals operate on string constants.
 
 As the first step, let's validate that the input indeed is a literal string type.
 
@@ -599,7 +599,7 @@ That's already awesome, but let's change it to show which tokens where invalid f
 +      : SplitToTailwindClassNames<T>
 ```
 
-It would work, but the error messages easily become too long to be useful. Another approach, which I like more, is to get the first error from the array. Fortunately we're dealing with just a flat array!
+It would work, but it could easily show too many errors at once to be useful. Another approach, which I like more, is to get the first error from the array. Fortunately we're dealing with just a flat array!
 
 ```typescript
 // Gets the first string of an array that starts with 'Error: '
