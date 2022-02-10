@@ -243,12 +243,13 @@ type ClassName =
   | 'flex'
   | 'grid'
   | 'bg-gray-100'
+  | 'p-1'
   // ... a thousand more
 ```
 
 ### 2. Trimming whitespace
 
-For this trick, we'll use [inference with template literals](https://www.typescriptlang.org/docs/handbook/2/template-literal-types.html#inference-with-template-literals) and type recursion. To get started, here's the generously commented `TrimStart` utility that deals with the leading whitespace.
+For this trick, we'll use [inference with template literals](https://www.typescriptlang.org/docs/handbook/2/template-literal-types.html#inference-with-template-literals), [conditional types](https://www.typescriptlang.org/docs/handbook/2/conditional-types.html), and type recursion. To get started, here's the generously commented `TrimStart` utility that deals with the leading whitespace.
 
 
 ```typescript
@@ -411,7 +412,7 @@ type SplitToTailwindClassNames<T extends string> =
     : []
 ```
 
-We can see that the utility now knows how to consume Tailwind class name tokens.
+We can see that the utility now knows how to consume Tailwind class name tokens ([TypeScript playground](https://www.typescriptlang.org/play?#code/C4TwDgpgBAwgNgQwM5IHIILbQLwCgpQA+UA5AEZwD2AxgNYn5EAFJAlgHZwcQC0FN9RsRIAzOBAAeDAsIDmAJ1YATaUVJlZPBQhA8AjAAYDq4WH2qA9BagA6O1ARRgAC0oBXJAnZKoGSvIhcXFBIKABlMC5gABVKaIRWOAB3DiV4ZDRMCCQAHmioSWAIbyQoJGBFdlkAPig8AisoABFKbKgAA2j2suAEeWAoFJcHKHjElO8oakQUKHYsgH5GfMLipVL2gBIAb3SUdCwAXx2OEQh5UYS4Q-bGBusATWybWEp2YA43aGo3pDcMDiyWAzTJYJyUWjFUpDZx3KCNdiFKABahueRIVhvKCsIryBAfN42OELKAAbT2oIgABpbHYIlFYmNkqkKQdsnkrtUALpwxqoSgvMLAShgZEQVHozHsIkEAgALjJPNwjRC0CaEDIblkejqiuC4DVGq1Ouw4UiOMZVwmaRBbNyJFI1SCKoNzSNsgATLrybasjzVW7NZ7dfSLXErSzfVh7fw6CQncrrAH1UGAMze1lZGmZrD+10prXp02hmLh8aRjJ2nLkKh0Mx6ePO6z8ooKpLOHHZMAIajQVildiUAY-eQo4BwEBQZxeJTiHwgCDAACETac+fdABYM1GIHnQgXZFvi+bS0zrTn2TWBFB6-GgA)).
 
 ```typescript
 // type Debug1 = []
@@ -455,7 +456,7 @@ type GetTokenTrick<T extends string> =
     : never
 ```
 
-Now the utility captures the first token!
+Now the utility captures the first token ([TypeScript playground](https://www.typescriptlang.org/play?#code/C4TwDgpgBAwgNgQwM5IHIILbQLwCgpQA+UA5AEZwD2AxgNYn5EAFJAlgHZwcQC0FN9RsRIAzOBAAeDAsIDmAJ1YATaUVJlZPBQhA8AjAAYDq4WH2qA9BagA6O1ARRgAC0oBXJAnZKoGSvIhcXFBIKABxCGAAFUpaCHYoxToAHiioSWB4pSQoJGBFdlkAPig8AjSMrJyAAwASAG94ZDRMCABfBo4RCHkoKIRWODbqxgIAfj70iUzvGs72bt6YDvr+weHRgigJmE2CKz7nVhykVzc4JXYSYCgyaDBKFFYKaGBKKACEamcAGgckPZQA4Ad2gACsPDcOAA3HpICA+FzQDAIYDfDiyQEALig7AgsPkmxxeIJQQOIWgABEIGQ3LJSlAAET8OiM4LgKk0ukMiLRWLxRKsFLkKgpYHOVH4npFEhFIA))!
 
 ```typescript
 // type Debug = "block"
@@ -481,7 +482,7 @@ type SplitToTailwindClassNames<T extends string> =
     : []
 ```
 
-Many cases are now dealt correctly, but there's still a few issues.
+Many cases are now dealt correctly, but there's still a few issues ([TypeScript playground](https://www.typescriptlang.org/play?#code/C4TwDgpgBAwgNgQwM5IHIILbQLwCgpQA+UA5AEZwD2AxgNYn5EAFJAlgHZwcQC0FN9RsRIAzOBAAeDAsIDmAJ1YATaUVJlZPBQhA8AjAAYDq4WH2qA9BagA6O1ARRgAC0oBXJAnZKoGSvIhcXFBIKABJdiRgL2BWBFjKdgARCDAXACUIJTdqDlkAdWdWYAgkMARqHCFSAlJqkgITGqaSAB12BmDwaAAVRQwAZWj5YAAeHqhJEu8kKCjFdlkAPig8AgmpiBmoAAMAEgBvCKiYuITk1IysnLzC4tLyyoBfQ44RCHkoHoRWOCedxgEAD8X36QwQI3GPzgS0BUAAXF8giFev0AKLecaTCTTJSzeZ5FZrL7Y3GzfYHN4fKAABQCIlYEheR0i0XYsXirESKTSzky2VyizuJTKFQg-zhIL6rAwGKUozpEAZElhtQRSK6oWlGCxm22BMWRNBMrl4zBwzGPSWsM10AGYC4wB6lG+vwA7hwlPBkGhMKVdTitni5sAFstVowrFAkpRSrsejsQxDgFAPS4HF9oR7vFBqIgUFB2H6gYwNoHthTvSh0FhmVTPq6-gC1VLSUHya92O9PjBmY2JWqCFGYIlYuw3NBqIkkG4MHlYPnfVgnJRaFtZmnnHCh9Z2FMoAFqG55EguewoPd5JzEjZt1AQQBtGAAGlsdntjudjezXsXNf92pQr81oALpBIOUBRj0RT4q4bhwEoHQpmQ0BgJQKCsBQ0DAJQB4QBUzivsgd5Rm60AAFYeCmHAAG4fEgWROM40AYPE1BFIsd6InudHyOBtRRkMlBgHhR4nmet5qoiD5gbgUYotGEBkG4sh6KsUAPgARPwdCaWBCkpMpqnqR+xRflmnpVku-rkFQdAkLC8ndIpRkAEzqVpOm0Jpr6aWYeh6baLkqe52BQKZTouhZ3hWf+SCjLZAhQP5DlydYBlKSpADMHnaXZ3m+f5gUZUZOVhRF5nupZf5+vFiV0O07T+bUqVpeFsRwHAhaUCmbr+LQeTwkEUbCg8YoOCmLjQChsgcOweRBYZKkACwmQ6ZlRVVMU1VgdVQF5Dk7hpslRmi8jyP4swQtA7A9VASj4XAKZTudEDUMAcAgM+bVIHBCH7dAD48R8+nOUtsgAKxrZ+m1wD+sW1QltEIFwKgrJB1gyUAA)).
 
 
 ```typescript
@@ -508,7 +509,7 @@ The easiest way to fix the leading whitespace issue is to make a wrapper utility
 type SplitToTailwindClassNames<T extends string> = SplitToTailwindClassNamesInner<Trim<T>>
 ```
 
-The error handling can be improved by using the `Err` type and separating the "invalid T" and "end recursion" cases:
+The error handling can be improved by using the `Err` type and separating the "invalid T" and "end recursion" cases ([TypeScript playground](https://www.typescriptlang.org/play?#code/C4TwDgpgBAwgNgQwM5IHIILbQLwCgpQA+UA5AEZwD2AxgNYn5EAFJAlgHZwcQC0FN9RsRIAzOBAAeDAsIDmAJ1YATaUVJlZPBQhA8AjAAYDq4WH2qA9BagA6O1ARRgAC0oBXJAnZKoGSvIhcXFBIKABJdiRgL2BWBFjKdgARCDAXACUIJTdqDlkAdWdWYAgkMARqHCFSAlJqkgITGqaSAB12BmDwaAAVRQwAZWj5YAAeHqhJEu8kKCjFdlkAPig8AgmpiBmoAAMAEgBvCKiYuITk1IysnLzC4tLyyoBfQ44RCHkoHoRWOCedxgEAD8X36QwQI3GPzgS0BUAAXF8giFev0AKLecaTCTTJSzeZ5FZrL7Y3GzfYHN4fKAABQCIlYEheR0i0XYsXirESKTSzky2VyizuJTKFQg-zhIL6rAwGKUozpEAZElhtQRSK6oWlGCxm22BMWRNBMrl4zBwzGPSWsM10AGYC4wB6lG+vwA7hwlPBkGhMKVdTitni5sAFstVlB7Y7na64B7vN6UOgsEgIuwPmaZeNrUErFAAKqxR0gJzdJyUKBgeSUABuymg7FYlU+H2rnxTnlkpVtUDR8nkowAsqVO9A9cGDeHsLs+23EYdhygEF2JT2o8UY9D417EEm-an2OmBxtA-rQ4TVowT2TdodE76sMyqZ9YxK1VLSUHya92O9PjBmVfAE1WBKAAG0YAAGlsOx1ydF0t09e9k39bUoV+a0AF04QIRFZ1GEgBlcNw4B8dhKGAKBnAQMBIA6G01TzABBJQlCySZ+38KivCULhFjhPMAAkePEWZqGQUooDdZwPmgHYeh2KAlEoSTyMojB4moZwBOsO9dwfcVDlfGwoAAMS4yRMAdQJGOscgqDoEhoJIJzSHadpXLYdgawQLgVGgrivJ8vyCH4RydJ0qBUAoiBEXk6FFOo2ZfICBAlBLMgIC2Jx+iwHwRGrDApKKEVHhs2pEWvL9b0pX9qSAnCoClaFP22ZC-Uagg83i35FIgABHNxfOSqBguUL5EO8KBqH0mxOqgPM5SgAJqDceQkC5dg5hySokBEEi4BAOaQNqEEwNjbCTtw40dVjFZx1mFz5q66wergRLkCgRJDuK+5RUqKBxBEYBjqul7eymla1o2xJtuoXb9rgQ7QbBs7LrBhbrAGSgsBcPJJjgJBoDdT6RHcbwUauvN0h+ImHC21t-Ge9UwPwnYSCM6EngaVhZjUhxRt88bY23ab9J2JZsMavMiPcUioHTGtqWo2jss++TFN5gXJ0p67Wf7AjZZIsiKO41X6KlvMUSgFIyDcWQ9AjMCACIwtoZ3sOt237cd6c4M3d0kP0lCkAIt2SFhK2y292QACYnddhz3eg52zD0D2exj+O-YdDcEMDhNg-3MOk8rcxI+sL2IDt2QAGYE7d52U7TjOq5r+uc+jfO4yDn0Q5LgR3PYNPagj3Ao9CGOO-AxOBFb6Pq-tgAWCN-e77d2pTAioHDivS0nxfZAAVgT2d-ERIKhZUKAtf5xwxp8EXPTFn154PmuT87vOn8Lvvi8vvyEcoBAA)):
 
 
 ```typescript
@@ -588,9 +589,13 @@ type Debug = IsValidTailwindClassString<`
 `>
 ```
 
-That's already awesome, but let's change it to show which tokens where invalid for a better developer experience. We could for example return the actual array that contains the correct Tailwind classes and errors.
+That's already awesome, but let's change it to show which tokens where invalid for a better developer experience. We could for example return the actual array that contains the correct Tailwind classes and the error ([TypeScript playground](https://www.typescriptlang.org/play?#code/C4TwDgpgBAwgNgQwM5IHIILbQLwCgpQA+UA5AEZwD2AxgNYn5EAFJAlgHZwcQC0FN9RsRIAzOBAAeDAsIDmAJ1YATaUVJlZPBQhA8AjAAYDq4WH2qA9BagA6O1ARRgAC0oBXJAnZKoGSvIhcXFBIKABJdiRgL2BWBFjKdgARCDAXACUIJTdqDlkAdWdWYAgkMARqHCFSAlJqkgITGqaSAB12BmDwaAAVRQwAZWj5YAAeHqhJEu8kKCjFdlkAPig8AgmpiBmoAAMAEgBvCKiYuITk1IysnLzC4tLyyoBfQ44RCHkoHoRWOCedxgEAD8X36QwQI3GPzgS0BUAAXF8giFev0AKLecaTCTTJSzeZ5FZrL7Y3GzfYHN4fKAABQCIlYEheR0i0XYsXirESKTSzky2VyizuJTKFQg-zhIL6rAwGKUozpEAZElhtQRSK6oWlGCxm22BMWRNBMrl4zBwzGPSWsM10AGYC4wB6lG+vwA7hwlPBkGhMKVdTitni5sAFstVlB7Y7na64B7vN6UOgsEgIuwPmaZeNrUErFAAKqxR0gJzdJyUKBgeSUABuymg7FYlU+H2rnxTnlkpVtUDR8nkowAsqVO9A9cGDeHsLs+23EYdhygEF2JT2o8UY9D417EEm-an2OmBxtA-rQ4TVowT2TdodE76sMyqZ9YxK1VLSUHya92O9PjBmVfAE1WBKAAG0YAAGlsOx1ydF0t09e9k39bUoV+a0AF04QIRFZ1GEgBlcNw4B8dhKGAKBnAQMBIA6G01TzABBJQlCySZ+38KivCULhFjhPMAAkePEWZqGQUooDdZwPmgHYeh2KAlEoSTyMojB4moZwBOsO9dwfcVDlfGwoAAMS4yRMAdQJGOscgqDoEhoJIJzSHadpXLYdgawQLgVGgrivJ8vyCH4RydJ0qBUAoiBEXk6FFOo2ZfICBAlBLMgIC2Jx+iwHwRGrDApKKEVHhs2pEWvL9b0pX9qSAnCoClaFP22ZC-Uagg83i35FIgABHNxfOSqBguUL5EO8KBqH0mxOqgPM5SgAJqDceQkC5dg5hySokBEEi4BAOaQNqEEwNjbCTtw40dVjFZx1mFz5q66wergRLkCgRJDuK+5RUqKBxBEYBjqul7eymla1o2xJtuoXb9rgQ7QbBs7LrBhbrAGSgsBcPJJjgJBoDdT6RHcbwUauvN0h+ImHC21t-Ge9UwPwnYSCM6EngaVhZjUhxRt88bY23ab9J2JZsMavMiPcUioHTGtqWo2jss++TFN5gXJ0p67Wf7AjZZIsiKO41X6KlnswiQAA1IWlBFpD9KGMMAxvSciUYSdWuDHpJV7A2SHzdMJEgagSh8LsjybEMwxIVVajzQcEFoaAkDWscKmcKB7iKrXHDGnwdnarBgIqyMHQ3BD3Sdn0UKQbMfdmEuIDA9HbPCEQoBAUpoPT+GR3pnwAmANatpcaAUV2BSc+AIm4BERqpWl6wwi78joPkWnoC8Di20axE4M3GuE30+vs1zawp5SMg3FkPQIwAIjC2hH57G+74f6drbtvzHdPn0Ls8gERfvHXAeZr4QFvrIAATE-F+lZ9Bv0gdAuB39bb23-juQB55FggIcrQRBegwEQLLB-WQABmeBBD3LsDMA-AgyCyFQLvlQ9Bv9lBYPvEAvB9kBC0PobUEhV9mHQIACxPygC-JhoRyESPYZgya2CUA8NkARKRBDhGllkSw2QABWCMYFn4EMftBR+9DTFQEfrOfwiIgr2x5nzU2Bd7YTRPj4GaPpH7YRQXfAxCi-5KO4bgtRfC6BEJzt5BxKwgA)).
 
 ```diff
+ type IsValidTailwindClassString<T extends string> =
+   string extends T
+     ? Err<'Unexpected generic string'>
+     // Make sure each item is a valid `ClassName`
      : SplitToTailwindClassNames<T> extends ClassName[]
        // If yes, success and return the type `T` itself
        ? T
@@ -599,7 +604,14 @@ That's already awesome, but let's change it to show which tokens where invalid f
 +      : SplitToTailwindClassNames<T>
 ```
 
-It would work, but it could easily show too many errors at once to be useful. Another approach, which I like more, is to get the first error from the array. Fortunately we're dealing with just a flat array!
+It would work, but the array format can contain valid class names which would make the actual error message harder to spot.
+
+```typescript
+// type Debug5 = ["block", "p-1", "Error: 'invalid' is not a valid Tailwind class"]
+type Debug5 = IsValidTailwindClassString<'block p-1 invalid'>
+```
+
+To fix that, we can get the first error from the array. Fortunately we're dealing with just a flat array!
 
 ```typescript
 // Gets the first string of an array that starts with 'Error: '
@@ -614,9 +626,13 @@ type GetFirstError<T extends unknown[]> =
     : never
 ```
 
-Let's add it to the string-validating utility and call it done.
+Let's add it to the string-validating utility and call it done ([TypeScript playground](https://www.typescriptlang.org/play?#code/C4TwDgpgBAwgNgQwM5IHIILbQLwCgpQA+UA5AEZwD2AxgNYn5EAFJAlgHZwcQC0FN9RsRIAzOBAAeDAsIDmAJ1YATaUVJlZPBQhA8AjAAYDq4WH2qA9BagA6O1ARRgAC0oBXJAnZKoGSvIhcXFBIKABJdiRgL2BWBFjKdgARCDAXACUIJTdqDlkAdWdWYAgkMARqHCFSAlJqkgITGqaSAB12BmDwaAAVRQwAZWj5YAAeHqhJEu8kKCjFdlkAPig8AgmpiBmoAAMAEgBvCKiYuITk1IysnLzC4tLyyoBfQ44RCHkoHoRWOCedxgEAD8X36QwQI3GPzgS0BUAAXF8giFev0AKLecaTCTTJSzeZ5FZrL7Y3GzfYHN4fKAABQCIlYEheR0i0XYsXirESKTSzky2VyizuJTKFQg-zhIL6rAwGKUozpEAZElhtQRSK6oWlGCxm22BMWRNBMrl4zBwzGPSWsM10AGYC4wB6lG+vwA7hwlPBkGhMKVdTitni5sAFstVlB7Y7na64B7vN6UOgsEgIuwPmaZeNrUErFAAKqxR0gJzdJyUKBgeSUABuymg7FYlU+H2rnxTnlkpVtUDR8nkowAsqVO9A9cGDeHsLs+23EYdhygEF2JT2o8UY9D417EEm-an2OmBxtA-rQ4TVowT2TdodE76sMyqZ9YxK1VLSUHya92O9PjBmVfAE1WBKAAG0YAAGlsOx1ydF0t09e9k39bUoV+a0AF04QIRFZ1GEgBlcNw4B8dhKGAKBnAQMBIA6G01TzABBJQlCySZ+38KivCULhFjhPMAAkePEWZqGQUooDdZwPmgHYeh2KAlEoSTyMojB4moZwBOsO9dwfcVDlfGwoAAMS4yRMAdQJGOscgqDoEhoJIJzSHadpXLYdgawQLgVGgrivJ8vyCH4RydJ0qBUAoiBEXk6FFOo2ZfICBAlBLMgIC2Jx+iwHwRGrDApKKEVHhs2pEWvL9b0pX9qSAnCoClaFP22ZC-Uagg83i35FIgABHNxfOSqBguUL5EO8KBqH0mxOqgPM5SgAJqDceQkC5dg5hySokBEEi4BAOaQNqEEwNjbCTtw40dVjFZx1mFz5q66wergRLkCgRJDuK+5RUqKBxBEYBjqul7eymla1o2xJtuoXb9rgQ7QbBs7LrBhbrAGSgsBcPJJjgJBoDdT6RHcbwUauvN0h+ImHC21t-Ge9UwPwnYSCM6EngaVhZjUhxRt88bY23ab9J2JZsMavMiPcUioHTGtqWo2jss++TFN5gXJ0p67Wf7AjZZIsiKO41X6KlvMAHEIGAWYXGgBl1soycvpEemHH7HQnGol2LVmD0XFIWd-ERBg80HDxKMyqAPHY76S2k7KNYcahgCGpGSw4Ga3DY5KGc4z57gwHsbeAUzWGdkPj1a4M3HYWhyLddgwMwokr1r2YwOfKBBIgNLoLsGwe4uyVe-7nwHpnQv51qv8oEXUc3xAiPNOcKAyfrpRoICdP5HYRqQT7tLpesGBElidg3GgImIS0-Gyc+LwOLbEMw0axEy4rqvC-QmE4URIrD4yIyxhCQAANSFkoEWSF9JDDDAGG8k524EFdlPHoY98IkHzOmCQkA07sS7EeJsb88gkFVLUVetAb5rTHBUdexcoBa0cGNHwOx2pYGAhVSMDoNwIXdLAn0KEkDZk7rAfSKFW6n3CO7EApRoJIB2iOemPhd5rS2g7UsoQU7FCJnAEQh8kQnTzGEd25Ed602gM-Rm8gP5QC-pXKI1dRhwU3AIhMEj9zZhtHmFEUAUhkDcLIPQEYABEYVaChJ7AEoJITpxgMgX5GBHifTwLyARCJ5DcC+LLDE2QAAmMJETKz6CiX4vJhT4kQKgckncqTzyLAyQ5WgJS9BZJyaEPJABmIpzT3LsDMCEggZTckQECbIHpVTEnKFqfeNJjT7ICH6YM2o7TrDlLGUEgALGEqAESRmdM2bIHZUyamTTqSgeZsgCJ7OaWsrR0A8kAFYwnVzDhwVhPM+amxYVAia7ifAzR9Acx5RyXmnKSecuZDTrmLLoK0ph3koHkKgEAA)).
 
 ```diff
+type IsValidTailwindClassString<T extends string> =
+   string extends T
+     ? Err<'Unexpected generic string'>
+     // Make sure each item is a valid `ClassName`
      : SplitToTailwindClassNames<T> extends ClassName[]
        // If yes, success and return the type `T` itself
        ? T
@@ -625,52 +641,183 @@ Let's add it to the string-validating utility and call it done.
 +      : GetFirstError<SplitToTailwindClassNames<T>>
 ```
 
+After the change, the error looks as expected.
+
+```typescript
+// type Debug5 = "Error: 'invalid' is not a valid Tailwind class"
+type Debug5 = IsValidTailwindClassString<'block p-1 invalid'>
+```
+
 Everything we've built so far has been now combined into a single utility type called `IsValidTailwindClassString`. That was a lot of work, but we still have a few other formats to cover.
 
 
 ### 6. Object type
 
-The object format:
+In the object format, each key is a string of class name_(s)_ and the value is a truthy or falsy value indicating if the class names should be included in the final class name.
 
-```js
-{
-  'block p-1': size === 'xl'
+```typescript
+const dense = true
+const classNames = cn({
+  'p-1 m-1': dense,
+  'p-3': !dense
+})
+// classNames = "p-1 m-1"
+```
+
+We need to iterate through each key-value pair in the object, and validate that the key consists of valid Tailwind classes. "Iterating" objects in TypeScript can be done with [mapped types](https://www.typescriptlang.org/docs/handbook/2/mapped-types.html). Let's look at a simpler example where we convert a given input object type values to nullables.
+
+```typescript
+type MakeNullable<T> = {
+  // "For each key (K) in object (T)"
+  [K in keyof T]: T[K] | null
 }
 ```
 
-Proceed to tell about mapped types.
+Now we can use `MakeNullable` to make all object's values nullable ([TypeScript playground](https://www.typescriptlang.org/play?#code/C4TwDgpgBAkgdmArsKBeKBvAUFKBDALijkQFsAjCAJwBocpyjyB7ZgGwjzjoF8stQkKAFk8AawgA5RGzZ5yHADwAVAHxpM9ANoBpKAEs4UCSGYAzKMoC6RZbqtQAPsRlssfAeGgAlCAGcZFHRRCWlZeSV4JGBVIA)).
+
+```typescript
+type Input = { a: number, b: boolean }
+
+// type Result = {
+//   a: number | null;
+//   b: boolean | null;
+// }
+type Result = MakeNullable<Input>
+```
+
+Using the knowledge, it's not a huge leap to validating Tailwind class names in keys. We already have `IsValidTailwindClassString` utility type which checks if a given string consists of valid Tailwind classes or not.
+
+```typescript
+// Use `any` because classnames uses truthiness check,
+// and does not require booleans
+type TailwindClassNamesObject<T extends { [key: string]: any }> = {
+  [K in keyof T]: K extends IsValidTailwindClassString<K>
+    ? T[K]
+    // If invalid class found, return the error
+    : IsValidTailwindClassString<K>
+}
+```
+
+It's that simple! Well, almost.. If you look at the type in [TypeScript playground](https://www.typescriptlang.org/play?#code/C4TwDgpgBAwgNgQwM5IHIILbQLwCgpQA+UA5AEZwD2AxgNYn5EAFJAlgHZwcQC0FN9RsRIAzOBAAeDAsIDmAJ1YATaUVJlZPBQhA8AjAAYDq4WH2qA9BagA6O1ARRgAC0oBXJAnZKoGSvIhcXFBIKABJdiRgL2BWBFjKdgARCDAXACUIJTdqDlkAdWdWYAgkMARqHCFSAlJqkgITGqaSAB12BmDwaAAVRQwAZWj5YAAeHqhJEu8kKCjFdlkAPig8AgmpiBmoAAMAEgBvCKiYuITk1IysnLzC4tLyyoBfQ44RCHkoHoRWOCedxgEAD8X36QwQI3GPzgS0BUAAXF8giFev0AKLecaTCTTJSzeZ5FZrL7Y3GzfYHN4fKAABQCIlYEheR0i0XYsXirESKTSzky2VyizuJTKFQg-zhIL6rAwGKUozpEAZElhtQRSK6oWlGCxm22BMWRNBMrl4zBwzGPSWsM10AGYC4wB6lG+vwA7hwlPBkGhMKVdTitni5sAFstVlB7Y7na64B7vN6UOgsEgIuwPmaZeNrUErFAAKqxR0gJzdJyUKBgeSUABuymg7FYlU+H2rnxTnlkpVtUDR8nkowAsqVO9A9cGDeHsLs+23EYdhygEF2JT2o8UY9D417EEm-an2OmBxtA-rQ4TVowT2TdodE76sMyqZ9YxK1VLSUHya92O9PjBmVfAE1WBKAAG0YAAGlsOx1ydF0t09e9k39bUoV+a0AF04QIRFZ1GEgBlcNw4B8dhKGAKBnAQMBIA6G01TzABBJQlCySZ+38KivCULhFjhPMAAkePEWZqGQUooDdZwPmgHYeh2KAlEoSTyMojB4moZwBOsO9dwfcVDlfGwoAAMS4yRMAdQJGOscgqDoEhoJIJzSHadpXLYdgawQLgVGgrivJ8vyCH4RydJ0qBUAoiBEXk6FFOo2ZfICBAlBLMgIC2Jx+iwHwRGrDApKKEVHhs2pEWvL9b0pX9qSAnCoClaFP22ZC-Uagg83i35FIgABHNxfOSqBguUL5EO8KBqH0mxOqgPM5SgAJqDceQkC5dg5hySokBEEi4BAOaQNqEEwNjbCTtw40dVjFZx1mFz5q66wergRLkCgRJDuK+5RUqKBxBEYBjqul7eymla1o2xJtuoXb9rgQ7QbBs7LrBhbrAGSgsBcPJJjgJBoDdT6RHcbwUauvN0h+ImHC21t-Ge9UwPwnYSCM6EngaVhZjUhxRt88bY23ab9J2JZsMavMiPcUioHTGtqWo2jss++TFN5gXJ0p67Wf7AjZZIsiKO41X6KlvMAHEIGAWYXGgBl1soycvpEemHH7HQnGol2LVmD0XFIWd-ERBg80HDxKMyqAPHY76S2k7KNYcahgCGpGSw4Ga3DY5KGc4z57gwHsbeAUzWGdkPj1a4M3HYWhyLddgwMwokr1r2YwOfKBBIgNLoLsGwe4uyVe-7nwHpnQv51qv8oEXUc3xAiPNOcKAyfrpRoICdP5HYRqQT7tLpesGBElidg3GgImIS0-Gyc+LwOLbEMw0axEy4rqvC-QmE4URIrD4yIyxhCQAANSFkoEWSF9JDDDAGG8k524EFdlPHoY98IkHzOmCQkA07sS7EeJsb88gkFVLUVetAb5rTHBUdexcoBa0cGNHwOx2pYGAhVSMDoNwIXdLAn0KEkDZk7rAfSKFW6n3CO7EApRoJIB2iOemPhd5rS2g7UsoQU7FCJnAEQh8kQnTzGEd25Ed602gM-Rm8gP5QC-pXKI1dRhwU3AIhMEj9zZhtHmfMdMdheBAIpTK4k45ix9Owfcscib23kG4PG6YUDTRknQSCuA8w8SUipPmpsAiDUrtAAAVlHKAZBKCUHEF4JAPYYEeKEfuAA8mQQpEA06IOqgccC1CQCIknJhREgSoBPCNAcRgYEADSTCtrdMoO7Ho-SoCTKnmAyBflak7h9PAvIoxxkUNAj0CZ6NwamKmaw8JSTN7eB3rbdRPsxyFwAeECBUD1n3i2YsHZsInhBCAA), you can see the following error.
+
+```
+Type 'K' does not satisfy the constraint 'string'.
+  Type 'keyof T' is not assignable to type 'string'.
+    Type 'string | number | symbol' is not assignable to type 'string'.
+      Type 'number' is not assignable to type 'string'.(2344)
+```
+
+Even when we explicitly defined that the input object can have only `string` keys, TypeScript will complain about it. The workaround provided in [this PR comment](https://github.com/microsoft/TypeScript/pull/40336#issuecomment-717319022) is to use `& string` to filter out all non-string named properties.
+
+Fortunately the trick works like a charm ([TypeScript playground](https://www.typescriptlang.org/play?#code/C4TwDgpgBAwgNgQwM5IHIILbQLwCgpQA+UA5AEZwD2AxgNYn5EAFJAlgHZwcQC0FN9RsRIAzOBAAeDAsIDmAJ1YATaUVJlZPBQhA8AjAAYDq4WH2qA9BagA6O1ARRgAC0oBXJAnZKoGSvIhcXFBIKABJdiRgL2BWBFjKdgARCDAXACUIJTdqDlkAdWdWYAgkMARqHCFSAlJqkgITGqaSAB12BmDwaAAVRQwAZWj5YAAeHqhJEu8kKCjFdlkAPig8AgmpiBmoAAMAEgBvCKiYuITk1IysnLzC4tLyyoBfQ44RCHkoHoRWOCedxgEAD8X36QwQI3GPzgS0BUAAXF8giFev0AKLecaTCTTJSzeZ5FZrL7Y3GzfYHN4fKAABQCIlYEheR0i0XYsXirESKTSzky2VyizuJTKFQg-zhIL6rAwGKUozpEAZElhtQRSK6oWlGCxm22BMWRNBMrl4zBwzGPSWsM10AGYC4wB6lG+vwA7hwlPBkGhMKVdTitni5sAFstVlB7Y7na64B7vN6UOgsEgIuwPmaZeNrUErFAAKqxR0gJzdJyUKBgeSUABuymg7FYlU+H2rnxTnlkpVtUDR8nkowAsqVO9A9cGDeHsLs+23EYdhygEF2JT2o8UY9D417EEm-an2OmBxtA-rQ4TVowT2TdodE76sMyqZ9YxK1VLSUHya92O9PjBmVfAE1WBKAAG0YAAGlsOx1ydF0t09e9k39bUoV+a0AF04QIRFZ1GEgBlcNw4B8dhKGAKBnAQMBIA6G01TzABBJQlCySZ+38KivCULhFjhPMAAkePEWZqGQUooDdZwPmgHYeh2KAlEoSTyMojB4moZwBOsO9dwfcVDlfGwoAAMS4yRMAdQJGOscgqDoEhoJIJzSHadpXLYdgawQLgVGgrivJ8vyCH4RydJ0qBUAoiBEXk6FFOo2ZfICBAlBLMgIC2Jx+iwHwRGrDApKKEVHhs2pEWvL9b0pX9qSAnCoClaFP22ZC-Uagg83i35FIgABHNxfOSqBguUL5EO8KBqH0mxOqgPM5SgAJqDceQkC5dg5hySokBEEi4BAOaQNqEEwNjbCTtw40dVjFZx1mFz5q66wergRLkCgRJDuK+5RUqKBxBEYBjqul7eymla1o2xJtuoXb9rgQ7QbBs7LrBhbrAGSgsBcPJJjgJBoDdT6RHcbwUauvN0h+ImHC21t-Ge9UwPwnYSCM6EngaVhZjUhxRt88bY23ab9J2JZsMavMiPcUioHTGtqWo2jss++TFN5gXJ0p67Wf7AjZZIsiKO41X6KlvMAHEIGAWYXGgBl1soycvpEemHH7HQnGol2LVmD0XFIWd-ERBg80HDxKMyqAPHY76S2k7KNYcahgCGpGSw4Ga3DY5KGc4z57gwHsbeAUzWGdkPj1a4M3HYWhyLddgwMwokr1r2YwOfKBBIgNLoLsGwe4uyVe-7nwHpnQv51qv8oEXUc3xAiPNOcKAyfrpRoICdP5HYRqQT7tLpesGBElidg3GgImIS0-Gyc+LwOLbEMw0axEy4rqvC-QmE4URIrD4yIyxhCQAANSFkoEWSF9JDDDAGG8k524EFdlPHoY98IkHzOmCQkA07sS7EeJsb88gkFVLUVetAb5rTHBUdexcoBa0cGNHwOx2pYGAhVSMDoNwIXdLAn0KEkDZk7rAfSKFW6n3CO7EApRoJIB2iOemPhd5rS2g7UsoQU7FCJnAEQh8kQnTzGEd25Ed602gM-Rm8gP5QC-pXKI1dRhwU3AIhMEj9zZhtHmfMdMdheBAIpTK4k45ix9Owfcscib23kG4PG6YUDTRknQSCuA8w8SUipPmpsAiDUrtAAAVlHKAZBKCUHEF4JAPYYEeKEfuAA8mQQpEA06IOqgccC1CQCIknJhREgSoBPCNAcRgYEADSTCtrdMoO7CYAAyUhix+lQEmVPMBkC-K1J3D6eBeRRjjIoaBHoEz0bg1MVM1h4Skmb28DvW26ifZjkLgA8IECoHbPvHsxYBzYRPBAaETIii4DAD0BGT5niUxNJaW00ZjQzB6BIIiUM180mNDEJIKQiIRDDQgGk4ZQA)).
+
+```typescript
+// Use `any` because classnames uses truthiness check,
+// and does not require just booleans
+type TailwindClassNamesObject<T extends { [key: string]: any }> = {
+  [K in keyof T & string]: K extends IsValidTailwindClassString<K>
+    ? T[K]
+    // If invalid class found, return the error
+    : IsValidTailwindClassString<K>
+}
+```
+
+The errors are correctly reported as we can see from the example.
+
+```typescript
+// type Result1 = {
+//   "p-1": true;
+//   flexx: "Error: 'x' is not a valid Tailwind class";
+// }
+type Result1 = TailwindClassNamesObject<{
+  'p-1': true,
+  'flexx': false,
+}>
+```
+
 
 
 
 ### 7. Array type
 
+Finally we have the array format. Each item in the array is a string of class names that we need to validate.
 
-
-
-Array format:
-
-```js
-[
-  'block p-1',
-  {
-    'block p-1': size === 'xl'
-  }
-]
+```typescript
+const classNames = cn(['block', 'p-1 m-1'])
+// classNames = "block p-1 m-1"
 ```
 
+Turns out, you can manipulate the type of each individual array item using the same mapped type syntax as for objects. Let's use the same `MakeNullable` we used as an example in the object format to demonstrate ([TypeScript playground](https://www.typescriptlang.org/play?#code/C4TwDgpgBAsghgawgOQK4Bt1wEbogHgBUA+KAXigG8AoKKAenqgCIAxAewCcoI4BjABZQkIKAAoA0gEooASwB2UdtgBWEPsHGEpzWlADaEuYpHsAZlEIBdAFyXDVqAB8o8jOmoBfatVCQoAEoQAM4YmhTwSGiYOHj4+m4AttgQnAA0UNjs7Hhw8lbEQA)).
 
-Next, let's figure out the array format.
+```typescript
+type MakeNullable<T> = {
+  // "For each index (K) in array (T)"
+  [K in keyof T]: T[K] | null
+}
 
-Proceed to tell about array recursion.
+// type Result = [number | null, boolean | null]
+type Result = MakeNullable<[number, boolean]>
+```
+
+Sometimes TypeScript is just magnificent. The syntax looks a bit odd, but one could argue that arrays do have object-like properties in JavaScript.
+
+The final array type looks very similar to the object one, but with a few minor differences ([TypeScript playground](https://www.typescriptlang.org/play?#code/C4TwDgpgBAwgNgQwM5IHIILbQLwCgpQA+UA5AEZwD2AxgNYn5EAFJAlgHZwcQC0FN9RsRIAzOBAAeDAsIDmAJ1YATaUVJlZPBQhA8AjAAYDq4WH2qA9BagA6O1ARRgAC0oBXJAnZKoGSvIhcXFBIKABJdiRgL2BWBFjKdgARCDAXACUIJTdqDlkAdWdWYAgkMARqHCFSAlJqkgITGqaSAB12BmDwaAAVRQwAZWj5YAAeHqhJEu8kKCjFdlkAPig8AgmpiBmoAAMAEgBvCKiYuITk1IysnLzC4tLyyoBfQ44RCHkoHoRWOCedxgEAD8X36QwQI3GPzgS0BUAAXF8giFev0AKLecaTCTTJSzeZ5FZrL7Y3GzfYHN4fKAABQCIlYEheR0i0XYsXirESKTSzky2VyizuJTKFQg-zhIL6rAwGKUozpEAZElhtQRSK6oWlGCxm22BMWRNBMrl4zBwzGPSWsM10AGYC4wB6lG+vwA7hwlPBkGhMKVdTitni5sAFstVlB7Y7na64B7vN6UOgsEgIuwPmaZeNrUErFAAKqxR0gJzdJyUKBgeSUABuymg7FYlU+H2rnxTnlkpVtUDR8nkowAsqVO9A9cGDeHsLs+23EYdhygEF2JT2o8UY9D417EEm-an2OmBxtA-rQ4TVowT2TdodE76sMyqZ9YxK1VLSUHya92O9PjBmVfAE1WBKAAG0YAAGlsOx1ydF0t09e9k39bUoV+a0AF04QIRFZ1GEgBlcNw4B8dhKGAKBnAQMBIA6G01TzABBJQlCySZ+38KivCULhFjhPMAAkePEWZqGQUooDdZwPmgHYeh2KAlEoSTyMojB4moZwBOsO9dwfcVDlfGwoAAMS4yRMAdQJGOscgqDoEhoJIJzSHadpXLYdgawQLgVGgrivJ8vyCH4RydJ0qBUAoiBEXk6FFOo2ZfICBAlBLMgIC2Jx+iwHwRGrDApKKEVHhs2pEWvL9b0pX9qSAnCoClaFP22ZC-Uagg83i35FIgABHNxfOSqBguUL5EO8KBqH0mxOqgPM5SgAJqDceQkC5dg5hySokBEEi4BAOaQNqEEwNjbCTtw40dVjFZx1mFz5q66wergRLkCgRJDuK+5RUqKBxBEYBjqul7eymla1o2xJtuoXb9rgQ7QbBs7LrBhbrAGSgsBcPJJjgJBoDdT6RHcbwUauvN0h+ImHC21t-Ge9UwPwnYSCM6EngaVhZjUhxRt88bY23ab9J2JZsMavMiPcUioHTGtqWo2jss++TFN5gXJ0p67Wf7AjZZIsiKO41X6KlvMAHEIGAWYXGgBl1soycvpEemHH7HQnGol2LVmD0XFIWd-ERBg80HDxKMyqAPHY76S2k7KNYcahgCGpGSw4Ga3DY5KGc4z57gwHsbeAUzWGdkPj1a4M3HYWhyLddgwMwokr1r2YwOfKBBIgNLoLsGwe4uyVe-7nwHpnQv51qv8oEXUc3xAiPNOcKAyfrpRoICdP5HYRqQT7tLpesGBElidg3GgImIS0-Gyc+LwOLbEMw0axEy4rqvC-QmE4URIrD4yIyxhCQAANSFkoEWSF9JDDDAGG8k524EFdlPHoY98IkHzOmCQkA07sS7EeJsb88gkFVLUVetAb5rTHBUdexcoBa0cGNHwOx2pYGAhVSMDoNwIXdLAn0KEkDZk7rAfSKFW6n3CO7EApRoJIB2iOemPhd5rS2g7UsoQU7FCJnAEQh8kQnTzGEd25Ed602gM-Rm8gP5QC-pXKI1dRhwU3AIhMEj9zZhtHmfMdMdheBAIpTK4k45ix9Owfcscib23kG4PG6YUDTRknQSCuA8w8SUipPmpsAiDUrtAAAVlHKAZBKCUHEF4JAPYYEeKEfuAA8mQQpEA06IOqgccC1CQCIknJhREgSoBPCNAcRgYEADSTCtrdMoO7CYAAyUhix+lQEmVPMBkC-K1J3D6eBeRRjjIoaBHoEz0bg1MVM1h4Skmb28DvW26ifZjkLgA8IECoHbPvHsxYBzYRPBAVqSaOy9wpiYl7EAojpyjIIBMqZUAZlzJWWs08wYNkfKBV888PyTnjMwlARZyCx44rOZjGRlyoHXNmLc7ey0Hn7yeS-JmapERoq2RiuBWLZDjFOfipZyxcBPAANxBB7JkRRcBKLTk+Z40F4LRhgRIGYPQnkwr0GchwVhJA264CAA)).
+
+```typescript
+type TailwindClassNamesArray<T> = {
+  [K in keyof T]: K extends IsValidTailwindClassString<T[K] & string>
+    ? T[K]
+    // If invalid class found, return the error
+    : IsValidTailwindClassString<T[K] & string>
+}
+```
+
+Instead of validating just `K` _(the key in objects)_, we validate `T[K]` which refers to the array item itself. You could think the array as an object where the keys _(usually referred as indices)_ are numeric starting from 0.
+
+The `& string` trick is required, but in a bit different context. The array item needs to "casted" into a string type, so that TypeScript is happy. Again, having `T extends string[]` constraint does not help here.
 
 
 ## Combining everything
 
 With the individual pieces solved, it's time to put everything together.
 
-Proceed to explain how.
+Each parameter of the `classnames` function can be a string, object, or an array. To allow the same flexibility with strict types, we need a type utility that validates the input based on its shape. Conditional type it is.
 
-Final playground link.
+```typescript
+type TailwindClassParameterValue<S> = S extends string
+  ? IsValidTailwindClassString<S>
+  : S extends any[]
+    ? TailwindClassNamesArray<S>
+    : S extends { [key: string]: any }
+      ? TailwindClassNamesObject<S>
+      : // Format not supported
+        never;
+```
+
+As you can see, nested ternaries are not that pleasant to read. Unfortunately it's all we got at type level.
+
+
+Now, the last part. Typings for the `cn` function. Prepare to see a bit of an ugly trick..
+
+```typescript
+export function cn<S1, S2, S3, S4, S5>(
+  c1?: TailwindClassParameterValue<S1>,
+  c2?: TailwindClassParameterValue<S2>,
+  c3?: TailwindClassParameterValue<S3>,
+  c4?: TailwindClassParameterValue<S4>,
+  c5?: TailwindClassParameterValue<S5>,
+  // If more than 5 class parameters are required, simply add new ones
+): string {
+  return classnames(c1, c2, c3, c4, c5)
+}
+```
+
+Voila! It's not pretty, but having the copy-pasted type parameters allows TypeScript to infer and validate the arguments individually.
+
+That's the solution! I hope this was educational. Links to the final results:
+
+* [Full working React project](https://replit.com/@KimmoBrunfeldt/the-ultimate-tailwind-typings#src/tailwindUtils.ts) in replit.com
+* [TypeScript playground](https://www.typescriptlang.org/play?#code/C4TwDgpgBAwgNgQwM5IHIILbQLwCgpQA+UA5AEZwD2AxgNYn5EAFJAlgHZwcQC0FN9RsRIAzOBAAeDAsIDmAJ1YATaUVJlZPBQhA8AjAAYDq4WH2qA9BagA6O1ARRgAC0oBXJAnZKoGSvIhcXFBIKABJdiRgL2BWBFjKdgARCDAXACUIJTdqDlkAdWdWYAgkMARqHCFSAlJqkgITGqaSAB12BmDwaAAVRQwAZWj5YAAeHqhJEu8kKCjFdlkAPig8AgmpiBmoAAMAEgBvCKiYuITk1IysnLzC4tLyyoBfQ44RCHkoHoRWOCedxgEAD8X36QwQI3GPzgS0BUAAXF8giFev0AKLecaTCTTJSzeZ5FZrL7Y3GzfYHN4fKAABQCIlYEheR0i0XYsXirESKTSzky2VyizuJTKFQg-zhIL6rAwGKUozpEAZElhtQRSK6oWlGCxm22BMWRNBMrl4zBwzGPSWsM10AGYC4wB6lG+vwA7hwlPBkGhMKVdTitni5sAFstVlB7Y7na64B7vN6UOgsEgIuwPmaZeNrUErFAAKqxR0gJzdJyUKBgeSUABuymg7FYlU+H2rnxTnlkpVtUDR8nkowAsqVO9A9cGDeHsLs+23EYdhygEF2JT2o8UY9D417EEm-an2OmBxtA-rQ4TVowT2TdodE76sMyqZ9YxK1VLSUHya92O9PjBmVfAE1WBKAAG0YAAGlsOx1ydF0t09e9k39bUoV+a0AF04QIRFZ1GEgBlcNw4B8dhKGAKBnAQMBIA6G01TzABBJQlCySZ+38KivCULhFjhPMAAkePEWZqGQUooDdZwPmgHYeh2KAlEoSTyMojB4moZwBOsO9dwfcVDlfGwoAAMS4yRMAdQJGOscgqDoEhoJIJzSHadpXLYdgawQLgVGgrivJ8vyCH4RydJ0qBUAoiBEXk6FFOo2ZfICBAlBLMgIC2Jx+iwHwRGrDApKKEVHhs2pEWvL9b0pX9qSAnCoClaFP22ZC-Uagg83i35FIgABHNxfOSqBguUL5EO8KBqH0mxOqgPM5SgAJqDceQkC5dg5hySokBEEi4BAOaQNqEEwNjbCTtw40dVjFZx1mFz5q66wergRLkCgRJDuK+5RUqKBxBEYBjqul7eymla1o2xJtuoXb9rgQ7QbBs7LrBhbrAGSgsBcPJJjgJBoDdT6RHcbwUauvN0h+ImHC21t-Ge9UwPwnYSCM6EngaVhZjUhxRt88bY23ab9J2JZsMavMiPcUioHTGtqWo2jss++TFN5gXJ0p67Wf7AjZZIsiKO41X6KlvMAHEIGAWYXGgBl1soycvpEemHH7HQnGol2LVmD0XFIWd-ERBg80HDxKMyqAPHY76S2k7KNYcahgCGpGSw4Ga3DY5KGc4z57gwHsbeAUzWGdkPj1a4M3HYWhyLddgwMwokr1r2YwOfKBBIgNLoLsGwe4uyVe-7nwHpnQv51qv8oEXUc3xAiPNOcKAyfrpRoICdP5HYRqQT7tLpesGBElidg3GgImIS0-Gyc+LwOLbEMw0axEy4rqvC-QmE4URIrD4yIyxhCQAANSFkoEWSF9JDDDAGG8k524EFdlPHoY98IkHzOmCQkA07sS7EeJsb88gkFVLUVetAb5rTHBUdexcoBa0cGNHwOx2pYGAhVSMDoNwIXdLAn0KEkDZk7rAfSKFW6n3CO7EApRoJIB2iOemPhd5rS2g7UsoQU7FCJnAEQh8kQnTzGEd25Ed602gM-Rm8gP5QC-pXKI1dRhwU3AIhMEj9zZhtHmfMdMdheBAIpTK4k45ix9Owfcscib23kG4PG6YUDTRknQSCuA8w8SUipPmpsAiDUrtAAAVlHKAZBKCUHEF4JAPYYEeKEfuAA8mQQpEA06IOqgccC1CQCIknJhREgSoBPCNAcRgYEADSTCtrdMoO7CYAAyUhix+lQEmVPMBkC-K1J3D6eBeRRjjIoaBHoEz0bg1MVM1h4Skmb28DvW26ifZjkLgA8IECoHbPvHsxYBzYRPBAVqSaOy9wpiYl7EAojpyjIIBMqZUAZlzJWWs08wYNkfKBV888PyTnjMwlARZyCx44rOZjGRlyoHXNmLc7ey0Hn7yeS-JmapERoq2RiuBWLZDjFOfipZyxcBPAANy5msDSCEfoSifHEltGOjhJzQQhPIb2XFKDNNaZRR+GlgC4EkGAfwlEUQTXccCpAYqlW4w+Js6+LijQDDEZORgIJWXKE+RyhBAwKGIjtVPQJUjjnsvqaC8FNrGBerEZ0sC3TemcpWYM-5-rjUcNKE0lpbSPWhtJeZeQWqFam0UbRfVWQ4RAPkMKkVUB8hKtVp8R+pAZoRP3A0Pw2RxBSWKOvAkactF5HSdYSOcBYjWS0dAco5rbYfGSgEOYFYXDxC+Ha5hFBoDAArM+LYAN+5aUrOKi1RdvCsDrNkXyh0dV4P1RveuadNrTXYC4vQ0EBgACYH0AGYH0ABYH0AFYlgAApGDUD0ECSqAaUBmolZa3y1qBh6CWGkgg1BH3AaNXGQRYGd3jvkFaiALjH1wYAy+5DrqfTgd3dhlxL78MIffUR0DpqMOSvIwMd9VHppfto4m-SpHMNMZ-fB0lFy-BTtnVtL9lLt1jslZO6AeS3AFJpRtDADoSxpTIhAN0X1Em4AAJTRrDFAaFpKegNKSA0xE4kkZ1v0pElMTbKAtvKmo+lT1-m4GoOwX9JAzB6BINptzHn7ICFcmBLz5hnLedKQ5eg0EuEEAUMoOEGgtBKt0IYAwuAdiYT8+539hnQs+cRKGa+Aq-NBBy-lzyHBWG+f855sK0XwIVeclVqBJAsu1byy1vyJBCtxMCE8bTQA)
 
 
 
@@ -690,10 +837,14 @@ The final types took quite a while to finish, and I couldn't have done it withou
 
 ### Utilities
 
-We ended up implementing many of the advanced TypeScript tricks from scratch.
-In many cases it makes sense to use an existing library instead. Consider libraries can be considered as the "lodash" for TypeScript.
+We ended up implementing numerous advanced TypeScript tricks from scratch.
+It might make sense to use an existing library instead. There are lodash-like utility packages for TypeScript types too:
 
 * [type-fest](https://github.com/sindresorhus/type-fest) — A collection of essential TypeScript types
 * [ts-toolbelt](https://github.com/millsp/ts-toolbelt) — TypeScript's largest utility library
 * [ts-essentials](https://github.com/krzkaczor/ts-essentials) — All basic TypeScript types in one place
 * [utility-types](https://github.com/piotrwitek/utility-types) — Think "lodash" for static types
+
+
+
+(Call to action here). Just kidding, I'm doing this for fun.
