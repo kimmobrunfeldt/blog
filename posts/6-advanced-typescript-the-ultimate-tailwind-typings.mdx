@@ -187,7 +187,7 @@ const Hello4 = ({ dense = false }: Props) => {
 }
 ```
 
-If we were able to raise type errors for all the cases, that'd be the holy grail. Let's start implementing!
+If we were able to raise type errors for all the cases, that'd be the holy grail. Sleeves up!
 
 
 ## Implementation
@@ -276,7 +276,7 @@ while (str.startsWith(' ') || str.startsWith('\n')) {
 }
 ```
 
-In each iteration of the recursive loop, only one whitespace character is consumed at a time. This happens because in the conditional, the type argument `T` needs to exactly match the template `` `${Whitespace}${infer Tail}` ``. Since `Whitespace` can only be 1 character long, it consumes a single whitespace character at a time.
+In each iteration of the recursive loop, only one whitespace character is consumed at a time. This happens because in the conditional, the type argument `T` needs to exactly match the template `` `${Whitespace}${infer Tail}` ``. Since `Whitespace` can only be 1 character long (' ' or '\n'), it consumes a single whitespace character at a time.
 
 
 Here's a few example results ([TypeScript playground](https://www.typescriptlang.org/play?#code/PTAEDkFMHcBsEsB2kDOoD2BjTBXATqEqALY6wAu8CyoK5eSA5mtPOQBagBGAhpgNaUBoAI4505VAFgAUOQCeAB0igA6uzapFfFQF5QAckOgAPoYA6iA7NkhQAA0gAPSYgAmaOg0SN7oAG48CG48kmgcoaAckLZgCsqgPHiMOMSQiOQOACp+8Gg8tPRMsvEqWQzEAMrkSeQAPFmgzq4ehd6MAHygurKgoHYAkmj2OYSIoABm6HjEoQBcDqAAJADeWTxUAL5+0w6Wq+tb9gD8vaCNzemt9qvqmijamJCbq0gTkASHsNtnfXYAmqgAHSgABKkFweBQ8H8kFg8lAmCCsCiGjQOEoCAUiUYG0QABpfv0wFwITwcCgyhsUcR4Ix2JlMOgMnjQMhoKBYJAeG5ijI+n8wNANGFHpAgUTjucKtVag1qR0iXZwOgQdV0IpQHgIfhocyJfyBQssjYZCUlCpwSgyOQAIzdaXwKo1PD1IygSygACCBkVcgtYNQNod5SdstddXd3r6vqAA)).
@@ -628,7 +628,7 @@ type GetFirstError<T extends unknown[]> =
 Let's add it to the string-validating utility and call it done ([TypeScript playground](https://www.typescriptlang.org/play?#code/C4TwDgpgBAwgNgQwM5IHIILbQLwCgpQA+UA5AEZwD2AxgNYn5EAFJAlgHZwcQC0FN9RsRIAzOBAAeDAsIDmAJ1YATaUVJlZPBQhA8AjAAYDq4WH2qA9BagA6O1ARRgAC0oBXJAnZKoGSvIhcXFBIKABJdiRgL2BWBFjKdgARCDAXACUIJTdqDlkAdWdWYAgkMARqHCFSAlJqkgITGqaSAB12BmDwaAAVRQwAZWj5YAAeHqhJEu8kKCjFdlkAPig8AgmpiBmoAAMAEgBvCKiYuITk1IysnLzC4tLyyoBfQ44RCHkoHoRWOCedxgEAD8X36QwQI3GPzgS0BUAAXF8giFev0AKLecaTCTTJSzeZ5FZrL7Y3GzfYHN4fKAABQCIlYEheR0i0XYsXirESKTSzky2VyizuJTKFQg-zhIL6rAwGKUozpEAZElhtQRSK6oWlGCxm22BMWRNBMrl4zBwzGPSWsM10AGYC4wB6lG+vwA7hwlPBkGhMKVdTitni5sAFstVlB7Y7na64B7vN6UOgsEgIuwPmaZeNrUErFAAKqxR0gJzdJyUKBgeSUABuymg7FYlU+H2rnxTnlkpVtUDR8nkowAsqVO9A9cGDeHsLs+23EYdhygEF2JT2o8UY9D417EEm-an2OmBxtA-rQ4TVowT2TdodE76sMyqZ9YxK1VLSUHya92O9PjBmVfAE1WBKAAG0YAAGlsOx1ydF0t09e9k39bUoV+a0AF04QIRFZ1GEgBlcNw4B8dhKGAKBnAQMBIA6G01TzABBJQlCySZ+38KivCULhFjhPMAAkePEWZqGQUooDdZwPmgHYeh2KAlEoSTyMojB4moZwBOsO9dwfcVDlfGwoAAMS4yRMAdQJGOscgqDoEhoJIJzSHadpXLYdgawQLgVGgrivJ8vyCH4RydJ0qBUAoiBEXk6FFOo2ZfICBAlBLMgIC2Jx+iwHwRGrDApKKEVHhs2pEWvL9b0pX9qSAnCoClaFP22ZC-Uagg83i35FIgABHNxfOSqBguUL5EO8KBqH0mxOqgPM5SgAJqDceQkC5dg5hySokBEEi4BAOaQNqEEwNjbCTtw40dVjFZx1mFz5q66wergRLkCgRJDuK+5RUqKBxBEYBjqul7eymla1o2xJtuoXb9rgQ7QbBs7LrBhbrAGSgsBcPJJjgJBoDdT6RHcbwUauvN0h+ImHC21t-Ge9UwPwnYSCM6EngaVhZjUhxRt88bY23ab9J2JZsMavMiPcUioHTGtqWo2jss++TFN5gXJ0p67Wf7AjZZIsiKO41X6KlvMAHEIGAWYXGgBl1soycvpEemHH7HQnGol2LVmD0XFIWd-ERBg80HDxKMyqAPHY76S2k7KNYcahgCGpGSw4Ga3DY5KGc4z57gwHsbeAUzWGdkPj1a4M3HYWhyLddgwMwokr1r2YwOfKBBIgNLoLsGwe4uyVe-7nwHpnQv51qv8oEXUc3xAiPNOcKAyfrpRoICdP5HYRqQT7tLpesGBElidg3GgImIS0-Gyc+LwOLbEMw0axEy4rqvC-QmE4URIrD4yIyxhCQAANSFkoEWSF9JDDDAGG8k524EFdlPHoY98IkHzOmCQkA07sS7EeJsb88gkFVLUVetAb5rTHBUdexcoBa0cGNHwOx2pYGAhVSMDoNwIXdLAn0KEkDZk7rAfSKFW6n3CO7EApRoJIB2iOemPhd5rS2g7UsoQU7FCJnAEQh8kQnTzGEd25Ed602gM-Rm8gP5QC-pXKI1dRhwU3AIhMEj9zZhtHmFEUAUhkDcLIPQEYABEYVaChJ7AEoJITpxgMgX5GBHifTwLyARCJ5DcC+LLDE2QAAmMJETKz6CiX4vJhT4kQKgckncqTzyLAyQ5WgJS9BZJyaEPJABmIpzT3LsDMCEggZTckQECbIHpVTEnKFqfeNJjT7ICH6YM2o7TrDlLGUEgALGEqAESRmdM2bIHZUyamTTqSgeZsgCJ7OaWsrR0A8kAFYwnVzDhwVhPM+amxYVAia7ifAzR9Acx5RyXmnKSecuZDTrmLLoK0ph3koHkKgEAA)).
 
 ```diff
-type IsValidTailwindClassString<T extends string> =
+ type IsValidTailwindClassString<T extends string> =
    string extends T
      ? Err<'Unexpected generic string'>
      // Make sure each item is a valid `ClassName`
