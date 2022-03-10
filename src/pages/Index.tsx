@@ -37,8 +37,7 @@ function Index(props: Props): JSX.Element {
             <P>
               I’m Kimmo and I’ve been in the industry for nearly ten years:
               consulting enterprises, doing product development in different
-              startups, and managing a{" "}
-              <Link href="https://alvarcarto.com">webshop</Link> I co-founded.
+              startups, and managing a webshop I co-founded.
             </P>
 
             <P>Hope you enjoy!</P>
