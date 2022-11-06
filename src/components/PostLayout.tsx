@@ -187,7 +187,7 @@ export function PostLayout(props: Props): JSX.Element {
               className={cls(
                 props.data.layout === "presentic"
                   ? `
-                    mdx max-w-[600px]
+                    mdx max-w-[620px]
                     row-start-2 col-span-12 col-start-1
                     sm:col-start-2 sm:col-span-10
                     lg:row-start-1 lg:col-start-4 lg:col-span-7
@@ -197,7 +197,7 @@ export function PostLayout(props: Props): JSX.Element {
                     2xl:col-start-3 2xl:col-span-9
                     `
                   : `
-                    mdx max-w-[600px]
+                    mdx max-w-[620px]
                     row-start-2 col-span-12 col-start-1
                     sm:col-start-2 sm:col-span-10
                     ${
@@ -264,7 +264,7 @@ export function PostLayout(props: Props): JSX.Element {
                 </div>
               )}
 
-              <div className="overflow-x-hidden flex-1 xl:max-w-md xl:w-full">
+              <div className="overflow-x-hidden flex-1 xl:max-w-lg xl:w-full">
                 {props.children}
               </div>
             </article>
