@@ -1,11 +1,11 @@
 ---
-title: "Building an E-Ink weather display for our home"
+title: "Building an e-ink weather display for our home"
 slug: "7-building-eink-weather-display-for-our-home"
 createdAt: "2022-11-13"
 coverImage: "/content-assets/7/cover.png"
 preview: false
 description: >
-  Building an E-Ink weather display for our home.
+  Building a battery powered e-ink weather forecast display for our home. This was a fun Raspberry PI project.
 tags:
   - eink
   - raspberrypi
@@ -19,12 +19,12 @@ tags:
 
 We almost always want to know today's weather before leaving the apartment. Often the whole event is quite a hassle: getting our daughter dressed, finding all our personal outwear, plus trying to find your phone to check the weather. To make the experience 1% better, the solution obviously needs engineering.
 
-I decided to build a DIY battery-powered E-Ink weather display for our home. After researching a while, I ended up with a few goals for the build:
+I decided to build a DIY battery powered e-ink weather display for our home. After researching a while, I ended up with a few goals for the build:
 
 * Easily glanceable weather forecast at the heart of our home. Ideally eliminates one more reason to pick up the phone.
 * Looks like a "real product". The housing should look professional.
 * Fully battery-powered. We didn't want a visible cable, and drilling the cable inside wall wasn't an option.
-* Always visible and doesn't light up the hallway during evening / night. This leads to E-Ink display.
+* Always visible and doesn't light up the hallway during evening / night. This leads to e-ink display.
 * Primarily for our use case, but with reusability in mind. For example custom location and timezone. The end result is somewhat tied to Finland due to using the API of Finnish meteorological institute, but nevertheless the design goal was kept in mind.
 
 The goals come with a few challenges:
@@ -35,7 +35,7 @@ The goals come with a few challenges:
 
 ## The plan
 
-The device should wake up early in the morning, fetch the latest weather forecast information, update the information to the E-Ink display, and go back to deep sleep until tomorrow.
+The device should wake up early in the morning, fetch the latest weather forecast information, update the information to the e-ink display, and go back to deep sleep until tomorrow.
 
 That way, we would have a fresh weather forecast for the day while consuming minimal amount of battery.
 
@@ -48,7 +48,7 @@ First I designed the weather UI in Figma. This took around 2 days (i.e. evenings
 ![](/content-assets/7/figma.png)
 
 
-It was design to the [Waveshare 7.5" E-Ink display](https://www.waveshare.com/7.5inch-e-paper-hat.htm). After ordering one, I started looking into good fonts to display in a 1-bit (black and white) screen. It was surprisingly hard to find real 1-bit-screen fonts, so I tested a few sample renders using regular web fonts with and without post-processing:
+It was design to the [Waveshare 7.5" e-ink display](https://www.waveshare.com/7.5inch-e-paper-hat.htm). After ordering one, I started looking into good fonts to display in a 1-bit (black and white) screen. It was surprisingly hard to find real 1-bit-screen fonts, so I tested a few sample renders using regular web fonts with and without post-processing:
 
 ![](/content-assets/7/test-anti-alias-disabled.png)
 ![](/content-assets/7/test-post-process-all-pixels-black.png)
@@ -68,7 +68,7 @@ The UI development took rougly 1-2 weeks when coding in the evenings and weekend
 
 The software vs hardware timing realised like a perfect Gantt Chart. As soon as I was ready fine-tuning the UI, the hardware arrived to Finland. Nice.
 
-Even though the development was done with the 1872x1404 display resolution in mind, I could finally see how it actually looked like. The Raspberry PI installation and setup took quite some time, but it paid off. It was absolutely amazing to see the UI appear the first time in the E-Ink display.
+Even though the development was done with the 1872x1404 display resolution in mind, I could finally see how it actually looked like. The Raspberry PI installation and setup took quite some time, but it paid off. It was absolutely amazing to see the UI appear the first time in the e-ink display.
 
 <Image caption="Past bedtime" alt="First display" src="/content-assets/7/first-display.jpg" />
 
@@ -120,7 +120,7 @@ Those done, it was time to mount the frame on our wall.
 
 ![](/content-assets/7/scene.jpg)
 
-I really like the end result. The IKEA frame has a white cardboard border, which we ended up cutting to fit the screen. To not have mismatching aspect ratios of the white cardboard border and the frame itself, I sacrificed a few vertical pixels of the E-Ink display. The white cover board opening is vertically shorter than what the E-Ink display is capable of, leaving some Y-pixels unused. A bit of a shame, but the overall look is most important!
+I really like the end result. The IKEA frame has a white cardboard border, which we ended up cutting to fit the screen. To not have mismatching aspect ratios of the white cardboard border and the frame itself, I sacrificed a few vertical pixels of the e-ink display. The white cover board opening is vertically shorter than what the e-ink display is capable of, leaving some Y-pixels unused. A bit of a shame, but the overall look is most important!
 
 One option I considered was to saw the frame to be a perfect fit for the screen. However, it could've lead to a messy end result and it was much easier to mount everything to the back cover with the extra space.
 
@@ -135,7 +135,7 @@ That's everything, it was fun!
 * Raspberry PI Zero W
 * [PiJuice Zero](https://uk.pi-supply.com/products/pijuice-zero)
 * [PiJuice 12000mAh battery](https://uk.pi-supply.com/products/pijuice-12000mah-battery). As large as possible to avoid having to charge the device often.
-* [Waveshare 10.3" 1872x1404 e-Ink display with Raspberry PI HAT](https://www.waveshare.com/10.3inch-e-paper-hat.htm). Supports 16 shades of black and white.
+* [Waveshare 10.3" 1872x1404 e-ink display with Raspberry PI HAT](https://www.waveshare.com/10.3inch-e-paper-hat.htm). Supports 16 shades of black and white.
 * [Geekworm Raspberry Pi Installation Tool 132 Pcs](https://www.amazon.de/-/en/gp/product/B07MN2GY6Y/ref=ppx_yo_dt_b_asin_title_o00_s00?ie=UTF8&psc=1). For a set of spacers and screws that fit Raspberry PI projects nicely.
 * Micro-usb to USB adapter
 * USB to micro-usb cable
@@ -144,5 +144,5 @@ That's everything, it was fun!
 
 Hardware bought but not needed in the end:
 
-* [GeeekPi Micro Connectors Raspberry Pi 40-pin GPIO 1 to 2 Expansion Board](https://www.amazon.de/-/en/gp/product/B08C4S8NPH/ref=ppx_yo_dt_b_asin_title_o00_s00?ie=UTF8&psc=1). To connect PiJuice and e-Ink display nicely.
+* [GeeekPi Micro Connectors Raspberry Pi 40-pin GPIO 1 to 2 Expansion Board](https://www.amazon.de/-/en/gp/product/B08C4S8NPH/ref=ppx_yo_dt_b_asin_title_o00_s00?ie=UTF8&psc=1). To connect PiJuice and e-ink display nicely.
 * [GPIO Cable for Raspberry Pi 40 Pin](https://www.amazon.de/-/en/gp/product/B08VRJ51T4/ref=ppx_yo_dt_b_asin_title_o00_s00?ie=UTF8&psc=1). To allow a bit more flexibility inside the build.
