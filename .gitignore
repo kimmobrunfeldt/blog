@@ -1,5 +1,6 @@
 # Custom ignores
 
+.DS_Store
 output
 output-tmp-rollup
 .tmp
