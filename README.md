@@ -112,6 +112,14 @@ See https://presentic.co for introduction.
 
 When exporting presentics from Figma, use "Include id" option. After the export, set `#viewport` rectangles to have `stroke-width="0"` from the SVG output. Presentic needs them for slides.
 
+### Screen captures
+
+Convert .mov files to .mp4:
+
+```
+ffmpeg -i shuffling1.mov -q:v 0 shuffling1.mp4
+```
+
 # License
 
 The code is MIT licensed. MIT license **does not apply** to any other content such as images and text content for the blog.

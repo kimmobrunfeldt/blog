@@ -1,9 +1,11 @@
 import React from "react";
+import { overrideTw } from "src/util/site";
 
 export type ImageProps = JSX.IntrinsicElements["img"] & {
   caption?: string;
   maxWidth?: React.CSSProperties["maxWidth"];
   children?: React.ReactNode;
+  wrapperClassName?: string;
   sources: JSX.IntrinsicElements["source"][];
 };
 
@@ -12,10 +14,11 @@ export function Image({
   caption,
   sources,
   maxWidth,
+  wrapperClassName = "",
   ...otherImageProps
 }: ImageProps) {
   return (
-    <div className="my-12">
+    <div className={overrideTw("my-12", wrapperClassName)}>
       <a href={otherImageProps.src} rel="noreferrer" target="_blank">
         <img
           className="mx-auto w-full"

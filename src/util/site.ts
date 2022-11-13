@@ -64,11 +64,15 @@ const EXTEND_PREFIXES = [
   "mt",
   "ml",
   "mr",
+  "my",
+  "mx",
   "p",
   "pb",
   "pt",
   "pl",
   "pr",
+  "py",
+  "px",
 ];
 export function overrideTw(base: string, extend: string): string {
   const baseSplitted = base.split(/\s+/);
