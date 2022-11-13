@@ -54,7 +54,7 @@ It was design to the [Waveshare 7.5" E-Ink display](https://www.waveshare.com/7.
 ![](/content-assets/7/test-post-process-all-pixels-black.png)
 ![](/content-assets/7/test-post-process-threshold-pixels-black.png)
 
-I wasn't super satisfied.. this product would be in a very central location of our apartment, so it should look nice.
+I wasn't super satisfied.. the product would be in a central place in our apartment, so it should look nice.
 
 So... after thinking a bit, I ordered the 10.3" 16-bit display in addition, since it allows text to be anti-aliased. The end result is way smoother. It would've been possible to just live with the 1-bit display constraint, but I decided to use that screen for something else in the future.
 
@@ -82,13 +82,11 @@ I didn't want to build a larger visible casing to the back, so it was time to go
 
 But even after cutting all extra plastic pieces from the cables, it wasn't possible to mount the frame flush to wall.
 
-Then I realised that the Waveshare demo page featured Windows app that connected to the controller via the micro-USB interface.
-
-Would it be possible to use that to control the display? There weren't any examples of doing that in a Linux box though.
+Then I realised that the Waveshare demo page featured Windows app that connected to the controller via the micro-USB interface. Would it be possible to use that to control the display? There weren't any examples of doing that in a Linux box though.
 
 Fortunately for me, some great minds had already [thought the same](https://twitter.com/faassen/status/1375922965062238208?lang=en). I connected the controller using USB cables, built the C code in the Raspberry PI, and tried to clear the display as a test. It worked! What a relief. USB cables were _so much_ smaller than the 40-pin GPIO cables and headers.
 
-Now that I was confident about the USB-strategy, I needed to get rid of the GPIO header of the IT851 controller. The chip was still too tall for the frame with it attached. Fortunately, Helsinki has an amazing library _(more like a library, hacker space, gaminb cafe, and place to hangout combined together)_ where I could go and desolder the header _for free_.
+Now that I was confident about the USB-strategy, I needed to get rid of the GPIO header of the IT851 controller. The chip was still too tall for the frame with it attached. Fortunately, Helsinki has an amazing library _(more like a library, hacker space, gaming cafe, and a public hangout place combined)_ where I could go and desolder the header _for free_.
 
 <Image caption="The picture is from the library's electronics room which has cool gear such as laser cutter, 3D printer, and much more." alt="Oodi" src="/content-assets/7/oodi.jpg" />
 
