@@ -67,10 +67,10 @@ export default {
 
       if (depName === "react" || depName === "react-dom") {
         // To fix error where react-dom was loaded before react
-        return "node_modules/react-and-dom";
+        return "dependencies/react-and-dom";
       }
 
-      return `node_modules/${depName}`;
+      return `dependencies/${depName}`;
     }
   },
   plugins,
