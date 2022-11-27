@@ -10,6 +10,7 @@
 
     <title>{{{ title }}}</title>
 
+    <meta name="author" content="Kimmo Brunfeldt" />
     <meta name="description" content="{{{ description }}}"/>
     <meta name="keywords" content="{{{ keywords }}}"/>
     <meta property="og:title" content="{{{ ogTitle }}}"/>
