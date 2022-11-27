@@ -116,15 +116,25 @@ async function getFilesForOneReactPage(
 ): Promise<File[]> {
   const pageData = await page.getData();
 
-  const fileDir = getStaticFileDir(pageData.path.toLowerCase());
-  const pageHydratePath = getRelativePathFromRoot(fileDir, "hydrate");
+  const isRootFile = pageData.path.endsWith(".html");
+  const fileDir = isRootFile
+    ? ""
+    : getStaticFileDir(pageData.path.toLowerCase());
+
+  const rootFileName = path.basename(
+    _.last(pageData.path.split("/"))!,
+    ".html"
+  );
+  const pageHydratePath = isRootFile
+    ? getRelativePathFromRoot("", `${rootFileName}-hydrate`)
+    : getRelativePathFromRoot(fileDir, "hydrate");
   const htmlContent = ReactDOMServer.renderToString(
     <Root>
       <page.Component pageData={pageData} siteData={siteData} />
     </Root>
   );
   const relativePathToRoot = `${getRelativePathToRoot(fileDir)}/`;
-  const is404 = pageData.path === "/404/";
+  const is404 = pageData.path.includes("/404");
   const html = renderTemplate(TEMPLATES.pageHtml, {
     title: getTitle(pageData.title),
     description: pageData.description,
@@ -133,7 +143,7 @@ async function getFilesForOneReactPage(
     hydrateScriptPath:
       // Set hydrate path as specific when dealing with 404 page.
       // This is necessary since 404 page might be returned from any path
-      is404 ? "/404/hydrate.js" : "./hydrate.js",
+      is404 ? "/404-hydrate.js" : "./hydrate.js",
     // In case 404 page, point relative path to root
     relativePathToRoot: is404 ? "/" : relativePathToRoot,
     ogTitle: pageData.title,
@@ -149,6 +159,20 @@ async function getFilesForOneReactPage(
     pagePath: pageData.path,
     relativePathToRoot,
   });
+
+  // Allow setting page path to e.g. 404.html and it'll be saved at root
+  if (isRootFile) {
+    return [
+      {
+        path: getRelativePathFromRoot("", _.last(pageData.path.split("/"))!),
+        content: html,
+      },
+      {
+        path: `${pageHydratePath}.tsx`,
+        content: pageHydrateContent,
+      },
+    ];
+  }
 
   return [
     {

@@ -45,7 +45,7 @@ function NotFound404(props: Props): JSX.Element {
 export async function getData(): Promise<PageMetadata> {
   return {
     title: "Not found",
-    path: "/404/",
+    path: "/404.html",
     tags: [
       "blog",
       "tech",
