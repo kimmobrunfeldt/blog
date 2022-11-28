@@ -2,6 +2,6 @@ html.dark img:not(.keep-opacity), html.dark svg:not(.keep-opacity), html.dark vi
   opacity: 0.8;
 }
 
-.loaded, .loaded * {
+.loaded, .loaded *, .loaded *::before, .loaded *::after {
   transition: box-shadow 500ms ease, background-color 500ms ease, border-color 500ms ease;
 }
