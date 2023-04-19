@@ -104,7 +104,7 @@ function shouldRefactor(awaitExpression: AwaitExpression) {
   )
   if (!paExpression || paExpression.wasForgotten()) {
     // In certain cases ts-morph stops tracking nodes for performance
-    //  optimisation reasons. If the node was forgotten, accessing it throws.
+    // optimisation reasons. If the node was forgotten, accessing it throws.
     return false
   }
 

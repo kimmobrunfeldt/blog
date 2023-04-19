@@ -16,13 +16,13 @@ export const theme = {
   highlightBackground: twTheme.colors.warning[1],
   inlineCodeBackground: twTheme.colors.gray[1],
   inlineCodeColor: twTheme.colors.gray[8],
-  keywordColor: twTheme.colors.amber[6],
+  keywordColor: twTheme.colors.info[7],
   operatorBackground: twTheme.colors.transparent,
-  operatorColor: twTheme.colors.rust[5],
+  operatorColor: twTheme.colors.gray[5],
   propertyColor: twTheme.colors.amber[6],
   punctuationColor: twTheme.colors.gray[5],
   selectedColor: twTheme.colors.rust[5],
-  selectorColor: twTheme.colors.rust[5],
+  selectorColor: twTheme.colors.warning[6],
   variableColor: twTheme.colors.info[4],
 };
 
@@ -33,4 +33,6 @@ export const darkTheme = {
   inlineCodeColor: twTheme.colors.gray[3],
   punctuationColor: twTheme.colors.gray[3],
   diffUnchangedColor: twTheme.colors.gray[5],
+  keywordColor: twTheme.colors.info[4],
+  selectorColor: twTheme.colors.warning[5],
 };
