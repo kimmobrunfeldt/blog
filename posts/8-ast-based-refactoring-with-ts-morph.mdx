@@ -83,7 +83,7 @@ SourceFile
 
 Pasting too much code makes the tree difficult to understand as the AST is so verbose.
 
-Once you have an understanding of the nodes types to look for, jump back to the editor. We can use the `findDescendants` method and simply log everything we find. Let's start with `AwaitExpression`s.
+Once you have an understanding of the nodes types to look for, jump back to the editor. We can use the `file.getDescendantsOfKind()` method and simply log everything we find. Let's start with `AwaitExpression`s.
 
 ```ts
 for (const file of sourceFiles) {
@@ -116,7 +116,7 @@ function shouldRefactor(awaitExpression: AwaitExpression) {
 
 Finally we need to modify the await expression as required. Luckily for me none of the call sites used any other parameters than the object property names. That allows us to simply just wrap the original object parameter with a new one: `{ where: <original> }`.
 
-To do that we can use the `getText` method of `ObjectLiteralExpression` node to get the original `{ name: 'Lisa' }` parameter as text and replace it with the new format using `replaceWithText`.
+To do that we can use the `getText()` method of `ObjectLiteralExpression` node to get the original `{ name: 'Lisa' }` parameter as text and replace it with the new format using `replaceWithText()`.
 
 
 ```ts
