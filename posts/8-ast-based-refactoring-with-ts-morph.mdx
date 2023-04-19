@@ -1,0 +1,212 @@
+---
+title: "AST-based refactoring with ts-morph"
+slug: "8-ast-based-refactoring-with-ts-morph"
+createdAt: "2023-04-19"
+coverImage: "/content-assets/8/cover.jpg"
+description: >
+  Mass-refactoring TypeScript code using ts-morph. The AST-based code transformation makes it quick to refactor even the largest codebases.
+tags:
+  - typescript
+  - ast
+  - ts-morph
+  - refactoring
+---
+
+
+I had a refactoring problem. My increasingly large codebase had widespread database entity model code that used the following signature:
+
+```ts
+await User.findMany({ name: 'Lisa' })
+```
+
+Which isn't bad per se, but the property names of a model are sharing the same object key namespace with other relevant parameters I was introducing. Relevant parameters such as `orderBy` and `connection` object:
+
+```ts
+await User.findMany({
+  name: 'Lisa',
+  orderBy: ['createdAt', 'desc'],
+  connection: transaction,
+})
+```
+
+I lived with the original approach until it bothered me enough to make a move. Let's go through the process together.
+
+
+The plan was to refactor all calls to the following form:
+
+```ts
+await User.findMany({ where: { name: 'Lisa' } })
+```
+
+More verbose but also more explicit. In the new format, the unknown property names of models would be clearly isolated from the pre-defined parameters within a `where` wrapper. Anyways, we're not here to judge my refactoring decisions but to learn how to undo the bad ones quickly using automation.
+
+The problem was that there were **119 call sites**. Not _that_ many – but enough to consider if spending an evening for a manual search & replace operation is worth the trouble. Of course not!
+
+I also wanted to level up my AST-based tooling skills so this would be a great opportunity.
+
+## The pieces
+
+I decided to use [ts-morph](https://ts-morph.com/). It provides a convenient API to access, traverse, and modify TypeScript code via AST operations. The basic refactoring formula goes like this:
+
+```ts
+import { Project, SyntaxKind } from 'ts-morph'
+
+const project = new Project({})
+project.addSourceFilesAtPaths('src/**/*.ts')
+
+const sourceFiles = project.getSourceFiles()
+for (const file of sourceFiles) {
+  // TODO: traverse and modify file AST as needed
+
+  await file.save() // Save file changes to disk
+}
+```
+
+Next we need to find our database model call syntax nodes and learn how to modify their code.
+
+To get started, I usually copy paste a minimal example code to https://ts-ast-viewer.com/. This makes it easier to understand what to look for. For example a simple `await User.findMany({ name: 'Lisa' })` becomes:
+
+```
+SourceFile
+  ExpressionStatement
+    AwaitExpression
+      CallExpression
+        PropertyAccessExpression
+          Identifier
+          Identifier
+        ObjectLiteralExpression
+          PropertyAssignment
+            Identifier
+            StringLiteral
+  EndOfFileToken
+```
+
+Pasting too much code makes the tree difficult to understand as the AST is so verbose.
+
+Once you have an understanding of the nodes types to look for, jump back to the editor. We can use the `findDescendants` method and simply log everything we find. Let's start with `AwaitExpression`s.
+
+```ts
+for (const file of sourceFiles) {
+  const awaitExpressions = file.getDescendantsOfKind(SyntaxKind.AwaitExpression)
+  for (const awaitExpression of awaitExpressions) {
+    console.log(awaitExpression.getText())
+  }
+}
+```
+
+This should print out all of them. However we're only interested of the database entity methods, so let's narrow it down further by checking if a descendant `PropertyAccessExpression` can be found with a specific name.
+
+
+```ts
+function shouldRefactor(awaitExpression: AwaitExpression) {
+  const paExpression = awaitExpression.getFirstDescendantByKind(
+    SyntaxKind.PropertyAccessExpression
+  )
+  if (!paExpression || paExpression.wasForgotten()) {
+    // In certain cases ts-morph stops tracking nodes for performance
+    //  optimisation reasons. If the node was forgotten, accessing it throws.
+    return false
+  }
+
+  const name = paExpression.getName()
+  const entityMethods = ['find', 'maybeFind', 'findMany']
+  return entityMethods.includes(name!)
+}
+```
+
+Finally we need to modify the await expression as required. Luckily for me none of the call sites used any other parameters than the object property names. That allows us to simply just wrap the original object parameter with a new one: `{ where: <original> }`.
+
+To do that we can use the `getText` method of `ObjectLiteralExpression` node to get the original `{ name: 'Lisa' }` parameter as text and replace it with the new format using `replaceWithText`.
+
+
+```ts
+function refactor(awaitExpression: AwaitExpression) {
+  const param = awaitExpression.getFirstDescendantByKind(
+    SyntaxKind.ObjectLiteralExpression
+  )
+  if (!param) {
+    throw new Error(`SyntaxKind.ObjectLiteralExpression not found`)
+  }
+
+  const paramAsTxt = param.getText() // e.g. "{ name: 'Lisa' }"
+  param.replaceWithText(`{ where: ${paramAsTxt} }`)
+}
+```
+
+That's all the pieces we need! The approach will mess up indentation in source code, but fortunately there's `eslint --fix`! After the refactor operation, all formatting trouble should be possible to fix with a single eslint command.
+
+
+## The result
+
+Everything in a ready-to-go TS script.
+
+```ts
+import chalk from 'chalk'
+import path from 'path'
+import { AwaitExpression, Project, SyntaxKind } from 'ts-morph'
+
+void main()
+
+async function main() {
+  console.log('Refactoring ..\n')
+
+  const project = new Project({})
+  project.addSourceFilesAtPaths('src/**/*.ts')
+
+  const sourceFiles = project.getSourceFiles()
+  // To debug typescript code AST: https://ts-ast-viewer.com/
+  for (const file of sourceFiles) {
+    const filePath = path.relative(process.cwd(), file.getFilePath())
+
+    console.log()
+    console.log(chalk.bold(filePath))
+
+    const awaits = file.getDescendantsOfKind(SyntaxKind.AwaitExpression)
+    for (const awaitExpression of awaits) {
+      if (!shouldRefactor(awaitExpression)) {
+        continue
+      }
+      refactor(awaitExpression)
+    }
+
+    await file.save()
+  }
+}
+
+function shouldRefactor(awaitExpression: AwaitExpression) {
+  const paExpression = awaitExpression.getFirstDescendantByKind(
+    SyntaxKind.PropertyAccessExpression
+  )
+  if (!paExpression || paExpression.wasForgotten()) {
+    // In certain cases ts-morph stops tracking nodes for performance
+    //  optimisation reasons. If the node was forgotten, accessing it throws.
+    return false
+  }
+
+  const name = paExpression.getName()
+  const entityMethods = ['find', 'maybeFind', 'findMany']
+  return entityMethods.includes(name!)
+}
+
+function refactor(awaitExpression: AwaitExpression) {
+  const param = awaitExpression.getFirstDescendantByKind(
+    SyntaxKind.ObjectLiteralExpression
+  )
+  if (!param) {
+    throw new Error(`SyntaxKind.ObjectLiteralExpression not found`)
+  }
+
+  const paramAsTxt = param.getText() // e.g. "{ name: 'Lisa' }"
+  param.replaceWithText(`{ where: ${paramAsTxt} }`)
+}
+```
+
+
+Mass refactoring TypeScript is surprisingly convenient using ts-morph. You wouldn't want to do this for every small change, but it's worth considering for larger refactoring piles.
+
+This time the automated approach took me more than the manual would've. But next time...
+
+## Prior art
+
+* Write an auto-fixable ESLint rule and apply
+* [jscodeshift](https://github.com/facebook/jscodeshift)
