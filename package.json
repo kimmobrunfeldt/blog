@@ -16,7 +16,7 @@
     "clean": "rm -rf output output-tmp-rollup .tmp && mkdir output output-tmp-rollup .tmp",
     "test": "jest",
     "build:development": "npm run clean && NODE_ENV=development npm run build:pages && npm run copy-public",
-    "build": "npm run clean && NODE_ENV=production npm run build:pages && NODE_ENV=production npm run rollup && NODE_ENV=production npm run postcss && npm run build:rss && npm run copy-public && npm run build:lighthouse && npm run lint:html && npm run minify:html",
+    "build": "npm run clean && NODE_ENV=production npm run build:pages && NODE_ENV=production npm run rollup && NODE_ENV=production npm run postcss && npm run build:rss && npm run copy-public && npm run lint:html && npm run minify:html",
     "build:lighthouse": "npm run build:gzip && bash tools/lighthouse.sh",
     "build:gzip": "cp -r output .tmp/output-gz && gzip -r .tmp/output-gz",
     "build:pages": "NODE_PATH=./ ts-node --project tsconfig.node.json src/generator/render.tsx && npm run build:pcss",
