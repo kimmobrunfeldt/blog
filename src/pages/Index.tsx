@@ -35,9 +35,8 @@ function Index(props: Props): JSX.Element {
               business, design, and tiny perfect details.
             </P>
             <P>
-              I’m Kimmo and I’ve been in the industry for nearly ten years:
-              consulting enterprises, doing product development in different
-              startups, and managing a webshop I co-founded.
+              I’m Kimmo and I’ve been in the industry for fifteen years:
+              consulting enterprises, delivering production software for global SaaS products, and managing a webshop I co-founded.
             </P>
 
             <P>Hope you enjoy!</P>
